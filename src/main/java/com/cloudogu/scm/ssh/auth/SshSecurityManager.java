@@ -1,4 +1,4 @@
-package com.cloudogu.scm.ssh;
+package com.cloudogu.scm.ssh.auth;
 
 import org.apache.shiro.mgt.DefaultSecurityManager;
 import org.apache.shiro.mgt.DefaultSessionStorageEvaluator;

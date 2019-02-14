@@ -1,15 +1,14 @@
 package com.cloudogu.scm.ssh;
 
-import com.cloudogu.scm.ssh.sample.SampleCommandFactory;
+import com.cloudogu.scm.ssh.auth.SshSecurityManager;
 import org.apache.shiro.util.ThreadContext;
 import org.apache.sshd.server.SshServer;
-import org.apache.sshd.server.keyprovider.SimpleGeneratorHostKeyProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import java.io.IOException;
-import java.nio.file.Paths;
+import java.util.Set;
 
 public class ScmSshServer {
 
@@ -19,16 +18,13 @@ public class ScmSshServer {
   private final SshSecurityManager securityManager;
 
   @Inject
-  public ScmSshServer(SshSecurityManager securityManager, Configuration configuration, ShiroPasswordAuthenticator passwordAuthenticator, SampleCommandFactory commandFactory) {
+  public ScmSshServer(SshSecurityManager securityManager, Set<SshServerConfigurator> configurators) {
     this.securityManager = securityManager;
     sshd = SshServer.setUpDefaultServer();
-    sshd.setScheduledExecutorService(ExecutorFactory.create(), true);
 
-    sshd.setPort(configuration.getPort());
-    sshd.setKeyPairProvider(new SimpleGeneratorHostKeyProvider(Paths.get("hostkey.ser")));
-
-    sshd.setPasswordAuthenticator(passwordAuthenticator);
-    sshd.setCommandFactory(commandFactory);
+    for (SshServerConfigurator configurator : configurators) {
+      configurator.configure(sshd);
+    }
   }
 
   void start() {

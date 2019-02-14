@@ -1,4 +1,4 @@
-package com.cloudogu.scm.ssh;
+package com.cloudogu.scm.ssh.auth;
 
 import com.google.inject.Inject;
 import com.google.inject.Injector;
