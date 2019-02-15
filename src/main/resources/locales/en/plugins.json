@@ -1,0 +1,11 @@
+{
+  "scm-ssh-plugin": {
+    "title": "Authorized Keys",
+    "navigation": "Authorized Keys",
+    "displayName": "Display Name",
+    "created": "Created at",
+    "raw": "Key",
+    "addKey": "Add key",
+    "noStoredKeys": "No authorized keys found"
+  }
+}

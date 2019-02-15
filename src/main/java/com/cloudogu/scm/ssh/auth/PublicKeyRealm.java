@@ -81,7 +81,7 @@ public class PublicKeyRealm extends AuthenticatingRealm {
 
     Iterable<AuthorizedKey> keys = authorizedKeyStore.getAll(publicKeyToken.getPrincipal());
     for (AuthorizedKey key : keys) {
-      AuthorizedKeyEntry entry = AuthorizedKeyEntry.parseAuthorizedKeyEntry(key.getAuthorizedKey());
+      AuthorizedKeyEntry entry = AuthorizedKeyEntry.parseAuthorizedKeyEntry(key.getRaw());
       entries.add(entry);
     }
     return entries;
