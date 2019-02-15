@@ -1,6 +1,5 @@
 package com.cloudogu.scm.ssh.auth;
 
-import com.sun.xml.internal.rngom.util.Uri;
 import de.otto.edison.hal.HalRepresentation;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.ThreadContext;
