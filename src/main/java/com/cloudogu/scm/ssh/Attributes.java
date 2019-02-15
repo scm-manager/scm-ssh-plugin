@@ -8,5 +8,5 @@ public final class Attributes {
   private Attributes() {
   }
 
-  public static final AttributeKey<Subject> SUBJECT = new AttributeKey();
+  public static final AttributeKey<Subject> SUBJECT = new AttributeKey<>();
 }

@@ -11,7 +11,7 @@ import sonia.scm.web.CollectingPackParserListener;
 import sonia.scm.web.GitReceiveHook;
 
 /**
- * TODO we should have a single ReceivePackFactory.
+ * TODO we should have a single/abstract ReceivePackFactory for http and ssh.
  */
 public class SshReceivePackFactory implements ReceivePackFactory<RepositoryContext> {
 

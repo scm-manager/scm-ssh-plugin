@@ -4,7 +4,6 @@ import com.google.common.annotations.VisibleForTesting;
 import de.otto.edison.hal.Link;
 import de.otto.edison.hal.Links;
 import org.mapstruct.Mapper;
-import org.mapstruct.MapperConfig;
 import org.mapstruct.Mapping;
 import org.mapstruct.ObjectFactory;
 import sonia.scm.api.v2.resources.LinkBuilder;
@@ -27,9 +26,9 @@ public abstract class AuthorizedKeyMapper {
   }
 
   @Mapping(target = "id", ignore = true)
-  @Mapping(target = "attributes", ignore = true)
   abstract AuthorizedKey map(AuthorizedKeyDto dto);
 
+  @Mapping(target = "attributes", ignore = true)
   abstract AuthorizedKeyDto map(AuthorizedKey authorizedKey);
 
   @ObjectFactory

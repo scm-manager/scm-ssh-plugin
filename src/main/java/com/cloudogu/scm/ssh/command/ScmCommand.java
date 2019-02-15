@@ -55,7 +55,7 @@ public class ScmCommand extends AbstractCommandSupport {
       protocol.handle(commandContext, repositoryContext);
 
       onExit(0);
-    } catch (Throwable throwable) {
+    } catch (Exception throwable) {
       LOG.error("received error during handling of command {}", command, throwable);
 
       onExit(-1, throwable.getClass().getSimpleName());
