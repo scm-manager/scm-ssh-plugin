@@ -1,6 +1,8 @@
 package com.cloudogu.scm.ssh.auth;
 
 import com.google.common.collect.ImmutableList;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
 import sonia.scm.security.KeyGenerator;
 import sonia.scm.store.DataStore;
 import sonia.scm.store.DataStoreFactory;
@@ -13,7 +15,6 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,15 +38,15 @@ class AuthorizedKeyStore {
   }
 
   List<AuthorizedKey> getAll(String username) {
-    AuthorizedKeys userPublicKeyStore = store.get(username);
-    if (userPublicKeyStore != null) {
-      return ImmutableList.copyOf(userPublicKeyStore.keys);
-    }
-    return Collections.emptyList();
+    AuthorizedKeys authorizedKeys = getKeysForUser(username);
+    return ImmutableList.copyOf(authorizedKeys.keys);
   }
 
   String add(String username, AuthorizedKey authorizedKey) {
     AuthorizedKeys authorizedKeys = getKeysForUser(username);
+
+    Subject subject = SecurityUtils.getSubject();
+    subject.checkPermission(Permissions.writeAuthorizedKeys(username));
 
     String id = keyGenerator.createKey();
     authorizedKey.setId(id);
@@ -57,11 +58,18 @@ class AuthorizedKeyStore {
 
   void delete(String username, String key) {
     AuthorizedKeys authorizedKeys = getKeysForUser(username);
+
+    Subject subject = SecurityUtils.getSubject();
+    subject.checkPermission(Permissions.writeAuthorizedKeys(username));
+
     authorizedKeys.delete(key);
     store.put(username, authorizedKeys);
   }
 
   private AuthorizedKeys getKeysForUser(String username) {
+    Subject subject = SecurityUtils.getSubject();
+    subject.checkPermission(Permissions.readAuthorizedKeys(username));
+
     AuthorizedKeys authorizedKeys = store.get(username);
     if (authorizedKeys == null) {
       authorizedKeys = new AuthorizedKeys();

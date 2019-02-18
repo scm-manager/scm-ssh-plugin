@@ -1,5 +1,10 @@
 package com.cloudogu.scm.ssh.auth;
 
+import com.google.common.collect.Lists;
+import org.apache.shiro.authz.AuthorizationException;
+import org.apache.shiro.subject.Subject;
+import org.apache.shiro.util.ThreadContext;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -15,11 +20,14 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class AuthorizedKeyStoreTest {
+
+  @Mock
+  private Subject subject;
 
   @Mock
   private KeyGenerator keyGenerator;
@@ -34,6 +42,13 @@ class AuthorizedKeyStoreTest {
   void setUpObjectUnderTest() {
     dataStoreFactory = new InMemoryDataStoreFactory();
     keyStore = new AuthorizedKeyStore(keyGenerator, dataStoreFactory);
+
+    ThreadContext.bind(subject);
+  }
+
+  @AfterEach
+  void clearThreadContext() {
+    ThreadContext.unbindSubject();
   }
 
   @Nested
@@ -80,6 +95,43 @@ class AuthorizedKeyStoreTest {
       List<AuthorizedKey> keys = keyStore.getAll("trillian");
       assertThat(keys).hasSize(2);
     }
+  }
+
+  @Test
+  void shouldCheckPermissionForGetAll() {
+    doThrowAuthorizationException("user:readAuthorizedKeys:trillian");
+
+    assertThrows(AuthorizationException.class, () -> keyStore.getAll("trillian"));
+  }
+
+  @Test
+  void shouldCheckPermissionForFindById() {
+    doThrowAuthorizationException("user:readAuthorizedKeys:trillian");
+
+    assertThrows(AuthorizationException.class, () -> keyStore.findById("trillian", "one"));
+  }
+
+  @Test
+  void shouldCheckPermissionForAdd() {
+    doThrowAuthorizationException("user:writeAuthorizedKeys:trillian");
+    assertThrows(AuthorizationException.class, () -> keyStore.add("trillian", new AuthorizedKey()));
+  }
+
+  @Test
+  void shouldCheckPermissionForDelete() {
+    doThrowAuthorizationException("user:writeAuthorizedKeys:trillian");
+    assertThrows(AuthorizationException.class, () -> keyStore.delete("trillian", "42"));
+  }
+
+  private void doThrowAuthorizationException(String... permissionArgs) {
+    List<String> permissions = Lists.newArrayList(permissionArgs);
+    doAnswer(ic -> {
+      String permission = ic.getArgument(0);
+      if (permissions.contains(permission)) {
+        throw new AuthorizationException("missing permission " + permission);
+      }
+      return null;
+    }).when(subject).checkPermission(anyString());
   }
 
   @Test

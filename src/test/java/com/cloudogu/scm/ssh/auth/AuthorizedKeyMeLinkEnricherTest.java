@@ -14,8 +14,7 @@ import sonia.scm.api.v2.resources.ScmPathInfoStore;
 
 import java.net.URI;
 
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class AuthorizedKeyMeLinkEnricherTest {
@@ -36,6 +35,7 @@ class AuthorizedKeyMeLinkEnricherTest {
     enricher = new AuthorizedKeyMeLinkEnricher(Providers.of(pathInfoStore));
 
     ThreadContext.bind(subject);
+    when(subject.getPrincipal()).thenReturn("trillian");
   }
 
   @AfterEach
@@ -45,11 +45,18 @@ class AuthorizedKeyMeLinkEnricherTest {
 
   @Test
   void shouldAppendAuthorizedKeysLink() {
-    when(subject.getPrincipal()).thenReturn("trillian");
+    when(subject.isPermitted("user:readAuthorizedKeys:trillian")).thenReturn(true);
 
     enricher.enrich(null, appender);
 
     verify(appender).appendLink("authorized_keys", "/v2/authorized_keys/trillian");
+  }
+
+  @Test
+  void shouldNotAppendAuthorizedKeysLinkWithoutPermission() {
+    enricher.enrich(null, appender);
+
+    verify(appender, never()).appendLink("authorized_keys", "/v2/authorized_keys/trillian");
   }
 
 }
