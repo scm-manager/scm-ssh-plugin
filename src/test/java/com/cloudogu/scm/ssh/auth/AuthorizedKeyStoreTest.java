@@ -40,7 +40,7 @@ class AuthorizedKeyStoreTest {
   class StoringTests {
 
     @BeforeEach
-    private void setUpKeyGenerator() {
+    void setUpKeyGenerator() {
       counter = new AtomicInteger();
       when(keyGenerator.createKey()).then(ic -> String.valueOf(counter.incrementAndGet()));
     }

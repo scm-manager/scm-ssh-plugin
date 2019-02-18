@@ -23,14 +23,14 @@ public class AuthorizedKeyCollectionMapper {
     this.mapper = mapper;
   }
 
-  HalRepresentation map(List<AuthorizedKey> keys) {
+  HalRepresentation map(String username, List<AuthorizedKey> keys) {
     List<AuthorizedKeyDto> dtos = keys.stream()
-      .map(mapper::map)
+      .map(key -> mapper.map(username, key))
       .collect(Collectors.toList());
 
     String href = new LinkBuilder(scmPathInfoStore.get().get(), AuthorizedKeyResource.class)
       .method("findAll")
-      .parameters()
+      .parameters(username)
       .href();
 
     return new HalRepresentation(linkingTo().self(href).build(), Embedded.embedded("keys", dtos));

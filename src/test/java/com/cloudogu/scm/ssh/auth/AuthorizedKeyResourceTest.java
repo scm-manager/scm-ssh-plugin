@@ -43,7 +43,6 @@ class AuthorizedKeyResourceTest {
 
   @BeforeEach
   void setUpSubject() {
-    when(subject.getPrincipal()).thenReturn("trillian");
     ThreadContext.bind(subject);
   }
 
@@ -58,9 +57,9 @@ class AuthorizedKeyResourceTest {
     when(store.getAll("trillian")).thenReturn(keys);
 
     HalRepresentation collection = new HalRepresentation();
-    when(collectionMapper.map(keys)).thenReturn(collection);
+    when(collectionMapper.map("trillian", keys)).thenReturn(collection);
 
-    HalRepresentation result = resource.findAll();
+    HalRepresentation result = resource.findAll("trillian");
     assertThat(result).isSameAs(collection);
   }
 
@@ -69,9 +68,9 @@ class AuthorizedKeyResourceTest {
     AuthorizedKey key = new AuthorizedKey("42");
     when(store.findById("trillian", "42")).thenReturn(Optional.of(key));
     AuthorizedKeyDto dto = new AuthorizedKeyDto();
-    when(mapper.map(key)).thenReturn(dto);
+    when(mapper.map("trillian", key)).thenReturn(dto);
 
-    Response response = resource.findById("42");
+    Response response = resource.findById("trillian", "42");
     assertThat(response.getStatus()).isEqualTo(200);
     assertThat(response.getEntity()).isSameAs(dto);
   }
@@ -80,7 +79,7 @@ class AuthorizedKeyResourceTest {
   void shouldReturn404IfIdDoesNotExists() {
     when(store.findById("trillian", "42")).thenReturn(Optional.empty());
 
-    Response response = resource.findById("42");
+    Response response = resource.findById("trillian", "42");
     assertThat(response.getStatus()).isEqualTo(404);
   }
 
@@ -97,7 +96,7 @@ class AuthorizedKeyResourceTest {
     when(mapper.map(dto)).thenReturn(key);
     when(store.add("trillian", key)).thenReturn("42");
 
-    Response response = resource.addKey(uriInfo, dto);
+    Response response = resource.addKey(uriInfo, "trillian", dto);
 
     assertThat(response.getStatus()).isEqualTo(201);
     assertThat(response.getLocation().toASCIIString()).isEqualTo("/v2/authorized_keys/42");
@@ -105,7 +104,7 @@ class AuthorizedKeyResourceTest {
 
   @Test
   void shouldDeleteFromStore() {
-    Response response = resource.deleteById("42");
+    Response response = resource.deleteById("trillian", "42");
     assertThat(response.getStatus()).isEqualTo(204);
     verify(store).delete("trillian", "42");
   }

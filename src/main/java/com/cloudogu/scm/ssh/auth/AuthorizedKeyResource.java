@@ -1,8 +1,6 @@
 package com.cloudogu.scm.ssh.auth;
 
 import de.otto.edison.hal.HalRepresentation;
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.subject.Subject;
 import sonia.scm.web.VndMediaType;
 
 import javax.inject.Inject;
@@ -19,7 +17,7 @@ import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 import java.util.Optional;
 
-@Path("v2/authorized_keys")
+@Path("v2/authorized_keys/{username}")
 public class AuthorizedKeyResource {
 
   private static final String MEDIA_TYPE = VndMediaType.PREFIX + "authorizedKey" + VndMediaType.SUFFIX;
@@ -39,19 +37,17 @@ public class AuthorizedKeyResource {
   @GET
   @Path("")
   @Produces(MEDIA_TYPE_COLLECTION)
-  public HalRepresentation findAll() {
-    String username = getPrincipalAsString();
-    return collectionMapper.map(store.getAll(username));
+  public HalRepresentation findAll(@PathParam("username") String username) {
+    return collectionMapper.map(username, store.getAll(username));
   }
 
   @GET
   @Path("{id}")
   @Produces(MEDIA_TYPE)
-  public Response findById(@PathParam("id") String id) {
-    String username = getPrincipalAsString();
+  public Response findById(@PathParam("username") String username, @PathParam("id") String id) {
     Optional<AuthorizedKey> byId = store.findById(username, id);
     if (byId.isPresent()) {
-      return Response.ok( mapper.map(byId.get()) ).build();
+      return Response.ok( mapper.map(username, byId.get()) ).build();
     }
     return Response.status(Response.Status.NOT_FOUND).build();
   }
@@ -59,8 +55,7 @@ public class AuthorizedKeyResource {
   @POST
   @Path("")
   @Consumes(MEDIA_TYPE)
-  public Response addKey(@Context UriInfo uriInfo, AuthorizedKeyDto authorizedKey) {
-    String username = getPrincipalAsString();
+  public Response addKey(@Context UriInfo uriInfo, @PathParam("username") String username, AuthorizedKeyDto authorizedKey) {
     String id = store.add(username, mapper.map(authorizedKey));
     UriBuilder builder = uriInfo.getAbsolutePathBuilder();
     builder.path(id);
@@ -69,15 +64,8 @@ public class AuthorizedKeyResource {
 
   @DELETE
   @Path("{id}")
-  public Response deleteById(@PathParam("id") String id) {
-    String username = getPrincipalAsString();
+  public Response deleteById(@PathParam("username") String username, @PathParam("id") String id) {
     store.delete(username, id);
     return Response.noContent().build();
   }
-
-  private String getPrincipalAsString() {
-    Subject subject = SecurityUtils.getSubject();
-    return subject.getPrincipal().toString();
-  }
-
 }

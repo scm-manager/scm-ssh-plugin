@@ -9,7 +9,7 @@ type Props = {
   me: Me
 };
 
-class NavigationRoute extends React.Component<Props> {
+class MeNavigationRoute extends React.Component<Props> {
   render() {
     const { me, url } = this.props;
     return (
@@ -21,4 +21,4 @@ class NavigationRoute extends React.Component<Props> {
   }
 }
 
-export default NavigationRoute;
+export default MeNavigationRoute;

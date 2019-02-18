@@ -17,6 +17,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -36,18 +37,18 @@ class AuthorizedKeyCollectionMapperTest {
 
   @Test
   void shouldMapToCollection() {
-    when(mapper.map(any(AuthorizedKey.class))).then(ic -> new AuthorizedKeyDto());
+    when(mapper.map(anyString(), any(AuthorizedKey.class))).then(ic -> new AuthorizedKeyDto());
 
     AuthorizedKey one = createAuthorizedKey("one");
     AuthorizedKey two = createAuthorizedKey("two");
 
     List<AuthorizedKey> keys = Lists.newArrayList(one, two);
-    HalRepresentation collection = collectionMapper.map(keys);
+    HalRepresentation collection = collectionMapper.map("trillian", keys);
 
     List<HalRepresentation> embedded = collection.getEmbedded().getItemsBy("keys");
     assertThat(embedded).hasSize(2);
 
-    assertThat(collection.getLinks().getLinkBy("self").get().getHref()).isEqualTo("/v2/authorized_keys");
+    assertThat(collection.getLinks().getLinkBy("self").get().getHref()).isEqualTo("/v2/authorized_keys/trillian");
   }
 
   private AuthorizedKey createAuthorizedKey(String displayName) {

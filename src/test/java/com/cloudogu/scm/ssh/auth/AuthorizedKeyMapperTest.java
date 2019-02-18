@@ -34,7 +34,7 @@ class AuthorizedKeyMapperTest {
     key.setRaw("ssh-rsa ... cardno:1234");
     key.setCreated(Instant.now());
 
-    AuthorizedKeyDto dto = mapper.map(key);
+    AuthorizedKeyDto dto = mapper.map("trillian", key);
     assertThat(dto.getDisplayName()).isEqualTo(key.getDisplayName());
     assertThat(dto.getRaw()).isEqualTo(key.getRaw());
     assertThat(dto.getCreated()).isEqualTo(key.getCreated());
@@ -43,15 +43,15 @@ class AuthorizedKeyMapperTest {
   @Test
   void shouldAppendSelfLink() {
     AuthorizedKey key = new AuthorizedKey("42");
-    AuthorizedKeyDto dto = mapper.map(key);
-    assertThat(dto.getLinks().getLinkBy("self").get().getHref()).isEqualTo("/v2/authorized_keys/42");
+    AuthorizedKeyDto dto = mapper.map("trillian", key);
+    assertThat(dto.getLinks().getLinkBy("self").get().getHref()).isEqualTo("/v2/authorized_keys/trillian/42");
   }
 
   @Test
   void shouldAppendDeleteLink() {
     AuthorizedKey key = new AuthorizedKey("42");
-    AuthorizedKeyDto dto = mapper.map(key);
-    assertThat(dto.getLinks().getLinkBy("delete").get().getHref()).isEqualTo("/v2/authorized_keys/42");
+    AuthorizedKeyDto dto = mapper.map("trillian", key);
+    assertThat(dto.getLinks().getLinkBy("delete").get().getHref()).isEqualTo("/v2/authorized_keys/trillian/42");
   }
 
   @Test
