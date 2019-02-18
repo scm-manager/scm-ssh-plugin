@@ -42,6 +42,10 @@ class AuthorizedKeyStore {
     return ImmutableList.copyOf(authorizedKeys.keys);
   }
 
+  List<AuthorizedKey> getAllWithoutPermissionCheck(String username) {
+    return getKeysForUserWithoutPermissionCheck(username).keys;
+  }
+
   String add(String username, AuthorizedKey authorizedKey) {
     AuthorizedKeys authorizedKeys = getKeysForUser(username);
 
@@ -69,7 +73,10 @@ class AuthorizedKeyStore {
   private AuthorizedKeys getKeysForUser(String username) {
     Subject subject = SecurityUtils.getSubject();
     subject.checkPermission(Permissions.readAuthorizedKeys(username));
+    return getKeysForUserWithoutPermissionCheck(username);
+  }
 
+  private AuthorizedKeys getKeysForUserWithoutPermissionCheck(String username) {
     AuthorizedKeys authorizedKeys = store.get(username);
     if (authorizedKeys == null) {
       authorizedKeys = new AuthorizedKeys();

@@ -41,7 +41,7 @@ public class PublicKeyRealm extends AuthenticatingRealm {
   }
 
   @Override
-  protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException {
+  protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) {
     PublicKeyToken publicKeyToken = (PublicKeyToken) token;
     if (isAuthenticated(publicKeyToken)) {
       return daoRealmHelper.authenticationInfoBuilder(publicKeyToken.getPrincipal()).build();
@@ -69,17 +69,7 @@ public class PublicKeyRealm extends AuthenticatingRealm {
 
   private List<AuthorizedKeyEntry> loadAuthorizedKeys(PublicKeyToken publicKeyToken) {
     List<AuthorizedKeyEntry> entries = new ArrayList<>();
-
-    if ("sdorra".equals(publicKeyToken.getPrincipal())) {
-      String keyStringRepresentation = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCu6TW1lFtGAH4OmEGJV341lYvXFaewHHmkaWkgql7IDMTWSjj/D0HR0sbOk6R/EpfjrRowmymrFsMyWzC3mqSrrGHP0qZiQPEWXZxDhl+fIXjTOqb5Kh8Huja7Ni090kb9r66/pdz1hdk7YZJUYlY3GZlVZEAwfGpxSlgNGwmO2wz5ihn8GN/mzfiELgIxWf9eQ3AsnrV+/JGuTLy/twqkPpqjdGW3kC1PGnBbPIXUWPfTYrj9T2li5BlgpGELI4TNHNEc88htyprfA88zASRLsZyIUUVZPIQ8bpRwMgB7Y/RMiKxps71D4qwhNOOUqGnwZnrLXvaB6G+kZBaJ3AcCtgzQD/4wIx5uhJ3/tpyDvq0c471P+Ph2vswEiVOcJcDqrUbGBYtjFr3SiAX6h434uJbgGr5Bxos0jQ18J9PohvEPb4qsOb6PhOSJf5+YpORNanZIcMwq6JImrR95XdCuBSRg6h8qXPxNdJsU1roMLcCkgEll1fPABYvVWASKRZIWWJ9pevS7oqyDOo82bAdh3813WqAEflUj15S4LQxnLwjNUuW+HebzMct+z2RN6l8ZH5TQ9fhOkQiufwNG5bzckjKb5UidC86FaqlJ5LTZTfEeyAlE/4chtzpyEZQo4le7fXFs6NBsPS6RDG/cgHynWu3QgQtGFSUzrtewWu0fiQ== cardno:000607466087";
-
-      AuthorizedKeyEntry entry = AuthorizedKeyEntry.parseAuthorizedKeyEntry(keyStringRepresentation);
-      entries.add(entry);
-
-      return entries;
-    }
-
-    Iterable<AuthorizedKey> keys = authorizedKeyStore.getAll(publicKeyToken.getPrincipal());
+    Iterable<AuthorizedKey> keys = authorizedKeyStore.getAllWithoutPermissionCheck(publicKeyToken.getPrincipal());
     for (AuthorizedKey key : keys) {
       AuthorizedKeyEntry entry = AuthorizedKeyEntry.parseAuthorizedKeyEntry(key.getRaw());
       entries.add(entry);
