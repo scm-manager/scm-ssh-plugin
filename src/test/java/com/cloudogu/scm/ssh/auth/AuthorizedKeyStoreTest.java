@@ -93,6 +93,19 @@ class AuthorizedKeyStoreTest {
     }
 
     @Test
+    void shouldTrimStoredKeys() {
+      AuthorizedKey key = new AuthorizedKey();
+      key.setRaw("   " + VALID_RAW_KEY + "   ");
+      key.setDisplayName("one");
+
+      String id = keyStore.add("trillian", key);
+      Optional<AuthorizedKey> optionalKey = keyStore.findById("trillian", id);
+      assertThat(optionalKey).isPresent();
+
+      assertThat(optionalKey.get().getRaw()).isEqualTo(VALID_RAW_KEY);
+    }
+
+    @Test
     void shouldDelete() {
       AuthorizedKey key = createValidAuthorizedKey();
       key.setDisplayName("one");

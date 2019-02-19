@@ -1,5 +1,6 @@
 package com.cloudogu.scm.ssh.auth;
 
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
@@ -53,6 +54,7 @@ class AuthorizedKeyStore {
     Subject subject = SecurityUtils.getSubject();
     subject.checkPermission(Permissions.writeAuthorizedKeys(username));
 
+    normalize(authorizedKey);
     validate(authorizedKey);
 
     String id = keyGenerator.createKey();
@@ -61,6 +63,10 @@ class AuthorizedKeyStore {
     authorizedKeys.add(authorizedKey);
     store.put(username, authorizedKeys);
     return id;
+  }
+
+  private void normalize(AuthorizedKey authorizedKey) {
+    authorizedKey.setRaw(Strings.nullToEmpty(authorizedKey.getRaw()).trim());
   }
 
   private void validate(AuthorizedKey authorizedKey) {
