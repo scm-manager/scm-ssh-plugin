@@ -26,6 +26,12 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class AuthorizedKeyStoreTest {
 
+  private static final String VALID_RAW_KEY = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCsts5J8omrz5H9JP52Gnd6G2n3hy" +
+    "/YPjQ0JCQTjO3iBkfzTm83dzti5DhZ20migHhZblhjv8sPk3e/+xVI/II5KejalI0ODBQ9YSkDsFHNlelrK2kbwXVEcLN8S8is7l6312wej2" +
+    "PAMQdDRsbjRGRRXbymzO4ZWfHVlIEuZAkBeNZS8K66nXX98cj6n6e8ZP0VCV/FRD82TDFD9Zvj19rkp3pJjJaOIftJ92op62P/g6po/+0bF9" +
+    "maCtIO6umgzuA1LiWaUXPEsxNIAkaZwiw2RgekqpWqkYibQOW2YCL67MwOf9WWWXgXmRNnS5gCRdYuXPLP23kF0HdRauJUwqV " +
+    "trillian@heart-of-gold";
+
   @Mock
   private Subject subject;
 
@@ -51,6 +57,18 @@ class AuthorizedKeyStoreTest {
     ThreadContext.unbindSubject();
   }
 
+  private AuthorizedKey createValidAuthorizedKey() {
+    AuthorizedKey authorizedKey = new AuthorizedKey();
+    authorizedKey.setRaw(VALID_RAW_KEY);
+    return authorizedKey;
+  }
+
+  private AuthorizedKey createInvalidAuthorizedKey() {
+    AuthorizedKey authorizedKey = new AuthorizedKey();
+    authorizedKey.setRaw("abc");
+    return authorizedKey;
+  }
+
   @Nested
   class StoringTests {
 
@@ -62,7 +80,7 @@ class AuthorizedKeyStoreTest {
 
     @Test
     void shouldStore() {
-      AuthorizedKey key = new AuthorizedKey();
+      AuthorizedKey key = createValidAuthorizedKey();
       key.setDisplayName("one");
 
       String id = keyStore.add("trillian", key);
@@ -76,7 +94,7 @@ class AuthorizedKeyStoreTest {
 
     @Test
     void shouldDelete() {
-      AuthorizedKey key = new AuthorizedKey();
+      AuthorizedKey key = createValidAuthorizedKey();
       key.setDisplayName("one");
 
       String id = keyStore.add("trillian", key);
@@ -88,9 +106,9 @@ class AuthorizedKeyStoreTest {
 
     @Test
     void shouldFindAllOfOneUser() {
-      keyStore.add("trillian", new AuthorizedKey());
-      keyStore.add("trillian", new AuthorizedKey());
-      keyStore.add("dent", new AuthorizedKey());
+      keyStore.add("trillian", createValidAuthorizedKey());
+      keyStore.add("trillian", createValidAuthorizedKey());
+      keyStore.add("dent", createValidAuthorizedKey());
 
       List<AuthorizedKey> keys = keyStore.getAll("trillian");
       assertThat(keys).hasSize(2);
@@ -114,7 +132,7 @@ class AuthorizedKeyStoreTest {
   @Test
   void shouldCheckPermissionForAdd() {
     doThrowAuthorizationException("user:writeAuthorizedKeys:trillian");
-    assertThrows(AuthorizationException.class, () -> keyStore.add("trillian", new AuthorizedKey()));
+    assertThrows(AuthorizationException.class, () -> keyStore.add("trillian", createValidAuthorizedKey()));
   }
 
   @Test
@@ -138,6 +156,11 @@ class AuthorizedKeyStoreTest {
   void shouldReturnEmpty() {
     Optional<AuthorizedKey> optionalKey = keyStore.findById("trillian", "42");
     assertThat(optionalKey).isNotPresent();
+  }
+
+  @Test
+  void shouldThrowExceptionForInvalidKeys() {
+    assertThrows(InvalidAuthorizedKeyException.class, () -> keyStore.add("trillian", createInvalidAuthorizedKey()));
   }
 
 }

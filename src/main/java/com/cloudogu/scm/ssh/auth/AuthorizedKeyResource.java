@@ -56,10 +56,14 @@ public class AuthorizedKeyResource {
   @Path("")
   @Consumes(MEDIA_TYPE)
   public Response addKey(@Context UriInfo uriInfo, @PathParam("username") String username, AuthorizedKeyDto authorizedKey) {
-    String id = store.add(username, mapper.map(authorizedKey));
-    UriBuilder builder = uriInfo.getAbsolutePathBuilder();
-    builder.path(id);
-    return Response.created(builder.build()).build();
+    try {
+      String id = store.add(username, mapper.map(authorizedKey));
+      UriBuilder builder = uriInfo.getAbsolutePathBuilder();
+      builder.path(id);
+      return Response.created(builder.build()).build();
+    } catch (InvalidAuthorizedKeyException ex) {
+      return Response.status(Response.Status.BAD_REQUEST).build();
+    }
   }
 
   @DELETE

@@ -3,6 +3,7 @@ package com.cloudogu.scm.ssh.auth;
 import com.google.common.collect.ImmutableList;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
+import org.apache.sshd.common.config.keys.AuthorizedKeyEntry;
 import sonia.scm.security.KeyGenerator;
 import sonia.scm.store.DataStore;
 import sonia.scm.store.DataStoreFactory;
@@ -52,12 +53,22 @@ class AuthorizedKeyStore {
     Subject subject = SecurityUtils.getSubject();
     subject.checkPermission(Permissions.writeAuthorizedKeys(username));
 
+    validate(authorizedKey);
+
     String id = keyGenerator.createKey();
     authorizedKey.setId(id);
     authorizedKey.setCreated(Instant.now());
     authorizedKeys.add(authorizedKey);
     store.put(username, authorizedKeys);
     return id;
+  }
+
+  private void validate(AuthorizedKey authorizedKey) {
+    try {
+      AuthorizedKeyEntry.parseAuthorizedKeyEntry(authorizedKey.getRaw());
+    } catch (IllegalArgumentException ex) {
+      throw new InvalidAuthorizedKeyException("invalid or unsupported key", ex);
+    }
   }
 
   void delete(String username, String key) {
