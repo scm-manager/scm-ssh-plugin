@@ -4,11 +4,9 @@ import { apiClient, Subtitle } from "@scm-manager/ui-components";
 import { translate } from "react-i18next";
 import AuthorizedKeysList from "./AuthorizedKeysList";
 import AuthorizedKeysForm from "./AuthorizedKeysForm";
-import type { AuthorizedKey } from "./types";
+import type {AuthorizedKeysCollection} from "./types";
 import Loading from "@scm-manager/ui-components/src/Loading";
 import ErrorNotification from "@scm-manager/ui-components/src/ErrorNotification";
-
-type ApiFn = () => Promise<Response>;
 
 type Props = {
   link: string,
@@ -18,8 +16,9 @@ type Props = {
 };
 
 type State = {
+  authorizedKeys?: AuthorizedKeysCollection,
   loading: boolean,
-  error?: Error
+  error?: Error,
 };
 
 class AuthorizedKeysPage extends React.Component<Props, State> {
@@ -30,25 +29,22 @@ class AuthorizedKeysPage extends React.Component<Props, State> {
     };
   }
 
-  addKey = (authorizedKey: AuthorizedKey) => {
-    const { link } = this.props;
-    const fn = () => apiClient.post(link, authorizedKey, "application/vnd.scmm-authorizedkey+json;v=2");
-    this.callApi(fn);
-  };
+  componentDidMount() {
+    this.fetchKeys();
+  }
 
-  deleteKey = (authorizedKey: AuthorizedKey) => {
-    const fn = () => apiClient.delete(authorizedKey._links.delete.href);
-    this.callApi(fn);
-  };
-
-  callApi = (apiFn: ApiFn) => {
+  fetchKeys = () => {
     this.setState({
       loading: true
     });
-    apiFn()
-      .then(() => {
+
+    apiClient
+      .get(this.props.link)
+      .then(resp => resp.json())
+      .then(authorizedKeys => {
         this.setState({
           loading: false,
+          authorizedKeys,
           error: undefined
         });
       })
@@ -60,8 +56,23 @@ class AuthorizedKeysPage extends React.Component<Props, State> {
       });
   };
 
+  onKeyAdded = () => {
+    this.fetchKeys();
+  };
+
+  onKeyDeleted = (error?: Error) => {
+    if (error) {
+      this.setState({
+        error
+      });
+    } else {
+      this.fetchKeys();
+    }
+  };
+
   render() {
-    const { loading, error } = this.state;
+    const { link } = this.props;
+    const { authorizedKeys, loading, error } = this.state;
     let children;
     if (loading) {
       children = <Loading />;
@@ -71,10 +82,11 @@ class AuthorizedKeysPage extends React.Component<Props, State> {
       children = (
         <>
           <AuthorizedKeysList
+            authorizedKeys={authorizedKeys}
             link={this.props.link}
-            onDelete={this.deleteKey}
+            onKeyDeleted={this.onKeyDeleted}
           />
-          <AuthorizedKeysForm onSubmit={this.addKey} />
+          <AuthorizedKeysForm url={link} onKeyAdded={this.onKeyAdded} />
         </>
       );
     }

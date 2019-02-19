@@ -5,7 +5,7 @@ import type { AuthorizedKey } from "./types";
 import AuthorizedKeyRow from "./AuthorizedKeyRow";
 
 type Props = {
-  onDelete: AuthorizedKey => void,
+  onKeyDeleted: (error?: Error) => void,
   authorizedKeys: AuthorizedKey[],
   // context props
   t: string => string
@@ -13,7 +13,7 @@ type Props = {
 
 class AuthorizedKeysTable extends React.Component<Props> {
   render() {
-    const { authorizedKeys, onDelete, t } = this.props;
+    const { authorizedKeys, onKeyDeleted, t } = this.props;
     return (
       <table className="card-table table is-hoverable is-fullwidth">
         <thead>
@@ -31,7 +31,7 @@ class AuthorizedKeysTable extends React.Component<Props> {
             return (
               <AuthorizedKeyRow
                 key={index}
-                onDelete={onDelete}
+                onKeyDeleted={onKeyDeleted}
                 authorizedKey={authorizedKey}
               />
             );

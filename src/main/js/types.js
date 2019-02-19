@@ -1,5 +1,11 @@
 //@flow
-import type { Links } from "@scm-manager/ui-types";
+import type {Collection, Links} from "@scm-manager/ui-types";
+
+export type AuthorizedKeysCollection = Collection & {
+  _embedded: {
+    keys: AuthorizedKey[]
+  }
+};
 
 export type AuthorizedKey = {
   displayName: string,

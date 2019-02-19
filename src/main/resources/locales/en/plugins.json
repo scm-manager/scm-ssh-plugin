@@ -6,6 +6,7 @@
     "created": "Created at",
     "raw": "Key",
     "addKey": "Add key",
+    "delete": "Delete",
     "noStoredKeys": "No authorized keys found"
   }
 }

@@ -3,14 +3,54 @@ import React from "react";
 import type { AuthorizedKey } from "./types";
 import DateFromNow from "@scm-manager/ui-components/src/DateFromNow";
 import { formatAuthorizedKey } from "./formatAuthorizedKey";
-import DeleteAction from "./DeleteAction";
+import {apiClient, DeleteButton} from "@scm-manager/ui-components";
+import { translate } from "react-i18next";
 
 type Props = {
-  onDelete: AuthorizedKey => void,
-  authorizedKey: AuthorizedKey
+  onKeyDeleted: (error?: Error) => void,
+  authorizedKey: AuthorizedKey,
+
+  // context props
+  t: (string) => string
 };
 
-class AuthorizedKeyRow extends React.Component<Props> {
+type State = {
+  loading: boolean
+};
+
+class AuthorizedKeyRow extends React.Component<Props, State> {
+
+  constructor(props: Props) {
+    super(props);
+    this.state = {
+      loading: false
+    };
+  }
+
+  onDelete = (url: string) => {
+    this.setState({
+      loading: true
+    });
+
+    const { onKeyDeleted } = this.props;
+
+    apiClient.delete(url)
+      .then(() => {
+        this.setState({
+          loading: false
+        });
+
+        onKeyDeleted();
+      })
+      .catch(error => {
+        this.setState({
+          loading: false
+        });
+
+        onKeyDeleted(error);
+      });
+  };
+
   render() {
     const { authorizedKey } = this.props;
     return (
@@ -28,12 +68,14 @@ class AuthorizedKeyRow extends React.Component<Props> {
   }
 
   renderDeleteAction() {
-    const { onDelete, authorizedKey } = this.props;
-    if (authorizedKey._links.delete) {
-      return <DeleteAction action={() => onDelete(authorizedKey)} />;
+    const { authorizedKey, t } = this.props;
+    const link = authorizedKey._links.delete;
+    if (link) {
+      const { loading } = this.state;
+      return <DeleteButton label={t("scm-ssh-plugin.delete")} loading={loading} action={() => this.onDelete(link.href)} />;
     }
     return null;
   }
 }
 
-export default AuthorizedKeyRow;
+export default translate("plugins")(AuthorizedKeyRow);
