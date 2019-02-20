@@ -1,5 +1,7 @@
 package com.cloudogu.scm.ssh.auth;
 
+import sonia.scm.user.UserPermissions;
+
 final class Permissions {
 
   private static final String ACTION_READ = "readAuthorizedKeys";
@@ -12,11 +14,19 @@ final class Permissions {
     return String.format("user:%s,%s:%s", ACTION_READ, ACTION_WRITE, user);
   }
 
-  static String readAuthorizedKeys(String user) {
-    return String.format("user:%s:%s", ACTION_READ, user);
+  static void checkReadAuthorizedKeys(String user) {
+    UserPermissions.custom(ACTION_READ, user).check();
   }
 
-  static String writeAuthorizedKeys(String user) {
-    return String.format("user:%s:%s", ACTION_WRITE, user);
+  static boolean isPermittedReadAuthorizedKeys(String user) {
+    return UserPermissions.custom(ACTION_READ, user).isPermitted();
+  }
+
+  static void checkWriteAuthorizedKeys(String user) {
+    UserPermissions.custom(ACTION_WRITE, user).check();
+  }
+
+  static boolean isPermittedWriteAuthorizedKeys(String user) {
+    return UserPermissions.custom(ACTION_WRITE, user).isPermitted();
   }
 }

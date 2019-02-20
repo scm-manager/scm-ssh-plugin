@@ -4,8 +4,6 @@ import de.otto.edison.hal.Embedded;
 import de.otto.edison.hal.HalRepresentation;
 import de.otto.edison.hal.Link;
 import de.otto.edison.hal.Links;
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.subject.Subject;
 import sonia.scm.api.v2.resources.LinkBuilder;
 import sonia.scm.api.v2.resources.ScmPathInfoStore;
 
@@ -46,8 +44,7 @@ public class AuthorizedKeyCollectionMapper {
   }
 
   private boolean hasCreatePermissions(String username) {
-    Subject subject = SecurityUtils.getSubject();
-    return subject.isPermitted(Permissions.writeAuthorizedKeys(username));
+    return Permissions.isPermittedWriteAuthorizedKeys(username);
   }
 
   private String createLink(String username) {

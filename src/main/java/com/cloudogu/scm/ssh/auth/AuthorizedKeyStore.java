@@ -2,8 +2,6 @@ package com.cloudogu.scm.ssh.auth;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.subject.Subject;
 import org.apache.sshd.common.config.keys.AuthorizedKeyEntry;
 import sonia.scm.security.KeyGenerator;
 import sonia.scm.store.DataStore;
@@ -51,8 +49,7 @@ class AuthorizedKeyStore {
   String add(String username, AuthorizedKey authorizedKey) {
     AuthorizedKeys authorizedKeys = getKeysForUser(username);
 
-    Subject subject = SecurityUtils.getSubject();
-    subject.checkPermission(Permissions.writeAuthorizedKeys(username));
+    Permissions.checkWriteAuthorizedKeys((username));
 
     normalize(authorizedKey);
     validate(authorizedKey);
@@ -80,16 +77,14 @@ class AuthorizedKeyStore {
   void delete(String username, String key) {
     AuthorizedKeys authorizedKeys = getKeysForUser(username);
 
-    Subject subject = SecurityUtils.getSubject();
-    subject.checkPermission(Permissions.writeAuthorizedKeys(username));
+    Permissions.checkWriteAuthorizedKeys(username);
 
     authorizedKeys.delete(key);
     store.put(username, authorizedKeys);
   }
 
   private AuthorizedKeys getKeysForUser(String username) {
-    Subject subject = SecurityUtils.getSubject();
-    subject.checkPermission(Permissions.readAuthorizedKeys(username));
+    Permissions.checkReadAuthorizedKeys(username);
     return getKeysForUserWithoutPermissionCheck(username);
   }
 
