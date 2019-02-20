@@ -55,7 +55,7 @@ public class AuthorizedKeyResource {
   @POST
   @Path("")
   @Consumes(MEDIA_TYPE)
-  public Response addKey(@Context UriInfo uriInfo, @PathParam("username") String username, AuthorizedKeyDto authorizedKey) {
+  public Response create(@Context UriInfo uriInfo, @PathParam("username") String username, AuthorizedKeyDto authorizedKey) {
     try {
       String id = store.add(username, mapper.map(authorizedKey));
       UriBuilder builder = uriInfo.getAbsolutePathBuilder();

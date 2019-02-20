@@ -71,7 +71,6 @@ class AuthorizedKeysPage extends React.Component<Props, State> {
   };
 
   render() {
-    const { link } = this.props;
     const { authorizedKeys, loading, error } = this.state;
     let children;
     if (loading) {
@@ -79,6 +78,12 @@ class AuthorizedKeysPage extends React.Component<Props, State> {
     } else if (error) {
       children = <ErrorNotification error={error} />;
     } else {
+
+      let form = null;
+      if (authorizedKeys && authorizedKeys._links.create) {
+        form = <AuthorizedKeysForm url={authorizedKeys._links.create.href} onKeyAdded={this.onKeyAdded} />;
+      }
+
       children = (
         <>
           <AuthorizedKeysList
@@ -86,7 +91,7 @@ class AuthorizedKeysPage extends React.Component<Props, State> {
             link={this.props.link}
             onKeyDeleted={this.onKeyDeleted}
           />
-          <AuthorizedKeysForm url={link} onKeyAdded={this.onKeyAdded} />
+          { form }
         </>
       );
     }

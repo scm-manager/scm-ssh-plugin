@@ -3,6 +3,9 @@ package com.cloudogu.scm.ssh.auth;
 import com.google.common.collect.Lists;
 import com.google.inject.util.Providers;
 import de.otto.edison.hal.HalRepresentation;
+import org.apache.shiro.subject.Subject;
+import org.apache.shiro.util.ThreadContext;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,11 +31,21 @@ class AuthorizedKeyCollectionMapperTest {
   @Mock
   private AuthorizedKeyMapper mapper;
 
+  @Mock
+  private Subject subject;
+
   @BeforeEach
   void setUpObjectUnderTest() {
     ScmPathInfoStore pathInfoStore = new ScmPathInfoStore();
     pathInfoStore.set(() -> URI.create("/"));
     collectionMapper = new AuthorizedKeyCollectionMapper(Providers.of(pathInfoStore), mapper);
+
+    ThreadContext.bind(subject);
+  }
+
+  @AfterEach
+  void cleanThreadContext() {
+    ThreadContext.unbindSubject();
   }
 
   @Test
@@ -49,6 +62,20 @@ class AuthorizedKeyCollectionMapperTest {
     assertThat(embedded).hasSize(2);
 
     assertThat(collection.getLinks().getLinkBy("self").get().getHref()).isEqualTo("/v2/authorized_keys/trillian");
+  }
+
+  @Test
+  void shouldAddCreateLinkIfTheUserIsPermitted() {
+    when(subject.isPermitted("user:writeAuthorizedKeys:trillian")).thenReturn(true);
+
+    HalRepresentation collection = collectionMapper.map("trillian", Lists.newArrayList());
+    assertThat(collection.getLinks().getLinkBy("create").get().getHref()).isEqualTo("/v2/authorized_keys/trillian");
+  }
+
+  @Test
+  void shouldNotAddCreateLinkWithoutPermission() {
+    HalRepresentation collection = collectionMapper.map("trillian", Lists.newArrayList());
+    assertThat(collection.getLinks().getLinkBy("create")).isNotPresent();
   }
 
   private AuthorizedKey createAuthorizedKey(String displayName) {

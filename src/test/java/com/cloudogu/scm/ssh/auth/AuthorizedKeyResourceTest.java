@@ -96,7 +96,7 @@ class AuthorizedKeyResourceTest {
     when(mapper.map(dto)).thenReturn(key);
     when(store.add("trillian", key)).thenReturn("42");
 
-    Response response = resource.addKey(uriInfo, "trillian", dto);
+    Response response = resource.create(uriInfo, "trillian", dto);
 
     assertThat(response.getStatus()).isEqualTo(201);
     assertThat(response.getLocation().toASCIIString()).isEqualTo("/v2/authorized_keys/42");
@@ -110,7 +110,7 @@ class AuthorizedKeyResourceTest {
     when(store.add("trillian", key)).thenThrow(new InvalidAuthorizedKeyException("nope", null));
 
     UriInfo uriInfo = mock(UriInfo.class);
-    Response response = resource.addKey(uriInfo, "trillian", dto);
+    Response response = resource.create(uriInfo, "trillian", dto);
 
     assertThat(response.getStatus()).isEqualTo(400);
   }
