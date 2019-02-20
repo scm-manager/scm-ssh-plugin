@@ -8,5 +8,21 @@
     "addKey": "Add key",
     "delete": "Delete",
     "noStoredKeys": "No authorized keys found"
+  },
+  "permissions": {
+    "user": {
+      "readAuthorizedKeys": {
+        "*": {
+          "displayName": "Read ssh keys of all users",
+          "description": "May read ssh public keys for all users"
+        }
+      },
+      "readAuthorizedKeys,writeAuthorizedKeys": {
+        "*": {
+          "displayName": "Read and set ssh keys of all users",
+          "description": "May read and set ssh public keys for all users"
+        }
+      }
+    }
   }
 }
