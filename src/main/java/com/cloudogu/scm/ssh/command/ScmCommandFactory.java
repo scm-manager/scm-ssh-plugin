@@ -3,10 +3,14 @@ package com.cloudogu.scm.ssh.command;
 import com.cloudogu.scm.ssh.SshServerConfigurator;
 import org.apache.sshd.server.SshServer;
 import org.apache.sshd.server.command.AbstractDelegatingCommandFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 
 public class ScmCommandFactory extends AbstractDelegatingCommandFactory implements SshServerConfigurator {
+
+  private static final Logger LOG = LoggerFactory.getLogger(ScmCommandFactory.class);
 
   private CommandParser commandParser;
   private RepositoryContextResolver repositoryContextResolver;
@@ -27,6 +31,7 @@ public class ScmCommandFactory extends AbstractDelegatingCommandFactory implemen
 
   @Override
   protected ScmCommand executeSupportedCommand(String command) {
+    LOG.debug("create scm command for '{}'", command);
     // TODO
     // we create a new executor for every command, this sounds not right
     // but with a cached thread pool the server hangs on the second request

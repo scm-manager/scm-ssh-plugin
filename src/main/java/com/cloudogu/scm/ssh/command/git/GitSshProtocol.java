@@ -9,12 +9,16 @@ import org.eclipse.jgit.transport.ReceivePack;
 import org.eclipse.jgit.transport.RemoteConfig;
 import org.eclipse.jgit.transport.UploadPack;
 import org.eclipse.jgit.util.FS;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import sonia.scm.repository.RepositoryPermissions;
 
 import javax.inject.Inject;
 import java.io.IOException;
 
 public class GitSshProtocol implements ScmSshProtocol {
+
+  private static final Logger LOG = LoggerFactory.getLogger(GitSshProtocol.class);
 
   private SshUploadPackFactory uploadPackFactory;
   private SshReceivePackFactory receivePackFactory;
@@ -30,8 +34,10 @@ public class GitSshProtocol implements ScmSshProtocol {
     String subCommand = commandContext.getArgs()[0];
 
     if (RemoteConfig.DEFAULT_UPLOAD_PACK.equals(subCommand)) {
+      LOG.trace("got upload pack");
       upload(commandContext, repositoryContext);
     } else if (RemoteConfig.DEFAULT_RECEIVE_PACK.equals(subCommand)) {
+      LOG.trace("got receive pack");
       receive(commandContext, repositoryContext);
     } else {
       throw new IllegalArgumentException("Unknown git command: " + commandContext.getCommand());

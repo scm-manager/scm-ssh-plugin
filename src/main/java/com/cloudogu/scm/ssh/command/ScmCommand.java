@@ -44,6 +44,7 @@ public class ScmCommand extends AbstractCommandSupport {
   @Override
   public void run() {
     String command = getCommand();
+    LOG.debug("trying to run command '{}'", command);
     try {
       ThreadContext.bind(getSession().getAttribute(Attributes.SUBJECT));
 
@@ -53,6 +54,8 @@ public class ScmCommand extends AbstractCommandSupport {
       CommandContext commandContext = createCommandContext(command, args);
 
       protocol.handle(commandContext, repositoryContext);
+
+      LOG.debug("finished protocol handling of command '{}'", command);
 
       onExit(0);
     } catch (Exception throwable) {

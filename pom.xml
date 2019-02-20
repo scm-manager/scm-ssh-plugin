@@ -86,6 +86,7 @@
             <version>1.0.0-alpha-3</version>
             <extensions>true</extensions>
             <configuration>
+              <restartNotifier>false</restartNotifier>
               <openBrowser>false</openBrowser>
               <links>
                 <link>@scm-manager/ui-types</link>
