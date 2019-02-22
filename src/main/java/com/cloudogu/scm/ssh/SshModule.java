@@ -6,6 +6,7 @@ import com.cloudogu.scm.ssh.command.ScmCommandFactory;
 import com.cloudogu.scm.ssh.command.git.GitSshModule;
 import com.google.inject.AbstractModule;
 import com.google.inject.multibindings.Multibinder;
+import org.mapstruct.factory.Mappers;
 import sonia.scm.plugin.Extension;
 
 @Extension
@@ -21,5 +22,7 @@ public class SshModule extends AbstractModule {
     configurators.addBinding().to(KeyPairConfigurator.class);
     configurators.addBinding().to(ExecutorFactory.class);
     configurators.addBinding().to(ScmCommandFactory.class);
+
+    bind(ConfigurationMapper.class).to(Mappers.getMapper(ConfigurationMapper.class).getClass());
   }
 }

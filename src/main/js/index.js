@@ -4,6 +4,8 @@ import { binder } from "@scm-manager/ui-extensions";
 import NavigationLink from "./NavigationLink";
 import MeNavigationRoute from "./MeNavigationRoute";
 import UserNavigationRoute from "./UserNavigationRoute";
+import { ConfigurationBinder as cfgBinder } from "@scm-manager/ui-components";
+import SshConfiguration from "./SshConfiguration";
 
 // me page
 
@@ -22,3 +24,12 @@ const userPredicate = props => {
 
 binder.bind("user.setting", NavigationLink, userPredicate);
 binder.bind("user.route", UserNavigationRoute, userPredicate);
+
+// global configuration
+
+cfgBinder.bindGlobal(
+  "/ssh",
+  "scm-ssh-plugin.globalConfig.navLink",
+  "sshConfig",
+  SshConfiguration
+);

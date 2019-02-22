@@ -1,7 +1,6 @@
 package com.cloudogu.scm.ssh;
 
 import com.google.common.base.Strings;
-import sonia.scm.config.ScmConfiguration;
 import sonia.scm.plugin.Extension;
 import sonia.scm.repository.NamespaceAndName;
 import sonia.scm.repository.Repository;
@@ -14,13 +13,11 @@ import java.net.URI;
 @Extension
 public class SshProtocolProvider implements ScmProtocolProvider {
 
-  private final Configuration sshConfiguration;
-  private final ScmConfiguration scmConfiguration;
+  private final ConfigStore sshConfigStore;
 
   @Inject
-  public SshProtocolProvider(Configuration sshConfiguration, ScmConfiguration scmConfiguration) {
-    this.sshConfiguration = sshConfiguration;
-    this.scmConfiguration = scmConfiguration;
+  public SshProtocolProvider(ConfigStore sshConfigStore) {
+    this.sshConfigStore = sshConfigStore;
   }
 
   @Override
@@ -31,22 +28,11 @@ public class SshProtocolProvider implements ScmProtocolProvider {
   @Override
   public SshProtocol get(Repository repository) {
     if ("git".equals(repository.getType())) {
-      String serverName = serverNameFromBaseUrl();
-      return new SshProtocol(serverName, sshConfiguration.getPort(), repository.getNamespaceAndName());
+      String serverName = sshConfigStore.getBaseUrl();
+      return new SshProtocol(serverName, sshConfigStore.getPort(), repository.getNamespaceAndName());
     }
     return null;
   }
-
-  private String serverNameFromBaseUrl() {
-    String baseUrl = scmConfiguration.getBaseUrl();
-    if (Strings.isNullOrEmpty(baseUrl)) {
-      // it is possible, that is empty? Is localhost the best option we have?
-      return "localhost";
-    }
-
-    return URI.create(baseUrl).getHost();
-  }
-
 
   public class SshProtocol implements ScmProtocol {
 

@@ -6,15 +6,15 @@ import javax.inject.Inject;
 
 public class ConfigurationApplier implements SshServerConfigurator {
 
-  private final Configuration configuration;
+  private final ConfigStore configStore;
 
   @Inject
-  public ConfigurationApplier(Configuration configuration) {
-    this.configuration = configuration;
+  public ConfigurationApplier(ConfigStore configStore) {
+    this.configStore = configStore;
   }
 
   @Override
   public void configure(SshServer server) {
-    server.setPort(configuration.getPort());
+    server.setPort(configStore.getConfiguration().getPort());
   }
 }

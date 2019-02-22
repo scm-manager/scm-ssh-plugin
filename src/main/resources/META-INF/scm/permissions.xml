@@ -1,5 +1,8 @@
 <permissions>
   <permission>
+    <value>configuration:read,write:ssh</value>
+  </permission>
+  <permission>
     <value>user:readAuthorizedKeys:*</value>
   </permission>
   <permission>
