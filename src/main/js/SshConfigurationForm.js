@@ -35,20 +35,28 @@ class SshConfigurationForm extends React.Component<Props, State> {
   };
 
   render(): React.ReactNode {
+    const {t} = this.props;
+    const {hostName, port} = this.state;
+    const hostNameValid = true;
+    const portValid = port > -2 && port < 0xC000;
     return (
       <>
         <InputField
           onChange={this.valueChangeHandler}
           name="hostName"
-          label={this.props.t("scm-ssh-plugin.globalConfig.hostName")}
-          helpText={this.props.t("scm-ssh-plugin.globalConfig.hostNameHelp")}
-          value={this.state.hostName}/>
+          label={t("scm-ssh-plugin.globalConfig.hostName")}
+          helpText={t("scm-ssh-plugin.globalConfig.hostNameHelp")}
+          errorMessage={t("scm-ssh-plugin.globalConfig.hostNameInvalid")}
+          validationError={!hostNameValid}
+          value={hostName}/>
         <InputField
           onChange={this.valueChangeHandler}
           name="port"
-          label={this.props.t("scm-ssh-plugin.globalConfig.port")}
-          helpText={this.props.t("scm-ssh-plugin.globalConfig.portHelp")}
-          value={this.state.port} type="number"/>
+          label={t("scm-ssh-plugin.globalConfig.port")}
+          helpText={t("scm-ssh-plugin.globalConfig.portHelp")}
+          errorMessage={t("scm-ssh-plugin.globalConfig.portInvalid")}
+          validationError={!portValid}
+          value={port} type="number"/>
       </>
       );
   }
