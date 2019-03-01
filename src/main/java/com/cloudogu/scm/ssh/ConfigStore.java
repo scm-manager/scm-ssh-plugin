@@ -2,12 +2,15 @@ package com.cloudogu.scm.ssh;
 
 import com.google.common.base.Strings;
 import sonia.scm.config.ScmConfiguration;
+import sonia.scm.event.ScmEventBus;
 import sonia.scm.store.ConfigurationStore;
 import sonia.scm.store.ConfigurationStoreFactory;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.net.URI;
 
+@Singleton
 public class ConfigStore {
 
   private final ConfigurationStore<Configuration> store;
@@ -24,7 +27,9 @@ public class ConfigStore {
   }
 
   public void setConfiguration(Configuration newConfig) {
+    Configuration oldConfig = this.getConfiguration();
     this.store.set(newConfig);
+    ScmEventBus.getInstance().post(new ConfigChangedEvent(oldConfig, newConfig));
   }
 
   public String getBaseUrl() {

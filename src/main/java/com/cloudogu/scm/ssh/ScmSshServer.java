@@ -1,6 +1,7 @@
 package com.cloudogu.scm.ssh;
 
 import com.cloudogu.scm.ssh.auth.SshSecurityManager;
+import com.github.legman.Subscribe;
 import org.apache.shiro.util.ThreadContext;
 import org.apache.sshd.server.SshServer;
 import org.slf4j.Logger;
@@ -14,14 +15,21 @@ public class ScmSshServer {
 
   private static final Logger LOG = LoggerFactory.getLogger(ScmSshServer.class);
 
-  private final SshServer sshd;
+  private SshServer sshd;
   private final SshSecurityManager securityManager;
+  private final Set<SshServerConfigurator> configurators;
 
   @Inject
   public ScmSshServer(SshSecurityManager securityManager, Set<SshServerConfigurator> configurators) {
     this.securityManager = securityManager;
+    this.configurators = configurators;
+
     sshd = SshServer.setUpDefaultServer();
 
+    applyConfigurators();
+  }
+
+  private void applyConfigurators() {
     for (SshServerConfigurator configurator : configurators) {
       configurator.configure(sshd);
     }
@@ -37,10 +45,9 @@ public class ScmSshServer {
 
       try {
         sshd.start();
-      } catch (IOException e) {
-        LOG.error("failed to start ");
+      } catch (Exception e) {
+        LOG.error("failed to start ssh server", e);
       }
-
 
     }).start();
   }
@@ -49,9 +56,19 @@ public class ScmSshServer {
     LOG.info("stop ssh server");
     try {
       sshd.stop();
-    } catch (IOException ex) {
-      LOG.warn("failed to stop ssh server");
+    } catch (IOException e) {
+      LOG.warn("failed to stop ssh server", e);
     }
   }
 
+  @Subscribe
+  public void configurationChanged(ConfigChangedEvent configChangedEvent) {
+    if (configChangedEvent.getOldItem().getPort() != configChangedEvent.getItem().getPort()) {
+      LOG.trace("configuration for ssh server changed");
+      stop();
+      sshd = SshServer.setUpDefaultServer();
+      applyConfigurators();
+      start();
+    }
+  }
 }
