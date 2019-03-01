@@ -1,0 +1,38 @@
+{
+  "scm-ssh-plugin": {
+    "title": "Autorisierte Schlüssel",
+    "navigation": "Autorisierte Schlüssel",
+    "displayName": "Anzeigename",
+    "created": "Erstellt am",
+    "raw": "Schlüssel",
+    "addKey": "Schlüssel hinzufügen",
+    "delete": "Löschen",
+    "noStoredKeys": "Keine autorisierten Schlüssel gefunden",
+    "globalConfig": {
+      "navLink": "SSH",
+      "header": "SSH",
+      "hostName": "SSH Nostname",
+      "hostNameHelp": "Hostname für den SSH-Zugang. Wenn dieser nicht ausgefüllt wird, wird der Hostname auf Basis der Base URL aus den globalen Einstellungen genutzt.",
+      "hostNameInvalid": "Geben Sie einen gültigen Hostnamen an",
+      "port": "SSH Port",
+      "portHelp": "TCP Port für den SSH-Zugang",
+      "portInvalid": "Der Port muss zwischen 1 und 49151 liegen"
+    }
+  },
+  "permissions": {
+    "user": {
+      "readAuthorizedKeys": {
+        "*": {
+          "displayName": "SSH-Schlüssel für alle Benutzer lesen",
+          "description": "Darf die öffentlichen SSH-Schlüssel aller Benutzer lesen"
+        }
+      },
+      "readAuthorizedKeys,writeAuthorizedKeys": {
+        "*": {
+          "displayName": "SSH-Schlüssel für alle Benutzer bearbeiten",
+          "description": "Darf die öffentlichen SSH-Schlüssel aller Benutzer lesen und verändern"
+        }
+      }
+    }
+  }
+}
