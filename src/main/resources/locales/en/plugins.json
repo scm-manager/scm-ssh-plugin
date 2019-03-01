@@ -13,7 +13,7 @@
       "header": "SSH",
       "hostName": "SSH host name",
       "hostNameHelp": "Host name for SSH access. If this is omitted, the host name of the base URL configured in global configuration will be used.",
-      "hostNameInvalid": "The port must be between 1 and 49151",
+      "hostNameInvalid": "Please specify a valid host name",
       "port": "SSH port",
       "portHelp": "TCP listener port for SSH access",
       "portInvalid": "The port must be between 1 and 49151"
