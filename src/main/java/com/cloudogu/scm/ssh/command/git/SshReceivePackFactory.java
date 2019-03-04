@@ -1,10 +1,10 @@
 package com.cloudogu.scm.ssh.command.git;
 
-import com.cloudogu.scm.ssh.command.RepositoryContext;
 import com.google.inject.Inject;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.transport.ReceivePack;
 import org.eclipse.jgit.transport.resolver.ReceivePackFactory;
+import sonia.scm.protocolcommand.RepositoryContext;
 import sonia.scm.repository.GitRepositoryHandler;
 import sonia.scm.repository.spi.HookEventFacade;
 import sonia.scm.web.CollectingPackParserListener;

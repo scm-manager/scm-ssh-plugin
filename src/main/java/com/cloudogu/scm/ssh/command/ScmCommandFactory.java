@@ -5,6 +5,9 @@ import org.apache.sshd.server.SshServer;
 import org.apache.sshd.server.command.AbstractDelegatingCommandFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import sonia.scm.protocolcommand.CommandParser;
+import sonia.scm.protocolcommand.RepositoryContextResolver;
+import sonia.scm.protocolcommand.ScmSshProtocol;
 
 import javax.inject.Inject;
 

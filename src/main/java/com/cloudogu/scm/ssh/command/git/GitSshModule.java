@@ -1,9 +1,9 @@
 package com.cloudogu.scm.ssh.command.git;
 
-import com.cloudogu.scm.ssh.command.CommandParser;
-import com.cloudogu.scm.ssh.command.RepositoryContextResolver;
-import com.cloudogu.scm.ssh.command.ScmSshProtocol;
 import com.google.inject.AbstractModule;
+import sonia.scm.protocolcommand.CommandParser;
+import sonia.scm.protocolcommand.RepositoryContextResolver;
+import sonia.scm.protocolcommand.ScmSshProtocol;
 
 public class GitSshModule extends AbstractModule {
   @Override

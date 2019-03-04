@@ -1,7 +1,7 @@
 package com.cloudogu.scm.ssh.command.git;
 
-import com.cloudogu.scm.ssh.command.CommandParser;
 import org.apache.sshd.git.AbstractGitCommand;
+import sonia.scm.protocolcommand.CommandParser;
 
 import java.util.List;
 

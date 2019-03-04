@@ -1,8 +1,5 @@
 package com.cloudogu.scm.ssh.command.git;
 
-import com.cloudogu.scm.ssh.command.RepositoryContext;
-import com.cloudogu.scm.ssh.command.CommandContext;
-import com.cloudogu.scm.ssh.command.ScmSshProtocol;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.lib.RepositoryCache;
 import org.eclipse.jgit.transport.ReceivePack;
@@ -11,6 +8,9 @@ import org.eclipse.jgit.transport.UploadPack;
 import org.eclipse.jgit.util.FS;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import sonia.scm.protocolcommand.CommandContext;
+import sonia.scm.protocolcommand.RepositoryContext;
+import sonia.scm.protocolcommand.ScmSshProtocol;
 import sonia.scm.repository.RepositoryPermissions;
 
 import javax.inject.Inject;

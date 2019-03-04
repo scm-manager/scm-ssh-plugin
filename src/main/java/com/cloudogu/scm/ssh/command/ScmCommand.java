@@ -7,6 +7,11 @@ import org.apache.sshd.common.util.threads.CloseableExecutorService;
 import org.apache.sshd.server.command.AbstractCommandSupport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import sonia.scm.protocolcommand.CommandContext;
+import sonia.scm.protocolcommand.CommandParser;
+import sonia.scm.protocolcommand.RepositoryContext;
+import sonia.scm.protocolcommand.RepositoryContextResolver;
+import sonia.scm.protocolcommand.ScmSshProtocol;
 
 import java.io.OutputStream;
 

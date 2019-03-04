@@ -1,8 +1,8 @@
 package com.cloudogu.scm.ssh.command.git;
 
-import com.cloudogu.scm.ssh.command.RepositoryContext;
-import com.cloudogu.scm.ssh.command.RepositoryContextResolver;
 import com.google.common.base.Splitter;
+import sonia.scm.protocolcommand.RepositoryContext;
+import sonia.scm.protocolcommand.RepositoryContextResolver;
 import sonia.scm.repository.NamespaceAndName;
 import sonia.scm.repository.Repository;
 import sonia.scm.repository.RepositoryLocationResolver;
