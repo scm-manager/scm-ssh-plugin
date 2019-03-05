@@ -19,7 +19,12 @@ public class GitCommandInterpreter implements CommandInterpreter {
 
   @Override
   public boolean canHandle(String command) {
-    return true;
+    try {
+      String[] args = new GitCommandParser().parse(command);
+      return args[0].startsWith("git");
+    } catch (IllegalArgumentException e) {
+      return false;
+    }
   }
 
   @Override
