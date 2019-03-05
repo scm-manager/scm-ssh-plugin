@@ -11,23 +11,25 @@ import sonia.scm.protocolcommand.CommandContext;
 import sonia.scm.protocolcommand.CommandParser;
 import sonia.scm.protocolcommand.RepositoryContext;
 import sonia.scm.protocolcommand.RepositoryContextResolver;
-import sonia.scm.protocolcommand.ScmSshProtocol;
+import sonia.scm.protocolcommand.ScmCommandProtocol;
+import sonia.scm.repository.InternalRepositoryException;
 
 import java.io.OutputStream;
+import java.util.Set;
 
 public class ScmCommand extends AbstractCommandSupport {
 
   private static final Logger LOG = LoggerFactory.getLogger(ScmCommand.class);
 
-  private RepositoryContextResolver contextResolver;
-  private CommandParser commandParser;
-  private ScmSshProtocol protocol;
+  private final RepositoryContextResolver contextResolver;
+  private final CommandParser commandParser;
+  private final Set<ScmCommandProtocol> protocols;
 
-  ScmCommand(String command, CloseableExecutorService executorService, CommandParser commandParser, RepositoryContextResolver contextResolver, ScmSshProtocol protocol) {
+  ScmCommand(String command, CloseableExecutorService executorService, CommandParser commandParser, RepositoryContextResolver contextResolver, Set<ScmCommandProtocol> protocols) {
     super(command, executorService);
     this.commandParser = commandParser;
     this.contextResolver = contextResolver;
-    this.protocol = protocol;
+    this.protocols = protocols;
   }
 
   @Override
@@ -58,7 +60,11 @@ public class ScmCommand extends AbstractCommandSupport {
       RepositoryContext repositoryContext = contextResolver.resolve(args);
       CommandContext commandContext = createCommandContext(command, args);
 
-      protocol.handle(commandContext, repositoryContext);
+      protocols.stream()
+        .filter(p -> p.canHandle(repositoryContext))
+        .findFirst()
+        .orElseThrow(() -> new InternalRepositoryException(repositoryContext.getRepository(), "no handler found"))
+        .handle(commandContext, repositoryContext);
 
       LOG.debug("finished protocol handling of command '{}'", command);
 
