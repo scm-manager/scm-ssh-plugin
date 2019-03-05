@@ -5,7 +5,7 @@ import org.apache.sshd.server.SshServer;
 import org.apache.sshd.server.command.AbstractDelegatingCommandFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sonia.scm.protocolcommand.CommandInterpreter;
+import sonia.scm.protocolcommand.CommandInterpreterFactory;
 import sonia.scm.protocolcommand.RepositoryContextResolver;
 
 import javax.inject.Inject;
@@ -16,13 +16,13 @@ public class ScmCommandFactory extends AbstractDelegatingCommandFactory implemen
   private static final Logger LOG = LoggerFactory.getLogger(ScmCommandFactory.class);
 
   private final RepositoryContextResolver repositoryContextResolver;
-  private final Set<CommandInterpreter> commandInterpreters;
+  private final Set<CommandInterpreterFactory> commandInterpreterFactories;
 
   @Inject
-  public ScmCommandFactory(RepositoryContextResolver repositoryContextResolver, Set<CommandInterpreter> commandInterpreters) {
+  public ScmCommandFactory(RepositoryContextResolver repositoryContextResolver, Set<CommandInterpreterFactory> commandInterpreterFactories) {
     super(ScmCommandFactory.class.getSimpleName());
     this.repositoryContextResolver = repositoryContextResolver;
-    this.commandInterpreters = commandInterpreters;
+    this.commandInterpreterFactories = commandInterpreterFactories;
   }
 
   @Override
@@ -36,7 +36,7 @@ public class ScmCommandFactory extends AbstractDelegatingCommandFactory implemen
     // TODO
     // we create a new executor for every command, this sounds not right
     // but with a cached thread pool the server hangs on the second request
-    return new ScmCommand(command, Executors.create(), commandInterpreters, repositoryContextResolver);
+    return new ScmCommand(command, Executors.create(), commandInterpreterFactories, repositoryContextResolver);
   }
 
   @Override

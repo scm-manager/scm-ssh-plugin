@@ -1,35 +1,21 @@
 package com.cloudogu.scm.ssh.command.git;
 
-import sonia.scm.plugin.Extension;
 import sonia.scm.protocolcommand.CommandInterpreter;
-import sonia.scm.protocolcommand.CommandParser;
 import sonia.scm.protocolcommand.ScmCommandProtocol;
 import sonia.scm.protocolcommand.git.GitCommandProtocol;
 
-import javax.inject.Inject;
-
-@Extension
-public class GitCommandInterpreter implements CommandInterpreter {
+class GitCommandInterpreter implements CommandInterpreter {
   private final GitCommandProtocol gitCommandProtocol;
+  private final String[] args;
 
-  @Inject
-  public GitCommandInterpreter(GitCommandProtocol gitCommandProtocol) {
+  GitCommandInterpreter(GitCommandProtocol gitCommandProtocol, String[] args) {
     this.gitCommandProtocol = gitCommandProtocol;
+    this.args = args;
   }
 
   @Override
-  public boolean canHandle(String command) {
-    try {
-      String[] args = new GitCommandParser().parse(command);
-      return args[0].startsWith("git");
-    } catch (IllegalArgumentException e) {
-      return false;
-    }
-  }
-
-  @Override
-  public CommandParser getParser() {
-    return new GitCommandParser();
+  public String[] getParsedArgs() {
+    return args;
   }
 
   @Override

@@ -9,10 +9,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sonia.scm.protocolcommand.CommandContext;
 import sonia.scm.protocolcommand.CommandInterpreter;
+import sonia.scm.protocolcommand.CommandInterpreterFactory;
 import sonia.scm.protocolcommand.RepositoryContext;
 import sonia.scm.protocolcommand.RepositoryContextResolver;
 
 import java.io.OutputStream;
+import java.util.Optional;
 import java.util.Set;
 
 public class ScmCommand extends AbstractCommandSupport {
@@ -20,11 +22,11 @@ public class ScmCommand extends AbstractCommandSupport {
   private static final Logger LOG = LoggerFactory.getLogger(ScmCommand.class);
 
   private final RepositoryContextResolver contextResolver;
-  private final Set<CommandInterpreter> commandInterpreters;
+  private final Set<CommandInterpreterFactory> commandInterpreterFactories;
 
-  ScmCommand(String command, CloseableExecutorService executorService, Set<CommandInterpreter> commandInterpreters, RepositoryContextResolver contextResolver) {
+  ScmCommand(String command, CloseableExecutorService executorService, Set<CommandInterpreterFactory> commandInterpreterFactories, RepositoryContextResolver contextResolver) {
     super(command, executorService);
-    this.commandInterpreters = commandInterpreters;
+    this.commandInterpreterFactories = commandInterpreterFactories;
     this.contextResolver = contextResolver;
   }
 
@@ -51,12 +53,14 @@ public class ScmCommand extends AbstractCommandSupport {
     try {
       ThreadContext.bind(getSession().getAttribute(Attributes.SUBJECT));
 
-      CommandInterpreter commandInterpreter = commandInterpreters.stream()
-        .filter(p -> p.canHandle(command))
+      CommandInterpreter commandInterpreter = commandInterpreterFactories.stream()
+        .map(p -> p.canHandle(command))
+        .filter(Optional::isPresent)
+        .map(Optional::get)
         .findFirst()
         .orElseThrow(() -> new IllegalArgumentException("no interpreter found for command: " + command));
 
-      String[] args = commandInterpreter.getParser().parse(command);
+      String[] args = commandInterpreter.getParsedArgs();
 
       RepositoryContext repositoryContext = contextResolver.resolve(args);
       CommandContext commandContext = createCommandContext(command, args);
