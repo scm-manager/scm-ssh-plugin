@@ -19,7 +19,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 @Singleton
-@Path("v2/config/ldap")
+@Path("v2/config/ssh")
 public class ConfigResource {
 
   private final ConfigStore configStore;
