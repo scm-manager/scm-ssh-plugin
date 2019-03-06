@@ -33,10 +33,7 @@ public class ScmCommandFactory extends AbstractDelegatingCommandFactory implemen
   @Override
   protected ScmCommand executeSupportedCommand(String command) {
     LOG.debug("create scm command for '{}'", command);
-    // TODO
-    // we create a new executor for every command, this sounds not right
-    // but with a cached thread pool the server hangs on the second request
-    return new ScmCommand(command, Executors.create(), commandInterpreterFactories, repositoryContextResolver);
+    return new ScmCommand(command, Executors.get(), commandInterpreterFactories, repositoryContextResolver);
   }
 
   @Override
