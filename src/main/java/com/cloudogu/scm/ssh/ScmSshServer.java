@@ -2,6 +2,7 @@ package com.cloudogu.scm.ssh;
 
 import com.cloudogu.scm.ssh.auth.SshSecurityManager;
 import com.github.legman.Subscribe;
+import com.google.common.annotations.VisibleForTesting;
 import org.apache.shiro.util.ThreadContext;
 import org.apache.sshd.server.SshServer;
 import org.slf4j.Logger;
@@ -24,7 +25,7 @@ public class ScmSshServer {
     this.securityManager = securityManager;
     this.configurators = configurators;
 
-    sshd = SshServer.setUpDefaultServer();
+    sshd = createDefaultServer();
 
     applyConfigurators();
   }
@@ -40,7 +41,7 @@ public class ScmSshServer {
 
     // start the sshd in a separate thread,
     // in order to bind a security manager to ssh threads only
-    new Thread(() -> {
+    runInThread(() -> {
       ThreadContext.bind( securityManager );
 
       try {
@@ -49,7 +50,7 @@ public class ScmSshServer {
         LOG.error("failed to start ssh server", e);
       }
 
-    }).start();
+    });
   }
 
   void stop() {
@@ -66,9 +67,19 @@ public class ScmSshServer {
     if (configChangedEvent.getOldItem().getPort() != configChangedEvent.getItem().getPort()) {
       LOG.trace("configuration for ssh server changed");
       stop();
-      sshd = SshServer.setUpDefaultServer();
+      sshd = createDefaultServer();
       applyConfigurators();
       start();
     }
+  }
+
+  @VisibleForTesting
+  void runInThread(Runnable r) {
+    new Thread(r).start();
+  }
+
+  @VisibleForTesting
+  SshServer createDefaultServer() {
+    return SshServer.setUpDefaultServer();
   }
 }
