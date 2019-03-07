@@ -21,13 +21,11 @@ public class ScmCommand extends AbstractCommandSupport {
 
   private static final Logger LOG = LoggerFactory.getLogger(ScmCommand.class);
 
-  private final RepositoryContextResolver contextResolver;
   private final Set<CommandInterpreterFactory> commandInterpreterFactories;
 
-  ScmCommand(String command, CloseableExecutorService executorService, Set<CommandInterpreterFactory> commandInterpreterFactories, RepositoryContextResolver contextResolver) {
+  ScmCommand(String command, CloseableExecutorService executorService, Set<CommandInterpreterFactory> commandInterpreterFactories) {
     super(command, executorService);
     this.commandInterpreterFactories = commandInterpreterFactories;
-    this.contextResolver = contextResolver;
   }
 
   @Override
@@ -62,7 +60,7 @@ public class ScmCommand extends AbstractCommandSupport {
 
       String[] args = commandInterpreter.getParsedArgs();
 
-      RepositoryContext repositoryContext = contextResolver.resolve(args);
+      RepositoryContext repositoryContext = commandInterpreter.getRepositoryContextResolver().resolve(args);
       CommandContext commandContext = createCommandContext(command, args);
 
       commandInterpreter.getProtocolHandler().handle(commandContext, repositoryContext);

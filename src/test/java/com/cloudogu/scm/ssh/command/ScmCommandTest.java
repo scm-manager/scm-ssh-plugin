@@ -1,68 +1,71 @@
 package com.cloudogu.scm.ssh.command;
 
-import com.cloudogu.scm.ssh.command.git.GitCommandInterpreterFactory;
 import org.apache.sshd.common.session.Session;
 import org.apache.sshd.common.util.threads.CloseableExecutorService;
 import org.apache.sshd.server.ExitCallback;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import sonia.scm.protocolcommand.CommandContext;
+import sonia.scm.protocolcommand.CommandInterpreter;
+import sonia.scm.protocolcommand.CommandInterpreterFactory;
 import sonia.scm.protocolcommand.RepositoryContext;
 import sonia.scm.protocolcommand.RepositoryContextResolver;
-import sonia.scm.protocolcommand.git.GitCommandProtocol;
+import sonia.scm.protocolcommand.ScmCommandProtocol;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Optional;
 
 import static java.util.Collections.singleton;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class ScmCommandTest {
 
   @Mock
-  CloseableExecutorService executorService;
+  private CloseableExecutorService executorService;
   @Mock
-  RepositoryContextResolver repositoryContextResolver;
+  private ScmCommandProtocol gitCommandProtocol;
   @Mock
-  GitCommandProtocol gitCommandProtocol;
+  private Session session;
   @Mock
-  Session session;
+  private ExitCallback exitCallback;
   @Mock
-  ExitCallback exitCallback;
+  private InputStream inputStream;
   @Mock
-  InputStream inputStream;
+  private OutputStream outputStream;
   @Mock
-  OutputStream outputStream;
-  @Mock
-  OutputStream errorStream;
+  private OutputStream errorStream;
 
   @Captor
-  ArgumentCaptor<CommandContext> commandContextCaptor;
+  private ArgumentCaptor<CommandContext> commandContextCaptor;
+
+  @Mock
+  private RepositoryContextResolver repositoryContextResolver;
+
   @Captor
-  ArgumentCaptor<RepositoryContext> repositoryContextCaptor;
+  private ArgumentCaptor<RepositoryContext> repositoryContextCaptor;
 
-  @InjectMocks
-  GitCommandInterpreterFactory gitCommandInterpreterFactory;
+  @Mock
+  private CommandInterpreterFactory commandInterpreterFactory;
 
-  ScmCommand scmCommand;
+  @Mock
+  private CommandInterpreter commandInterpreter;
 
   @Test
   void shouldCallCapableInterpreter() throws IOException {
-    initGitCommandProtocol();
-    scmCommand = initTestObject("git arg");
-
+    ScmCommand scmCommand = initGitCommandProtocol("git arg");
     scmCommand.run();
+
+
 
     assertThat(commandContextCaptor.getValue().getArgs()).contains("git", "arg");
     assertThat(commandContextCaptor.getValue().getInputStream()).isSameAs(inputStream);
@@ -75,20 +78,26 @@ class ScmCommandTest {
 
   @Test
   void shouldFailIfNoInterpreterFound() throws IOException {
-    scmCommand = initTestObject("other arg");
-
+    ScmCommand scmCommand = initTestObject("other arg");
     scmCommand.run();
 
     verify(gitCommandProtocol, never()).handle(any(), any());
     verify(exitCallback).onExit(-1, "IllegalArgumentException");
   }
 
-  void initGitCommandProtocol() throws IOException {
+  ScmCommand initGitCommandProtocol(String command) throws IOException {
+    when(commandInterpreter.getParsedArgs()).then(ic -> command.split("\\s"));
+    when(commandInterpreter.getRepositoryContextResolver()).thenReturn(repositoryContextResolver);
+    when(commandInterpreter.getProtocolHandler()).thenReturn(gitCommandProtocol);
+
     doNothing().when(gitCommandProtocol).handle(commandContextCaptor.capture(), repositoryContextCaptor.capture());
+
+    when(commandInterpreterFactory.canHandle(command)).thenReturn(Optional.of(commandInterpreter));
+    return initTestObject(command);
   }
 
   ScmCommand initTestObject(String command) {
-     scmCommand = new ScmCommand(command, executorService, singleton(gitCommandInterpreterFactory), repositoryContextResolver) {
+    ScmCommand scmCommand = new ScmCommand(command, executorService, singleton(commandInterpreterFactory)) {
       @Override
       public Session getSession() {
         return session;

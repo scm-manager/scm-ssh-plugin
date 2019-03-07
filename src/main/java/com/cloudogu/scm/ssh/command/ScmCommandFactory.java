@@ -15,13 +15,11 @@ public class ScmCommandFactory extends AbstractDelegatingCommandFactory implemen
 
   private static final Logger LOG = LoggerFactory.getLogger(ScmCommandFactory.class);
 
-  private final RepositoryContextResolver repositoryContextResolver;
   private final Set<CommandInterpreterFactory> commandInterpreterFactories;
 
   @Inject
-  public ScmCommandFactory(RepositoryContextResolver repositoryContextResolver, Set<CommandInterpreterFactory> commandInterpreterFactories) {
+  public ScmCommandFactory(Set<CommandInterpreterFactory> commandInterpreterFactories) {
     super(ScmCommandFactory.class.getSimpleName());
-    this.repositoryContextResolver = repositoryContextResolver;
     this.commandInterpreterFactories = commandInterpreterFactories;
   }
 
@@ -33,7 +31,7 @@ public class ScmCommandFactory extends AbstractDelegatingCommandFactory implemen
   @Override
   protected ScmCommand executeSupportedCommand(String command) {
     LOG.debug("create scm command for '{}'", command);
-    return new ScmCommand(command, Executors.get(), commandInterpreterFactories, repositoryContextResolver);
+    return new ScmCommand(command, Executors.get(), commandInterpreterFactories);
   }
 
   @Override
