@@ -6,7 +6,6 @@ import org.apache.sshd.server.command.AbstractDelegatingCommandFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sonia.scm.protocolcommand.CommandInterpreterFactory;
-import sonia.scm.protocolcommand.RepositoryContextResolver;
 
 import javax.inject.Inject;
 import java.util.Set;

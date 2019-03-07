@@ -11,7 +11,6 @@ import sonia.scm.protocolcommand.CommandContext;
 import sonia.scm.protocolcommand.CommandInterpreter;
 import sonia.scm.protocolcommand.CommandInterpreterFactory;
 import sonia.scm.protocolcommand.RepositoryContext;
-import sonia.scm.protocolcommand.RepositoryContextResolver;
 
 import java.io.OutputStream;
 import java.util.Optional;
