@@ -7,22 +7,24 @@ import org.apache.sshd.common.util.threads.CloseableExecutorService;
 import org.apache.sshd.server.command.AbstractCommandSupport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import sonia.scm.protocolcommand.CommandContext;
+import sonia.scm.protocolcommand.CommandInterpreter;
+import sonia.scm.protocolcommand.CommandInterpreterFactory;
+import sonia.scm.protocolcommand.RepositoryContext;
 
 import java.io.OutputStream;
+import java.util.Optional;
+import java.util.Set;
 
 public class ScmCommand extends AbstractCommandSupport {
 
   private static final Logger LOG = LoggerFactory.getLogger(ScmCommand.class);
 
-  private RepositoryContextResolver contextResolver;
-  private CommandParser commandParser;
-  private ScmSshProtocol protocol;
+  private final Set<CommandInterpreterFactory> commandInterpreterFactories;
 
-  ScmCommand(String command, CloseableExecutorService executorService, CommandParser commandParser, RepositoryContextResolver contextResolver, ScmSshProtocol protocol) {
+  ScmCommand(String command, CloseableExecutorService executorService, Set<CommandInterpreterFactory> commandInterpreterFactories) {
     super(command, executorService);
-    this.commandParser = commandParser;
-    this.contextResolver = contextResolver;
-    this.protocol = protocol;
+    this.commandInterpreterFactories = commandInterpreterFactories;
   }
 
   @Override
@@ -48,12 +50,19 @@ public class ScmCommand extends AbstractCommandSupport {
     try {
       ThreadContext.bind(getSession().getAttribute(Attributes.SUBJECT));
 
-      String[] args = commandParser.parse(command);
+      CommandInterpreter commandInterpreter = commandInterpreterFactories.stream()
+        .map(p -> p.canHandle(command))
+        .filter(Optional::isPresent)
+        .map(Optional::get)
+        .findFirst()
+        .orElseThrow(() -> new IllegalArgumentException("no interpreter found for command: " + command));
 
-      RepositoryContext repositoryContext = contextResolver.resolve(args);
+      String[] args = commandInterpreter.getParsedArgs();
+
+      RepositoryContext repositoryContext = commandInterpreter.getRepositoryContextResolver().resolve(args);
       CommandContext commandContext = createCommandContext(command, args);
 
-      protocol.handle(commandContext, repositoryContext);
+      commandInterpreter.getProtocolHandler().handle(commandContext, repositoryContext);
 
       LOG.debug("finished protocol handling of command '{}'", command);
 

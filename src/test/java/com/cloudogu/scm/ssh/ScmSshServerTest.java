@@ -112,10 +112,10 @@ class ScmSshServerTest {
     ConfigChangedEvent event = mock(ConfigChangedEvent.class);
     Configuration oldConfiguration = new Configuration();
     oldConfiguration.setPort(oldPort);
-    when(event.getOldItem()).thenReturn(oldConfiguration);
+    when(event.getOldConfiguration()).thenReturn(oldConfiguration);
     Configuration newConfiguration = new Configuration();
     newConfiguration.setPort(newPort);
-    when(event.getItem()).thenReturn(newConfiguration);
+    when(event.getNewConfiguration()).thenReturn(newConfiguration);
     return event;
   }
 }

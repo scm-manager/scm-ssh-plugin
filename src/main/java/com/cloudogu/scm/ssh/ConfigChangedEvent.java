@@ -1,31 +1,22 @@
 package com.cloudogu.scm.ssh;
 
-import sonia.scm.HandlerEventType;
 import sonia.scm.event.Event;
-import sonia.scm.event.HandlerEvent;
 
 @Event
-public class ConfigChangedEvent implements HandlerEvent<Configuration> {
+public class ConfigChangedEvent {
   private final Configuration oldConfiguration;
   private final Configuration newConfiguration;
 
-  public ConfigChangedEvent(Configuration oldConfiguration, Configuration newConfiguration) {
+  ConfigChangedEvent(Configuration oldConfiguration, Configuration newConfiguration) {
     this.oldConfiguration = oldConfiguration;
     this.newConfiguration = newConfiguration;
   }
 
-  @Override
-  public HandlerEventType getEventType() {
-    return HandlerEventType.MODIFY;
-  }
-
-  @Override
-  public Configuration getItem() {
+  public Configuration getOldConfiguration() {
     return oldConfiguration;
   }
 
-  @Override
-  public Configuration getOldItem() {
+  public Configuration getNewConfiguration() {
     return newConfiguration;
   }
 }

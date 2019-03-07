@@ -64,7 +64,7 @@ public class ScmSshServer {
 
   @Subscribe
   public void configurationChanged(ConfigChangedEvent configChangedEvent) {
-    if (configChangedEvent.getOldItem().getPort() != configChangedEvent.getItem().getPort()) {
+    if (configChangedEvent.getOldConfiguration().getPort() != configChangedEvent.getNewConfiguration().getPort()) {
       LOG.trace("configuration for ssh server changed");
       stop();
       sshd = createDefaultServer();

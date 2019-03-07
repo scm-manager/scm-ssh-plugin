@@ -1,6 +1,5 @@
 package com.cloudogu.scm.ssh;
 
-import com.google.common.base.Strings;
 import sonia.scm.plugin.Extension;
 import sonia.scm.repository.NamespaceAndName;
 import sonia.scm.repository.Repository;
@@ -8,7 +7,6 @@ import sonia.scm.repository.api.ScmProtocol;
 import sonia.scm.repository.api.ScmProtocolProvider;
 
 import javax.inject.Inject;
-import java.net.URI;
 
 @Extension
 public class SshProtocolProvider implements ScmProtocolProvider {
