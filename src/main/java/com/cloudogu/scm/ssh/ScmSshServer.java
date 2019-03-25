@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
+import javax.inject.Provider;
 import java.io.IOException;
 import java.util.Set;
 
@@ -17,12 +18,12 @@ public class ScmSshServer {
   private static final Logger LOG = LoggerFactory.getLogger(ScmSshServer.class);
 
   private SshServer sshd;
-  private final SshSecurityManager securityManager;
+  private final Provider<SshSecurityManager> securityManagerProvider;
   private final Set<SshServerConfigurator> configurators;
 
   @Inject
-  public ScmSshServer(SshSecurityManager securityManager, Set<SshServerConfigurator> configurators) {
-    this.securityManager = securityManager;
+  public ScmSshServer(Provider<SshSecurityManager> securityManagerProvider, Set<SshServerConfigurator> configurators) {
+    this.securityManagerProvider = securityManagerProvider;
     this.configurators = configurators;
 
     sshd = createDefaultServer();
@@ -42,7 +43,7 @@ public class ScmSshServer {
     // start the sshd in a separate thread,
     // in order to bind a security manager to ssh threads only
     runInThread(() -> {
-      ThreadContext.bind( securityManager );
+      ThreadContext.bind(securityManagerProvider.get());
 
       try {
         sshd.start();

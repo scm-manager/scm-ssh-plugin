@@ -1,6 +1,7 @@
 package com.cloudogu.scm.ssh;
 
 import com.cloudogu.scm.ssh.auth.SshSecurityManager;
+import com.google.inject.util.Providers;
 import org.apache.shiro.util.ThreadContext;
 import org.apache.sshd.server.SshServer;
 import org.junit.jupiter.api.AfterEach;
@@ -27,6 +28,7 @@ class ScmSshServerTest {
 
   @Mock
   private SshSecurityManager securityManager;
+
   @Mock
   private SshServerConfigurator configurator;
 
@@ -36,7 +38,7 @@ class ScmSshServerTest {
 
   @BeforeEach
   void initTestObject() {
-    scmSshServer = new ScmSshServer(securityManager, Collections.singleton(configurator)) {
+    scmSshServer = new ScmSshServer(Providers.of(securityManager), Collections.singleton(configurator)) {
       @Override
       void runInThread(Runnable r) {
         r.run();
@@ -59,7 +61,7 @@ class ScmSshServerTest {
   }
 
   @Test
-  void shouldBindThreadContext() throws IOException {
+  void shouldBindThreadContext() {
     scmSshServer.start();
     assertThat(ThreadContext.getSecurityManager()).isSameAs(securityManager);
   }
