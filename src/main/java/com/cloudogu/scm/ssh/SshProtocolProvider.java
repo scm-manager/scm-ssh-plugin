@@ -1,5 +1,7 @@
 package com.cloudogu.scm.ssh;
 
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
 import sonia.scm.plugin.Extension;
 import sonia.scm.repository.NamespaceAndName;
 import sonia.scm.repository.Repository;
@@ -51,13 +53,24 @@ public class SshProtocolProvider implements ScmProtocolProvider {
 
     @Override
     public String getUrl() {
-      return String.format(
-        "ssh://%s:%d/repo/%s/%s",
-        serverName,
-        port,
-        namespaceAndName.getNamespace(),
-        namespaceAndName.getName()
-      );
+      StringBuilder builder = new StringBuilder("ssh://");
+
+      Subject subject = SecurityUtils.getSubject();
+      if (subject.isAuthenticated()) {
+        builder.append(subject.getPrincipal()).append("@");
+      }
+      builder.append(serverName);
+
+      if (port != 22) {
+        builder.append(":")
+          .append(port);
+      }
+
+      return builder.append("/repo/")
+        .append(namespaceAndName.getNamespace())
+        .append("/")
+        .append(namespaceAndName.getName())
+        .toString();
     }
   }
 }
