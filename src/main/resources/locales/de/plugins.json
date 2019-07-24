@@ -11,7 +11,7 @@
     "globalConfig": {
       "navLink": "SSH",
       "header": "SSH",
-      "hostName": "SSH Nostname",
+      "hostName": "SSH Hostname",
       "hostNameHelp": "Hostname für den SSH-Zugang. Wenn dieser nicht ausgefüllt wird, wird der Hostname auf Basis der Base URL aus den globalen Einstellungen genutzt.",
       "hostNameInvalid": "Geben Sie einen gültigen Hostnamen an",
       "port": "SSH Port",
