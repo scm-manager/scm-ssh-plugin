@@ -70,7 +70,7 @@ class AuthorizedKeyStore {
     try {
       AuthorizedKeyEntry.parseAuthorizedKeyEntry(authorizedKey.getRaw());
     } catch (IllegalArgumentException ex) {
-      throw new InvalidAuthorizedKeyException("invalid or unsupported key", ex);
+      throw new InvalidAuthorizedKeyException(ex);
     }
   }
 

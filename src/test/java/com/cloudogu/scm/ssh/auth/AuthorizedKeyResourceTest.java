@@ -103,19 +103,6 @@ class AuthorizedKeyResourceTest {
   }
 
   @Test
-  void shouldReturn400ForAnInvalidKey() {
-    AuthorizedKeyDto dto = new AuthorizedKeyDto();
-    AuthorizedKey key = new AuthorizedKey();
-    when(mapper.map(dto)).thenReturn(key);
-    when(store.add("trillian", key)).thenThrow(new InvalidAuthorizedKeyException("nope", null));
-
-    UriInfo uriInfo = mock(UriInfo.class);
-    Response response = resource.create(uriInfo, "trillian", dto);
-
-    assertThat(response.getStatus()).isEqualTo(400);
-  }
-
-  @Test
   void shouldDeleteFromStore() {
     Response response = resource.deleteById("trillian", "42");
     assertThat(response.getStatus()).isEqualTo(204);
