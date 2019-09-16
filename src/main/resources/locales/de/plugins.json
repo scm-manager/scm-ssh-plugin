@@ -34,5 +34,11 @@
         }
       }
     }
+  },
+  "errors": {
+    "3fRby4izZ1": {
+      "displayName": "Unbekanntes Format",
+      "description": "Der Schlüssel konnte nicht importiert werden, da das Format ungültig oder unbekannt ist."
+    }
   }
 }
