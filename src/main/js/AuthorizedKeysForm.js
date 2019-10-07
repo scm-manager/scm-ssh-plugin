@@ -1,8 +1,14 @@
 //@flow
 import React from "react";
 import { translate } from "react-i18next";
-import {apiClient, ErrorNotification, InputField, SubmitButton, Textarea} from "@scm-manager/ui-components";
 import type { AuthorizedKey } from "./types";
+import {
+  apiClient,
+  ErrorNotification,
+  InputField,
+  SubmitButton,
+  Textarea
+} from "@scm-manager/ui-components";
 
 type Props = {
   url: string,
@@ -16,7 +22,7 @@ type State = {
   raw?: string,
 
   loading: boolean,
-  error?: Error,
+  error?: Error
 };
 
 class AuthorizedKeysForm extends React.Component<Props, State> {
@@ -31,7 +37,7 @@ class AuthorizedKeysForm extends React.Component<Props, State> {
     e.preventDefault();
     const { displayName, raw } = this.state;
     if (displayName && raw) {
-      this.addKey({displayName, raw, _links: {}});
+      this.addKey({ displayName, raw, _links: {} });
     }
   };
 
@@ -41,7 +47,8 @@ class AuthorizedKeysForm extends React.Component<Props, State> {
     });
 
     const { url, onKeyAdded } = this.props;
-    apiClient.post(url, key, "application/vnd.scmm-authorizedkey+json;v=2")
+    apiClient
+      .post(url, key, "application/vnd.scmm-authorizedkey+json;v=2")
       .then(() => {
         this.setState({
           displayName: "",
@@ -52,10 +59,12 @@ class AuthorizedKeysForm extends React.Component<Props, State> {
 
         onKeyAdded(key);
       })
-      .catch(error => this.setState({
-        error,
-        loading: false
-      }));
+      .catch(error =>
+        this.setState({
+          error,
+          loading: false
+        })
+      );
   };
 
   onChange = (value: string, name: string) => {

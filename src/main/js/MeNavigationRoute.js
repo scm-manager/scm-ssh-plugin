@@ -1,8 +1,8 @@
 //@flow
 import React from "react";
 import { Route } from "react-router-dom";
-import AuthorizedKeys from "./AuthorizedKeysPage";
 import type { Me } from "@scm-manager/ui-types";
+import AuthorizedKeys from "./AuthorizedKeysPage";
 
 type Props = {
   url: string,

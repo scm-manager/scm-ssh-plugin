@@ -1,12 +1,15 @@
 //@flow
 import React from "react";
-import { apiClient, Subtitle } from "@scm-manager/ui-components";
 import { translate } from "react-i18next";
+import type { AuthorizedKeysCollection } from "./types";
+import {
+  apiClient,
+  Loading,
+  ErrorNotification,
+  Subtitle
+} from "@scm-manager/ui-components";
 import AuthorizedKeysList from "./AuthorizedKeysList";
 import AuthorizedKeysForm from "./AuthorizedKeysForm";
-import type {AuthorizedKeysCollection} from "./types";
-import Loading from "@scm-manager/ui-components/src/Loading";
-import ErrorNotification from "@scm-manager/ui-components/src/ErrorNotification";
 
 type Props = {
   link: string,
@@ -18,7 +21,7 @@ type Props = {
 type State = {
   authorizedKeys?: AuthorizedKeysCollection,
   loading: boolean,
-  error?: Error,
+  error?: Error
 };
 
 class AuthorizedKeysPage extends React.Component<Props, State> {
@@ -78,10 +81,14 @@ class AuthorizedKeysPage extends React.Component<Props, State> {
     } else if (error) {
       children = <ErrorNotification error={error} />;
     } else {
-
       let form = null;
       if (authorizedKeys && authorizedKeys._links.create) {
-        form = <AuthorizedKeysForm url={authorizedKeys._links.create.href} onKeyAdded={this.onKeyAdded} />;
+        form = (
+          <AuthorizedKeysForm
+            url={authorizedKeys._links.create.href}
+            onKeyAdded={this.onKeyAdded}
+          />
+        );
       }
 
       children = (
@@ -91,7 +98,7 @@ class AuthorizedKeysPage extends React.Component<Props, State> {
             link={this.props.link}
             onKeyDeleted={this.onKeyDeleted}
           />
-          { form }
+          {form}
         </>
       );
     }

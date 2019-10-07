@@ -1,10 +1,9 @@
 // @flow
 import { binder } from "@scm-manager/ui-extensions";
-
+import { ConfigurationBinder as cfgBinder } from "@scm-manager/ui-components";
 import NavigationLink from "./NavigationLink";
 import MeNavigationRoute from "./MeNavigationRoute";
 import UserNavigationRoute from "./UserNavigationRoute";
-import { ConfigurationBinder as cfgBinder } from "@scm-manager/ui-components";
 import SshConfiguration from "./SshConfiguration";
 
 // me page

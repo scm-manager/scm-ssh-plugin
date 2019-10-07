@@ -1,19 +1,18 @@
 //@flow
 import React from "react";
 import { translate } from "react-i18next";
+import type { AuthorizedKeysCollection } from "./types";
 import { Notification } from "@scm-manager/ui-components";
-import type {AuthorizedKeysCollection} from "./types";
 import AuthorizedKeysTable from "./AuthorizedKeysTable";
 
 type Props = {
   authorizedKeys?: AuthorizedKeysCollection,
   onKeyDeleted: (error?: Error) => void,
   // context props
-  t: (string) => string
+  t: string => string
 };
 
 class AuthorizedKeysList extends React.Component<Props> {
-
   render() {
     const { authorizedKeys, t } = this.props;
 

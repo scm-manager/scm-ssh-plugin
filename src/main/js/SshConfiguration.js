@@ -1,7 +1,7 @@
 // @flow
 import React from "react";
-import { Title, Configuration } from "@scm-manager/ui-components";
 import { translate } from "react-i18next";
+import { Title, Configuration } from "@scm-manager/ui-components";
 import SshConfigurationForm from "./SshConfigurationForm";
 
 type Props = {
@@ -10,7 +10,7 @@ type Props = {
 };
 
 class LdapConfiguration extends React.Component<Props> {
-  render(): React.ReactNode {
+  render() {
     const { t, link } = this.props;
     return (
       <>

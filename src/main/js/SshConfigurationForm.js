@@ -1,5 +1,4 @@
 //@flow
-
 import React from "react";
 import {Configuration, InputField} from "@scm-manager/ui-components";
 import {translate} from "react-i18next";

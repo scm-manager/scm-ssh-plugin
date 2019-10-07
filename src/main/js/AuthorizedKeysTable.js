@@ -20,9 +20,7 @@ class AuthorizedKeysTable extends React.Component<Props> {
           <tr>
             <th>{t("scm-ssh-plugin.displayName")}</th>
             <th>{t("scm-ssh-plugin.created")}</th>
-            <th className="is-hidden-mobile">
-              {t("scm-ssh-plugin.raw")}
-            </th>
+            <th className="is-hidden-mobile">{t("scm-ssh-plugin.raw")}</th>
             <th />
           </tr>
         </thead>

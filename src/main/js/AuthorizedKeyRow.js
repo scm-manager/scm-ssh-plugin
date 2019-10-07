@@ -1,17 +1,20 @@
 //@flow
 import React from "react";
-import type { AuthorizedKey } from "./types";
-import DateFromNow from "@scm-manager/ui-components/src/DateFromNow";
-import { formatAuthorizedKey } from "./formatAuthorizedKey";
-import {apiClient, DeleteButton} from "@scm-manager/ui-components";
 import { translate } from "react-i18next";
+import type { AuthorizedKey } from "./types";
+import {
+  apiClient,
+  DateFromNow,
+  DeleteButton
+} from "@scm-manager/ui-components";
+import { formatAuthorizedKey } from "./formatAuthorizedKey";
 
 type Props = {
   onKeyDeleted: (error?: Error) => void,
   authorizedKey: AuthorizedKey,
 
   // context props
-  t: (string) => string
+  t: string => string
 };
 
 type State = {
@@ -19,7 +22,6 @@ type State = {
 };
 
 class AuthorizedKeyRow extends React.Component<Props, State> {
-
   constructor(props: Props) {
     super(props);
     this.state = {
@@ -34,7 +36,8 @@ class AuthorizedKeyRow extends React.Component<Props, State> {
 
     const { onKeyDeleted } = this.props;
 
-    apiClient.delete(url)
+    apiClient
+      .delete(url)
       .then(() => {
         this.setState({
           loading: false
@@ -72,7 +75,13 @@ class AuthorizedKeyRow extends React.Component<Props, State> {
     const link = authorizedKey._links.delete;
     if (link) {
       const { loading } = this.state;
-      return <DeleteButton label={t("scm-ssh-plugin.delete")} loading={loading} action={() => this.onDelete(link.href)} />;
+      return (
+        <DeleteButton
+          label={t("scm-ssh-plugin.delete")}
+          loading={loading}
+          action={() => this.onDelete(link.href)}
+        />
+      );
     }
     return null;
   }

@@ -1,8 +1,8 @@
 //@flow
 import React from "react";
 import { Route } from "react-router-dom";
+import type { User } from "@scm-manager/ui-types";
 import AuthorizedKeys from "./AuthorizedKeysPage";
-import type {User} from "@scm-manager/ui-types";
 
 type Props = {
   url: string,
@@ -15,7 +15,9 @@ class UserNavigationRoute extends React.Component<Props> {
     return (
       <Route
         path={`${url}/settings/authorized_keys`}
-        render={() => <AuthorizedKeys link={user._links.authorized_keys.href} />}
+        render={() => (
+          <AuthorizedKeys link={user._links.authorized_keys.href} />
+        )}
       />
     );
   }
