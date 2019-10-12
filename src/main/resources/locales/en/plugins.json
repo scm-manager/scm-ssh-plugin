@@ -20,6 +20,14 @@
     }
   },
   "permissions": {
+    "configuration": {
+      "read,write": {
+        "ssh": {
+          "displayName": "Modify ssh configuration",
+          "description": "May modify the ssh server configuration"
+        }
+      }
+    },
     "user": {
       "readAuthorizedKeys": {
         "*": {
