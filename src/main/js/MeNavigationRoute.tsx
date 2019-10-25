@@ -1,12 +1,11 @@
-//@flow
 import React from "react";
 import { Route } from "react-router-dom";
-import type { Me } from "@scm-manager/ui-types";
+import { Me } from "@scm-manager/ui-types";
 import AuthorizedKeys from "./AuthorizedKeysPage";
 
 type Props = {
-  url: string,
-  me: Me
+  url: string;
+  me: Me;
 };
 
 class MeNavigationRoute extends React.Component<Props> {

@@ -1,18 +1,16 @@
-//@flow
 import React from "react";
 import { Configuration, InputField } from "@scm-manager/ui-components";
-import { translate } from "react-i18next";
+import { WithTranslation, withTranslation } from "react-i18next";
 
 type SshConfiguration = {
-  hostName: string,
-  port: number
+  hostName: string;
+  port: number;
 };
 
-type Props = {
-  initialConfiguration: Configuration,
-  readOnly: boolean,
-  onConfigurationChange: (Configuration, boolean) => void,
-  t: string => string
+type Props = WithTranslation & {
+  initialConfiguration: Configuration;
+  readOnly: boolean;
+  onConfigurationChange: (p1: Configuration, p2: boolean) => void;
 };
 
 type State = SshConfiguration;
@@ -20,7 +18,9 @@ type State = SshConfiguration;
 class SshConfigurationForm extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
-    this.state = { ...props.initialConfiguration };
+    this.state = {
+      ...props.initialConfiguration
+    };
   }
 
   valueChangeHandler = (value: any, name: string) => {
@@ -28,7 +28,13 @@ class SshConfigurationForm extends React.Component<Props, State> {
       {
         [name]: value
       },
-      () => this.props.onConfigurationChange({ ...this.state }, true)
+      () =>
+        this.props.onConfigurationChange(
+          {
+            ...this.state
+          },
+          true
+        )
     );
   };
 
@@ -63,4 +69,4 @@ class SshConfigurationForm extends React.Component<Props, State> {
   }
 }
 
-export default translate("plugins")(SshConfigurationForm);
+export default withTranslation("plugins")(SshConfigurationForm);

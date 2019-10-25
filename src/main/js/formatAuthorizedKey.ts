@@ -1,5 +1,3 @@
-// @flow
-
 export function formatAuthorizedKey(key: string) {
   const parts = key.split(/\s+/);
   if (parts.length === 3) {

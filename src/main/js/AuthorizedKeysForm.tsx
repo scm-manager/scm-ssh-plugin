@@ -1,28 +1,19 @@
-//@flow
 import React from "react";
-import { translate } from "react-i18next";
-import type { AuthorizedKey } from "./types";
-import {
-  apiClient,
-  ErrorNotification,
-  InputField,
-  SubmitButton,
-  Textarea
-} from "@scm-manager/ui-components";
+import { WithTranslation, withTranslation } from "react-i18next";
+import { AuthorizedKey } from "./types";
+import { apiClient, ErrorNotification, InputField, SubmitButton, Textarea } from "@scm-manager/ui-components";
 
-type Props = {
-  url: string,
-  onKeyAdded: AuthorizedKey => void,
-  // context props
-  t: string => string
+type Props = WithTranslation & {
+  url: string;
+  onKeyAdded: (p: AuthorizedKey) => void;
 };
 
 type State = {
-  displayName?: string,
-  raw?: string,
+  displayName?: string;
+  raw?: string;
 
-  loading: boolean,
-  error?: Error
+  loading: boolean;
+  error?: Error;
 };
 
 class AuthorizedKeysForm extends React.Component<Props, State> {
@@ -37,7 +28,11 @@ class AuthorizedKeysForm extends React.Component<Props, State> {
     e.preventDefault();
     const { displayName, raw } = this.state;
     if (displayName && raw) {
-      this.addKey({ displayName, raw, _links: {} });
+      this.addKey({
+        displayName,
+        raw,
+        _links: {}
+      });
     }
   };
 
@@ -90,20 +85,11 @@ class AuthorizedKeysForm extends React.Component<Props, State> {
           value={displayName}
           onChange={this.onChange}
         />
-        <Textarea
-          name="raw"
-          label={t("scm-ssh-plugin.raw")}
-          value={raw}
-          onChange={this.onChange}
-        />
-        <SubmitButton
-          label={t("scm-ssh-plugin.addKey")}
-          loading={loading}
-          disabled={!this.isValid()}
-        />
+        <Textarea name="raw" label={t("scm-ssh-plugin.raw")} value={raw} onChange={this.onChange} />
+        <SubmitButton label={t("scm-ssh-plugin.addKey")} loading={loading} disabled={!this.isValid()} />
       </form>
     );
   }
 }
 
-export default translate("plugins")(AuthorizedKeysForm);
+export default withTranslation("plugins")(AuthorizedKeysForm);

@@ -1,20 +1,14 @@
-// @flow
-
 import { formatAuthorizedKey } from "./formatAuthorizedKey";
 
 describe("format authorized key tests", () => {
   it("should format the given key", () => {
     const key = "ssh-rsa ACB0DEFGHIJKLMOPQRSTUVWXYZ tricia@hitchhiker.com";
-    expect(formatAuthorizedKey(key)).toEqual(
-      "ssh-rsa ... tricia@hitchhiker.com"
-    );
+    expect(formatAuthorizedKey(key)).toEqual("ssh-rsa ... tricia@hitchhiker.com");
   });
 
   it("should use the first chars of the key without prefix", () => {
     const key = "ACB0DEFGHIJKLMOPQRSTUVWXYZ tricia@hitchhiker.com";
-    expect(formatAuthorizedKey(key)).toEqual(
-      "ACB0DEF... tricia@hitchhiker.com"
-    );
+    expect(formatAuthorizedKey(key)).toEqual("ACB0DEF... tricia@hitchhiker.com");
   });
 
   it("should use the last chars of the key without suffix", () => {

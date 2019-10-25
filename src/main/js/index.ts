@@ -1,4 +1,3 @@
-// @flow
 import { binder } from "@scm-manager/ui-extensions";
 import { ConfigurationBinder as cfgBinder } from "@scm-manager/ui-components";
 import NavigationLink from "./NavigationLink";
@@ -26,9 +25,4 @@ binder.bind("user.route", UserNavigationRoute, userPredicate);
 
 // global configuration
 
-cfgBinder.bindGlobal(
-  "/ssh",
-  "scm-ssh-plugin.globalConfig.navLink",
-  "sshConfig",
-  SshConfiguration
-);
+cfgBinder.bindGlobal("/ssh", "scm-ssh-plugin.globalConfig.navLink", "sshConfig", SshConfiguration);

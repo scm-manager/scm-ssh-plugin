@@ -1,14 +1,11 @@
-//@flow
 import React from "react";
-import { translate } from "react-i18next";
-import type { AuthorizedKey } from "./types";
+import { WithTranslation, withTranslation } from "react-i18next";
+import { AuthorizedKey } from "./types";
 import AuthorizedKeyRow from "./AuthorizedKeyRow";
 
-type Props = {
-  onKeyDeleted: (error?: Error) => void,
-  authorizedKeys: AuthorizedKey[],
-  // context props
-  t: string => string
+type Props = WithTranslation & {
+  onKeyDeleted: (error?: Error) => void;
+  authorizedKeys: AuthorizedKey[];
 };
 
 class AuthorizedKeysTable extends React.Component<Props> {
@@ -26,13 +23,7 @@ class AuthorizedKeysTable extends React.Component<Props> {
         </thead>
         <tbody>
           {authorizedKeys.map((authorizedKey, index) => {
-            return (
-              <AuthorizedKeyRow
-                key={index}
-                onKeyDeleted={onKeyDeleted}
-                authorizedKey={authorizedKey}
-              />
-            );
+            return <AuthorizedKeyRow key={index} onKeyDeleted={onKeyDeleted} authorizedKey={authorizedKey} />;
           })}
         </tbody>
       </table>
@@ -40,4 +31,4 @@ class AuthorizedKeysTable extends React.Component<Props> {
   }
 }
 
-export default translate("plugins")(AuthorizedKeysTable);
+export default withTranslation("plugins")(AuthorizedKeysTable);
