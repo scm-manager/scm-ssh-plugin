@@ -52,6 +52,10 @@ class SshProtocolProviderTest {
   private ScmProtocol configureAndGet(int port) {
     Configuration sshConfiguration = new Configuration();
     sshConfiguration.setPort(port);
+    return configureAndGet(sshConfiguration);
+  }
+
+  private ScmProtocol configureAndGet(Configuration sshConfiguration) {
     sshConfigStore.setConfiguration(sshConfiguration);
 
     scmConfiguration.setBaseUrl("https://scm.hitchhiker.com/scm");
@@ -77,6 +81,36 @@ class SshProtocolProviderTest {
 
     assertThat(sshProtocol.getType()).isEqualTo("ssh");
     assertThat(sshProtocol.getUrl()).isEqualTo("ssh://scm.hitchhiker.com/repo/hitchhiker/HeartOfGold");
+  }
+
+  @Test
+  void shouldKeepConfiguredPort() {
+    Configuration sshConfiguration = new Configuration();
+    sshConfiguration.setHostName("ssh.hitchhiker.com:2200");
+    sshConfiguration.setPort(2222);
+
+    ScmProtocol sshProtocol = configureAndGet(sshConfiguration);
+    assertThat(sshProtocol.getUrl()).isEqualTo("ssh://ssh.hitchhiker.com:2200/repo/hitchhiker/HeartOfGold");
+  }
+
+  @Test
+  void shouldKeepConfiguredPortButShouldNotDisplay22() {
+    Configuration sshConfiguration = new Configuration();
+    sshConfiguration.setHostName("ssh.hitchhiker.com:22");
+    sshConfiguration.setPort(2222);
+
+    ScmProtocol sshProtocol = configureAndGet(sshConfiguration);
+    assertThat(sshProtocol.getUrl()).isEqualTo("ssh://ssh.hitchhiker.com/repo/hitchhiker/HeartOfGold");
+  }
+
+  @Test
+  void shouldIgnoreConfiguredSshProtocolPrefix() {
+    Configuration sshConfiguration = new Configuration();
+    sshConfiguration.setHostName("ssh://ssh.hitchhiker.com:22");
+    sshConfiguration.setPort(2222);
+
+    ScmProtocol sshProtocol = configureAndGet(sshConfiguration);
+    assertThat(sshProtocol.getUrl()).isEqualTo("ssh://ssh.hitchhiker.com/repo/hitchhiker/HeartOfGold");
   }
 
 }

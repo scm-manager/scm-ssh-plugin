@@ -37,12 +37,12 @@ public class SshProtocolProvider implements ScmProtocolProvider {
   public class SshProtocol implements ScmProtocol {
 
     private String serverName;
-    private int port;
+    private int sshPort;
     private NamespaceAndName namespaceAndName;
 
-    private SshProtocol(String serverName, int port, NamespaceAndName namespaceAndName) {
+    private SshProtocol(String serverName, int sshPort, NamespaceAndName namespaceAndName) {
       this.serverName = serverName;
-      this.port = port;
+      this.sshPort = sshPort;
       this.namespaceAndName = namespaceAndName;
     }
 
@@ -59,11 +59,25 @@ public class SshProtocolProvider implements ScmProtocolProvider {
       if (subject.isAuthenticated()) {
         builder.append(subject.getPrincipal()).append("@");
       }
-      builder.append(serverName);
 
-      if (port != 22) {
-        builder.append(":")
-          .append(port);
+      String hostname = serverName;
+      if (hostname.startsWith("ssh://")) {
+        hostname = hostname.substring(6);
+      }
+
+      int portIndex = hostname.indexOf(':');
+      if (portIndex > 0) {
+        builder.append(hostname, 0, portIndex);
+        int port = Integer.parseInt(hostname.substring(portIndex + 1));
+        if (port != 22) {
+          builder.append(":").append(port);
+        }
+      } else {
+        builder.append(hostname);
+        if (sshPort != 22) {
+          builder.append(":")
+            .append(sshPort);
+        }
       }
 
       return builder.append("/repo/")

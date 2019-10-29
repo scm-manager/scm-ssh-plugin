@@ -27,12 +27,12 @@ public class IndexLinkEnricher implements HalEnricher {
   @Override
   public void enrich(HalEnricherContext context, HalAppender appender) {
     if (ConfigurationPermissions.read("ssh").isPermitted()) {
-      String globalLdapConfigUrl = new LinkBuilder(scmPathInfoStore.get().get(), ConfigResource.class)
+      String globalConfigUrl = new LinkBuilder(scmPathInfoStore.get().get(), ConfigResource.class)
         .method("getConfig")
         .parameters()
         .href();
 
-      appender.appendLink("sshConfig", globalLdapConfigUrl);
+      appender.appendLink("sshConfig", globalConfigUrl);
     }
   }
 }

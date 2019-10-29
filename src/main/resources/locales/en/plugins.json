@@ -11,12 +11,12 @@
     "globalConfig": {
       "navLink": "SSH",
       "header": "SSH",
-      "hostName": "SSH host name",
-      "hostNameHelp": "Host name for SSH access. If this is omitted, the host name of the base URL configured in global configuration will be used.",
-      "hostNameInvalid": "Please specify a valid host name",
-      "port": "SSH port",
-      "portHelp": "TCP listener port for SSH access",
-      "portInvalid": "The port must be between 1 and 49151"
+      "hostName": "SSH Client URL",
+      "hostNameHelp": "URL that is used by SSH Client to connect to SCM-Manager (e.g.: ssh.hitchhiker.com:2222 or ssh://ssh.hitchhiker.com:2222).\nIf this is omitted, the host name of the base URL configured in global configuration will be used.",
+      "hostNameInvalid": "Please specify a valid SSH client url (e.g.: ssh.hitchhiker.com:2222 or ssh://ssh.hitchhiker.com:2222)",
+      "port": "SSH Server port",
+      "portHelp": "TCP port opened by SCM-Manager to provide SSH support",
+      "portInvalid": "The port must be between 1 and 65535"
     }
   },
   "permissions": {

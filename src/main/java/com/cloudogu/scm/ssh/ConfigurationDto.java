@@ -13,8 +13,10 @@ import org.hibernate.validator.constraints.Range;
 @SuppressWarnings("squid:S2160") // no need for equals and hash code
 public class ConfigurationDto extends HalRepresentation {
 
+  @SshHostnameWithPort
   private String hostName;
-  @Range(min = 1, max = 0xBFFF)
+
+  @Range(min = 1, max = 65535)
   private int port;
 
   public ConfigurationDto(Links links) {
