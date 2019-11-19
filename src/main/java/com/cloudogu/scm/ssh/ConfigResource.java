@@ -1,6 +1,5 @@
 package com.cloudogu.scm.ssh;
 
-import com.google.inject.Singleton;
 import com.webcohesion.enunciate.metadata.rs.ResponseCode;
 import com.webcohesion.enunciate.metadata.rs.StatusCodes;
 import sonia.scm.config.ConfigurationPermissions;
@@ -18,7 +17,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-@Singleton
 @Path("v2/config/ssh")
 public class ConfigResource {
 
