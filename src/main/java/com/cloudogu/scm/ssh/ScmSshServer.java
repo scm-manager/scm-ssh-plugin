@@ -76,7 +76,7 @@ public class ScmSshServer {
 
   @VisibleForTesting
   void runInThread(Runnable r) {
-    new Thread(r).start();
+    new Thread(r, "ScmSshServer").start();
   }
 
   @VisibleForTesting
