@@ -3,10 +3,6 @@ package com.cloudogu.scm.ssh;
 import com.github.sdorra.shiro.ShiroRule;
 import com.github.sdorra.shiro.SubjectAware;
 import com.google.common.io.Resources;
-import org.apache.shiro.authz.UnauthorizedException;
-import org.assertj.core.api.Assertions;
-import org.jboss.resteasy.core.Dispatcher;
-import org.jboss.resteasy.mock.MockDispatcherFactory;
 import org.jboss.resteasy.mock.MockHttpRequest;
 import org.jboss.resteasy.mock.MockHttpResponse;
 import org.junit.Before;
@@ -16,16 +12,12 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import sonia.scm.api.v2.resources.ScmPathInfo;
 import sonia.scm.api.v2.resources.ScmPathInfoStore;
-import sonia.scm.web.VndMediaType;
+import sonia.scm.web.RestDispatcher;
 
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.ext.ExceptionMapper;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 
@@ -33,7 +25,6 @@ import static java.net.URI.create;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -58,14 +49,14 @@ public class ConfigResourceTest {
 
   private ConfigResource resource;
 
-  private Dispatcher dispatcher;
+  private RestDispatcher dispatcher;
 
   private static final Configuration CONFIGURATION = new Configuration();
 
   @Test
   @SubjectAware(username = "unpriv")
-  public void unauthorizedUserShouldNotReadConfiguration() throws URISyntaxException, UnsupportedEncodingException {
-    MockHttpRequest request = MockHttpRequest.get("v2/config/ssh");
+  public void unauthorizedUserShouldNotReadConfiguration() throws URISyntaxException {
+    MockHttpRequest request = MockHttpRequest.get("/v2/config/ssh");
     MockHttpResponse response = new MockHttpResponse();
 
     dispatcher.invoke(request, response);
@@ -76,7 +67,7 @@ public class ConfigResourceTest {
   @Test
   @SubjectAware(username = "reader")
   public void userWithReadPermissionShouldReadConfiguration() throws URISyntaxException, UnsupportedEncodingException {
-    MockHttpRequest request = MockHttpRequest.get("v2/config/ssh");
+    MockHttpRequest request = MockHttpRequest.get("/v2/config/ssh");
     MockHttpResponse response = new MockHttpResponse();
 
     dispatcher.invoke(request, response);
@@ -90,7 +81,7 @@ public class ConfigResourceTest {
   @SubjectAware(username = "unpriv")
   public void unauthorizedUserShouldNotWriteConfiguration() throws URISyntaxException, IOException {
     MockHttpRequest request = MockHttpRequest
-      .put("v2/config/ssh")
+      .put("/v2/config/ssh")
       .content(readConfigJson())
       .contentType(MediaType.APPLICATION_JSON_TYPE);
     MockHttpResponse response = new MockHttpResponse();
@@ -104,7 +95,7 @@ public class ConfigResourceTest {
   @SubjectAware(username = "reader")
   public void userWithReadPermissionShouldNotWriteConfiguration() throws URISyntaxException, IOException {
     MockHttpRequest request = MockHttpRequest
-      .put("v2/config/ssh")
+      .put("/v2/config/ssh")
       .content(readConfigJson())
       .contentType(MediaType.APPLICATION_JSON_TYPE);
     MockHttpResponse response = new MockHttpResponse();
@@ -118,7 +109,7 @@ public class ConfigResourceTest {
   @SubjectAware(username = "writer")
   public void userWithWritePermissionShouldWriteConfiguration() throws URISyntaxException, IOException {
     MockHttpRequest request = MockHttpRequest
-      .put("v2/config/ssh")
+      .put("/v2/config/ssh")
       .content(readConfigJson())
       .contentType(MediaType.APPLICATION_JSON_TYPE);
     MockHttpResponse response = new MockHttpResponse();
@@ -146,13 +137,7 @@ public class ConfigResourceTest {
     doNothing().when(configStore).setConfiguration(setCaptor.capture());
     when(scmPathInfoStore.get()).thenReturn(() -> create("/"));
 
-    dispatcher = MockDispatcherFactory.createDispatcher();
-    dispatcher.getProviderFactory().register(new ExceptionMapper<UnauthorizedException>() {
-      @Override
-      public Response toResponse(UnauthorizedException e) {
-        return Response.status(403).build();
-      }
-    });
-    dispatcher.getRegistry().addSingletonResource(resource);
+    dispatcher = new RestDispatcher();
+    dispatcher.addSingletonResource(resource);
   }
 }
