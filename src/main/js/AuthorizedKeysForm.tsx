@@ -1,7 +1,7 @@
 import React from "react";
 import { WithTranslation, withTranslation } from "react-i18next";
 import { AuthorizedKey } from "./types";
-import { apiClient, ErrorNotification, InputField, SubmitButton, Textarea } from "@scm-manager/ui-components";
+import { apiClient, ErrorNotification, InputField, SubmitButton, Textarea, Level } from "@scm-manager/ui-components";
 
 type Props = WithTranslation & {
   url: string;
@@ -86,7 +86,9 @@ class AuthorizedKeysForm extends React.Component<Props, State> {
           onChange={this.onChange}
         />
         <Textarea name="raw" label={t("scm-ssh-plugin.raw")} value={raw} onChange={this.onChange} />
-        <SubmitButton label={t("scm-ssh-plugin.addKey")} loading={loading} disabled={!this.isValid()} />
+        <Level
+          right={<SubmitButton label={t("scm-ssh-plugin.addKey")} loading={loading} disabled={!this.isValid()} />}
+        />
       </form>
     );
   }
