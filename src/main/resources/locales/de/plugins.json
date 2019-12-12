@@ -10,7 +10,7 @@
     "noStoredKeys": "Keine autorisierten Schlüssel gefunden",
     "globalConfig": {
       "navLink": "SSH",
-      "header": "SSH",
+      "title": "SSH Konfiguration",
       "hostName": "SSH Client URL",
       "hostNameHelp": "URL die von SSH Client für die Verbindung zu SCM-Manager verwendet werden kann\n(z.B.: ssh.hitchhiker.com:2222 or ssh://ssh.hitchhiker.com:2222).\nWenn dieser nicht ausgefüllt wird, wird der Hostname auf Basis der Base URL aus den globalen Einstellungen genutzt.",
       "hostNameInvalid": "Geben Sie einen gültige SSH Client URL an (z.B.: ssh.hitchhiker.com:2222 or ssh://ssh.hitchhiker.com:2222)",

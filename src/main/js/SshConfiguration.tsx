@@ -13,7 +13,7 @@ class LdapConfiguration extends React.Component<Props> {
     const { t, link } = this.props;
     return (
       <>
-        <Title title={t("scm-ssh-plugin.globalConfig.header")} />
+        <Title title={t("scm-ssh-plugin.globalConfig.title")} />
         <Configuration link={link} t={t} render={props => <SshConfigurationForm {...props} />} />
       </>
     );
