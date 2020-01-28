@@ -3,9 +3,8 @@ import { WithTranslation, withTranslation } from "react-i18next";
 import { Title, Configuration } from "@scm-manager/ui-components";
 import SshConfigurationForm from "./SshConfigurationForm";
 
-type Props = {
+type Props = WithTranslation & {
   link: string;
-  t: (p: string) => string;
 };
 
 class LdapConfiguration extends React.Component<Props> {
@@ -14,7 +13,7 @@ class LdapConfiguration extends React.Component<Props> {
     return (
       <>
         <Title title={t("scm-ssh-plugin.globalConfig.title")} />
-        <Configuration link={link} t={t} render={props => <SshConfigurationForm {...props} />} />
+        <Configuration link={link} render={props => <SshConfigurationForm {...props} />} />
       </>
     );
   }

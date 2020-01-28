@@ -16,7 +16,9 @@
       "hostNameInvalid": "Geben Sie einen gültige SSH Client URL an (z.B.: ssh.hitchhiker.com:2222 or ssh://ssh.hitchhiker.com:2222)",
       "port": "SSH Server Port",
       "portHelp": "TCP Port den SCM-Manager für den SSH Support öffnet",
-      "portInvalid": "Der Port muss zwischen 1 und 65535 liegen"
+      "portInvalid": "Der Port muss zwischen 1 und 65535 liegen",
+      "disablePasswordAuthentication": "Passwort Authentifizierung deaktivieren",
+      "disablePasswordAuthenticationHelp": "Deaktiviert die SSH Password Authentifizierung. Es kann sich nur noch mit PublicKey authentifiziert werden."
     }
   },
   "permissions": {

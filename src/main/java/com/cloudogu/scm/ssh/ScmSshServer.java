@@ -13,6 +13,8 @@ import javax.inject.Provider;
 import java.io.IOException;
 import java.util.Set;
 
+import static sun.print.CUPSPrinter.getPort;
+
 public class ScmSshServer {
 
   private static final Logger LOG = LoggerFactory.getLogger(ScmSshServer.class);
@@ -65,13 +67,28 @@ public class ScmSshServer {
 
   @Subscribe
   public void configurationChanged(ConfigChangedEvent configChangedEvent) {
-    if (configChangedEvent.getOldConfiguration().getPort() != configChangedEvent.getNewConfiguration().getPort()) {
+    if (shouldRestartServer(configChangedEvent)) {
       LOG.trace("configuration for ssh server changed");
       stop();
       sshd = createDefaultServer();
       applyConfigurators();
       start();
     }
+  }
+
+  private boolean shouldRestartServer(ConfigChangedEvent configChangedEvent) {
+    Configuration oldConfiguration = configChangedEvent.getOldConfiguration();
+    Configuration newConfiguration = configChangedEvent.getNewConfiguration();
+    return hasPortChanged(oldConfiguration, newConfiguration)
+      || hasDisabledPasswordAuthenticationChanged(oldConfiguration, newConfiguration);
+  }
+
+  private boolean hasDisabledPasswordAuthenticationChanged(Configuration oldConfiguration, Configuration newConfiguration) {
+    return oldConfiguration.isDisablePasswordAuthentication() != newConfiguration.isDisablePasswordAuthentication();
+  }
+
+  private boolean hasPortChanged(Configuration oldConfiguration, Configuration newConfiguration) {
+    return oldConfiguration.getPort() != newConfiguration.getPort();
   }
 
   @VisibleForTesting

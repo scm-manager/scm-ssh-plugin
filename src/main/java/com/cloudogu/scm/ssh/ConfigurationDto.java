@@ -19,6 +19,8 @@ public class ConfigurationDto extends HalRepresentation {
   @Range(min = 1, max = 65535)
   private int port;
 
+  private boolean disablePasswordAuthentication;
+
   public ConfigurationDto(Links links) {
     super(links);
   }
