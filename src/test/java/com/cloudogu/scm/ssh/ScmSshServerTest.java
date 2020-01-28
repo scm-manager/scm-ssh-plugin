@@ -83,15 +83,31 @@ class ScmSshServerTest {
   }
 
   @Test
-  void shouldRestartServerOnConfigurationChange() throws IOException {
+  void shouldRestartServerOnPortChange() throws IOException {
     scmSshServer.start();
 
     scmSshServer.configurationChanged(createEvent(2222, 3333));
 
+    assertRestart();
+  }
+
+  private void assertRestart() throws IOException {
     assertThat(createdServers).hasSize(2);
     verify(createdServers.get(0)).start();
     verify(createdServers.get(0)).stop();
     verify(createdServers.get(1)).start();
+  }
+
+  @Test
+  void shouldRestartServerOnDisablePasswordAuthenticationChange() throws IOException {
+    scmSshServer.start();
+
+    ConfigChangedEvent event = createEvent(2222, 2222);
+    event.getNewConfiguration().setDisablePasswordAuthentication(true);
+
+    scmSshServer.configurationChanged(event);
+
+    assertRestart();
   }
 
   @Test
