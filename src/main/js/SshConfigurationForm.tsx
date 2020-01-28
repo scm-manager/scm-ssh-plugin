@@ -1,11 +1,12 @@
 import React from "react";
-import { InputField } from "@scm-manager/ui-components";
+import { Checkbox, InputField } from "@scm-manager/ui-components";
 import { WithTranslation, withTranslation } from "react-i18next";
-import {validateHostnameWithPort, validatePort} from "./validator";
+import { validateHostnameWithPort, validatePort } from "./validator";
 
 type SshConfiguration = {
   hostName?: string;
   port: number;
+  disablePasswordAuthentication: boolean;
 };
 
 type Props = WithTranslation & {
@@ -49,9 +50,18 @@ class SshConfigurationForm extends React.Component<Props, State> {
     );
   };
 
+  onDisablePasswordAuthenticationChanged = () => {
+    this.setState(
+      prevState => ({
+        disablePasswordAuthentication: !prevState.disablePasswordAuthentication
+      }),
+      this.onStateChange
+    );
+  };
+
   onStateChange = () => {
-    const { hostName, port } = this.state;
-    this.props.onConfigurationChange({ hostName, port }, this.isValid());
+    const { hostName, port, disablePasswordAuthentication } = this.state;
+    this.props.onConfigurationChange({ hostName, port, disablePasswordAuthentication }, this.isValid());
   };
 
   isValid = () => {
@@ -61,7 +71,7 @@ class SshConfigurationForm extends React.Component<Props, State> {
 
   render(): React.ReactNode {
     const { t } = this.props;
-    const { hostName, hostNameValidationError, port, portValidationError } = this.state;
+    const { hostName, hostNameValidationError, port, portValidationError, disablePasswordAuthentication } = this.state;
     return (
       <>
         <InputField
@@ -82,6 +92,12 @@ class SshConfigurationForm extends React.Component<Props, State> {
           validationError={portValidationError}
           value={"" + port}
           type="number"
+        />
+        <Checkbox
+          onChange={this.onDisablePasswordAuthenticationChanged}
+          label={t("scm-ssh-plugin.globalConfig.disablePasswordAuthentication")}
+          helpText={t("scm-ssh-plugin.globalConfig.disablePasswordAuthenticationHelp")}
+          checked={disablePasswordAuthentication}
         />
       </>
     );

@@ -16,7 +16,9 @@
       "hostNameInvalid": "Please specify a valid SSH client url (e.g.: ssh.hitchhiker.com:2222 or ssh://ssh.hitchhiker.com:2222)",
       "port": "SSH Server port",
       "portHelp": "TCP port opened by SCM-Manager to provide SSH support",
-      "portInvalid": "The port must be between 1 and 65535"
+      "portInvalid": "The port must be between 1 and 65535",
+      "disablePasswordAuthentication": "Deactivate password authentication",
+      "disablePasswordAuthenticationHelp": "Deactivates the ssh password authentication. Only authentication with public key is possible."
     }
   },
   "permissions": {
