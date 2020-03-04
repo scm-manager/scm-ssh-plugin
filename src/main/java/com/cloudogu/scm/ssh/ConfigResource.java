@@ -41,7 +41,12 @@ public class ConfigResource {
   @GET
   @Path("")
   @Produces(MediaType.APPLICATION_JSON)
-  @Operation(summary = "Get ssh configuration", description = "Returns the ssh configuration.", tags = "SSH Plugin")
+  @Operation(
+    summary = "Get ssh configuration",
+    description = "Returns the ssh configuration.",
+    tags = "SSH Plugin",
+    operationId = "ssh_get_config"
+  )
   @ApiResponse(
     responseCode = "200",
     description = "success",
@@ -68,7 +73,11 @@ public class ConfigResource {
   @PUT
   @Path("")
   @Consumes(MediaType.APPLICATION_JSON)
-  @Operation(summary = "Update ssh configuration", description = "Modifies the ssh configuration.", tags = "SSH Plugin")
+  @Operation(
+    summary = "Update ssh configuration",
+    description = "Modifies the ssh configuration.",
+    tags = "SSH Plugin",
+    operationId = "ssh_put_config")
   @ApiResponse(responseCode = "204", description = "update success")
   @ApiResponse(responseCode = "401", description = "not authenticated / invalid credentials")
   @ApiResponse(responseCode = "403", description = "not authorized /  the current user does not have the right privilege")

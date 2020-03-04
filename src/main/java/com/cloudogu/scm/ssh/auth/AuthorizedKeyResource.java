@@ -17,7 +17,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
@@ -43,7 +42,12 @@ public class AuthorizedKeyResource {
   @GET
   @Path("")
   @Produces(MEDIA_TYPE_COLLECTION)
-  @Operation(summary = "Get all keys for user", description = "Returns all keys for the given username.", tags = "SSH Plugin")
+  @Operation(
+    summary = "Get all keys for user",
+    description = "Returns all keys for the given username.",
+    tags = "SSH Plugin",
+    operationId = "ssh_get_all_keys"
+  )
   @ApiResponse(
     responseCode = "200",
     description = "success",
@@ -69,7 +73,12 @@ public class AuthorizedKeyResource {
   @GET
   @Path("{id}")
   @Produces(MEDIA_TYPE)
-  @Operation(summary = "Get single key for user", description = "Returns a single key for username by id.", tags = "SSH Plugin")
+  @Operation(
+    summary = "Get single key for user",
+    description = "Returns a single key for username by id.",
+    tags = "SSH Plugin",
+    operationId = "ssh_get_single_key"
+  )
   @ApiResponse(
     responseCode = "200",
     description = "success",
@@ -99,7 +108,7 @@ public class AuthorizedKeyResource {
   public Response findById(@PathParam("username") String username, @PathParam("id") String id) {
     Optional<AuthorizedKey> byId = store.findById(username, id);
     if (byId.isPresent()) {
-      return Response.ok( mapper.map(username, byId.get()) ).build();
+      return Response.ok(mapper.map(username, byId.get())).build();
     }
     return Response.status(Response.Status.NOT_FOUND).build();
   }
@@ -107,7 +116,12 @@ public class AuthorizedKeyResource {
   @POST
   @Path("")
   @Consumes(MEDIA_TYPE)
-  @Operation(summary = "Create new key", description = "Creates new key for user.", tags = "SSH Plugin")
+  @Operation(
+    summary = "Create new key",
+    description = "Creates new key for user.",
+    tags = "SSH Plugin",
+    operationId = "ssh_create_key"
+  )
   @ApiResponse(responseCode = "201", description = "create success")
   @ApiResponse(responseCode = "401", description = "not authenticated / invalid credentials")
   @ApiResponse(responseCode = "403", description = "not authorized /  the current user does not have the right privilege")
@@ -128,7 +142,12 @@ public class AuthorizedKeyResource {
 
   @DELETE
   @Path("{id}")
-  @Operation(summary = "Deletes key", description = "Deletes key for user.", tags = "SSH Plugin")
+  @Operation(
+    summary = "Deletes key",
+    description = "Deletes key for user.",
+    tags = "SSH Plugin",
+    operationId = "ssh_delete_key"
+  )
   @ApiResponse(responseCode = "204", description = "delete success")
   @ApiResponse(responseCode = "401", description = "not authenticated / invalid credentials")
   @ApiResponse(responseCode = "403", description = "not authorized /  the current user does not have the right privilege")
