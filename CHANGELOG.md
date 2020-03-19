@@ -4,11 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Unreleased
+### Changed
+- Changeover to MIT license ([#5](https://github.com/scm-manager/scm-ssh-plugin/pull/5))
+
 ## 2.0.0-rc2 - 2020-01-29
 ### Added
 - Configuration flag to disable password authentication
-
-### Changed
 
 ## 2.0.0-rc1 - 2019-12-2
 - First public release candidate
