@@ -46,6 +46,21 @@
     <url>https://github.com/scm-manager/scm-ssh-plugin</url>
   </scm>
 
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>io.openapitools.swagger</groupId>
+        <artifactId>swagger-maven-plugin</artifactId>
+        <configuration>
+          <resourcePackages>
+            <resourcePackage>com.cloudogu.scm.ssh</resourcePackage>
+            <resourcePackage>com.cloudogu.scm.ssh.auth</resourcePackage>
+          </resourcePackages>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
   <dependencies>
     <dependency>
       <groupId>org.apache.sshd</groupId>
