@@ -27,7 +27,7 @@ import org.apache.sshd.server.SshServer;
 import org.apache.sshd.server.keyprovider.SimpleGeneratorHostKeyProvider;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junitpioneer.jupiter.TempDirectory;
+import org.junit.jupiter.api.io.TempDir;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -39,7 +39,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-@ExtendWith({MockitoExtension.class, TempDirectory.class})
+@ExtendWith(MockitoExtension.class)
 class KeyPairConfiguratorTest {
 
   @Mock
@@ -49,7 +49,7 @@ class KeyPairConfiguratorTest {
   private KeyPairConfigurator configurator;
 
   @Test
-  void shouldApplyKeyProviderWithPathToConfig(@TempDirectory.TempDir Path home) {
+  void shouldApplyKeyProviderWithPathToConfig(@TempDir Path home) {
     when(context.resolve(any(Path.class))).then((ic) -> {
       Path path = ic.getArgument(0);
       return home.resolve(path);
