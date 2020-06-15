@@ -1,0 +1,5 @@
+- section: Getting started
+  entries:
+    - /configuration/
+    - /ssh-commands/
+    - /public-key/
