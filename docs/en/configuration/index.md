@@ -9,7 +9,7 @@ The SSH client URL defines the URL that users can use to connect to the server v
 It is possible to provide an "external" port by adding it behind a colon (":"). This could be necessary if the SSH port maps to a different port (port forwarding), which is available from outside. If a port is provided, it is automatically included in the SSH commands (e.g. to clone a repository).
 
 ### SSH server port
-SCM-Manager opens the provided TCP port for SSH support.
+SCM-Manager opens the provided TCP port for SSH support. The default port is 2222.
 
 ### Deactivate password authentication
 The checkbox "Deactivate password authentication" can be used to deactivate the authentication with username and password for SSH. If this option in used, the SSH server only accepts authentication with "public key".
