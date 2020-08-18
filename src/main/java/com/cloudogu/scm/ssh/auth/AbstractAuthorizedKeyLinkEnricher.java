@@ -47,7 +47,7 @@ public abstract class AbstractAuthorizedKeyLinkEnricher implements HalEnricher {
     Subject subject = SecurityUtils.getSubject();
     String username = getUsername(context, subject);
 
-    if (!Authentications.isSubjectAnonymous(subject.getPrincipal().toString()) && Permissions.isPermittedReadAuthorizedKeys(username)) {
+    if (!Authentications.isAuthenticatedSubjectAnonymous() && Permissions.isPermittedReadAuthorizedKeys(username)) {
       appendLink(appender, username);
     }
   }
