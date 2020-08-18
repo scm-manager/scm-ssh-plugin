@@ -58,7 +58,6 @@ class AuthorizedKeyMeLinkEnricherTest {
     enricher = new AuthorizedKeyMeLinkEnricher(Providers.of(pathInfoStore));
 
     ThreadContext.bind(subject);
-    when(subject.getPrincipal()).thenReturn("trillian");
   }
 
   @AfterEach
@@ -68,6 +67,7 @@ class AuthorizedKeyMeLinkEnricherTest {
 
   @Test
   void shouldAppendAuthorizedKeysLink() {
+    when(subject.getPrincipal()).thenReturn("trillian");
     when(subject.isPermitted("user:readAuthorizedKeys:trillian")).thenReturn(true);
 
     enricher.enrich(null, appender);
@@ -77,6 +77,18 @@ class AuthorizedKeyMeLinkEnricherTest {
 
   @Test
   void shouldNotAppendAuthorizedKeysLinkWithoutPermission() {
+    when(subject.getPrincipal()).thenReturn("trillian");
+
+    enricher.enrich(null, appender);
+
+    verify(appender, never()).appendLink("authorized_keys", "/v2/authorized_keys/trillian");
+  }
+
+  @Test
+  void shouldNotAppendAuthorizedKeysLinkWhenAnonymousEvenWithPermissions() {
+    when(subject.getPrincipal()).thenReturn("_anonymous");
+    lenient().when(subject.isPermitted("user:readAuthorizedKeys:trillian")).thenReturn(true);
+
     enricher.enrich(null, appender);
 
     verify(appender, never()).appendLink("authorized_keys", "/v2/authorized_keys/trillian");

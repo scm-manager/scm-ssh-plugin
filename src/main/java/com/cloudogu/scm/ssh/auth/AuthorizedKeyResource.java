@@ -29,12 +29,15 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import sonia.scm.api.v2.resources.ErrorDto;
+import sonia.scm.security.Authentications;
 import sonia.scm.web.VndMediaType;
 
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
+import javax.ws.rs.ForbiddenException;
 import javax.ws.rs.GET;
+import javax.ws.rs.NotAuthorizedException;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -90,7 +93,11 @@ public class AuthorizedKeyResource {
     )
   )
   public HalRepresentation findAll(@PathParam("username") String username) {
-    return collectionMapper.map(username, store.getAll(username));
+    if (!Authentications.isAuthenticatedSubjectAnonymous()) {
+      return collectionMapper.map(username, store.getAll(username));
+    } else {
+      throw new ForbiddenException();
+    }
   }
 
   @GET
@@ -129,11 +136,15 @@ public class AuthorizedKeyResource {
     )
   )
   public Response findById(@PathParam("username") String username, @PathParam("id") String id) {
-    Optional<AuthorizedKey> byId = store.findById(username, id);
-    if (byId.isPresent()) {
-      return Response.ok(mapper.map(username, byId.get())).build();
+    if (!Authentications.isAuthenticatedSubjectAnonymous()) {
+      Optional<AuthorizedKey> byId = store.findById(username, id);
+      if (byId.isPresent()) {
+        return Response.ok(mapper.map(username, byId.get())).build();
+      }
+      return Response.status(Response.Status.NOT_FOUND).build();
+    } else {
+      throw new ForbiddenException();
     }
-    return Response.status(Response.Status.NOT_FOUND).build();
   }
 
   @POST
@@ -157,10 +168,14 @@ public class AuthorizedKeyResource {
     )
   )
   public Response create(@Context UriInfo uriInfo, @PathParam("username") String username, AuthorizedKeyDto authorizedKey) {
-    String id = store.add(username, mapper.map(authorizedKey));
-    UriBuilder builder = uriInfo.getAbsolutePathBuilder();
-    builder.path(id);
-    return Response.created(builder.build()).build();
+    if (!Authentications.isAuthenticatedSubjectAnonymous()) {
+      String id = store.add(username, mapper.map(authorizedKey));
+      UriBuilder builder = uriInfo.getAbsolutePathBuilder();
+      builder.path(id);
+      return Response.created(builder.build()).build();
+    } else {
+      throw new ForbiddenException();
+    }
   }
 
   @DELETE
@@ -183,7 +198,11 @@ public class AuthorizedKeyResource {
     )
   )
   public Response deleteById(@PathParam("username") String username, @PathParam("id") String id) {
-    store.delete(username, id);
-    return Response.noContent().build();
+    if (!Authentications.isAuthenticatedSubjectAnonymous()) {
+      store.delete(username, id);
+      return Response.noContent().build();
+    } else {
+      throw new ForbiddenException();
+    }
   }
 }

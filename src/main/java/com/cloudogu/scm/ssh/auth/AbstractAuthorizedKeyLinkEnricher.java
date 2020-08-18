@@ -30,6 +30,7 @@ import sonia.scm.api.v2.resources.HalEnricher;
 import sonia.scm.api.v2.resources.HalEnricherContext;
 import sonia.scm.api.v2.resources.LinkBuilder;
 import sonia.scm.api.v2.resources.ScmPathInfoStore;
+import sonia.scm.security.Authentications;
 
 import javax.inject.Provider;
 
@@ -46,7 +47,7 @@ public abstract class AbstractAuthorizedKeyLinkEnricher implements HalEnricher {
     Subject subject = SecurityUtils.getSubject();
     String username = getUsername(context, subject);
 
-    if (Permissions.isPermittedReadAuthorizedKeys(username)) {
+    if (!Authentications.isSubjectAnonymous(subject.getPrincipal().toString()) && Permissions.isPermittedReadAuthorizedKeys(username)) {
       appendLink(appender, username);
     }
   }

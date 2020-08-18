@@ -27,6 +27,7 @@ import de.otto.edison.hal.HalRepresentation;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.ThreadContext;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -34,6 +35,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import javax.ws.rs.ForbiddenException;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
@@ -44,6 +46,8 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -87,6 +91,13 @@ class AuthorizedKeyResourceTest {
   }
 
   @Test
+  void shouldReturnForbiddenOnFindAllWhenAnonymous() {
+    when(subject.getPrincipal()).thenReturn("_anonymous");
+
+    assertThrows(ForbiddenException.class, () -> resource.findAll("trillian"));
+  }
+
+  @Test
   void shouldFindById() {
     AuthorizedKey key = new AuthorizedKey("42");
     when(store.findById("trillian", "42")).thenReturn(Optional.of(key));
@@ -96,6 +107,13 @@ class AuthorizedKeyResourceTest {
     Response response = resource.findById("trillian", "42");
     assertThat(response.getStatus()).isEqualTo(200);
     assertThat(response.getEntity()).isSameAs(dto);
+  }
+
+  @Test
+  void shouldReturnForbiddenOnFindByIdWhenAnonymous() {
+    when(subject.getPrincipal()).thenReturn("_anonymous");
+
+    assertThrows(ForbiddenException.class, () -> resource.findById("trillian", "42"));
   }
 
   @Test
@@ -126,9 +144,23 @@ class AuthorizedKeyResourceTest {
   }
 
   @Test
+  void shouldReturnForbiddenOnCreateWhenAnonymous() throws URISyntaxException {
+    when(subject.getPrincipal()).thenReturn("_anonymous");
+
+    assertThrows(ForbiddenException.class, () -> resource.create(null, "trillian", null));
+  }
+
+  @Test
   void shouldDeleteFromStore() {
     Response response = resource.deleteById("trillian", "42");
     assertThat(response.getStatus()).isEqualTo(204);
     verify(store).delete("trillian", "42");
+  }
+
+  @Test
+  void shouldReturnForbiddenOnDeleteWhenAnonymous() {
+    when(subject.getPrincipal()).thenReturn("_anonymous");
+
+    assertThrows(ForbiddenException.class, () -> resource.deleteById("trillian", "42"));
   }
 }

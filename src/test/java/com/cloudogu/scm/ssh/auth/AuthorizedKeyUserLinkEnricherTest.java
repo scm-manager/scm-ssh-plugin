@@ -86,4 +86,17 @@ class AuthorizedKeyUserLinkEnricherTest {
     verify(appender, never()).appendLink("authorized_keys", "/v2/authorized_keys/trillian");
   }
 
+  @Test
+  void shouldNotAppendAuthorizedKeysLinkWhenAnonymousEvenWithPermissions() {
+    when(subject.getPrincipal()).thenReturn("_anonymous");
+    lenient().when(subject.isPermitted("user:readAuthorizedKeys:trillian")).thenReturn(true);
+
+    User trillian = UserTestData.createTrillian();
+
+    linkEnricher.enrich(HalEnricherContext.of(trillian), appender);
+
+    verify(appender, never()).appendLink("authorized_keys", "/v2/authorized_keys/trillian");
+    verify(subject, atLeastOnce()).getPrincipal();
+  }
+
 }
