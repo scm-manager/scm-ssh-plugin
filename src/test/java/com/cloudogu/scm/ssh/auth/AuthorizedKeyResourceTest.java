@@ -24,10 +24,10 @@
 package com.cloudogu.scm.ssh.auth;
 
 import de.otto.edison.hal.HalRepresentation;
+import org.apache.shiro.authz.AuthorizationException;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.ThreadContext;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -35,7 +35,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import javax.ws.rs.ForbiddenException;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
@@ -46,9 +45,11 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static sonia.scm.SCMContext.USER_ANONYMOUS;
 
 @ExtendWith(MockitoExtension.class)
 class AuthorizedKeyResourceTest {
@@ -91,10 +92,10 @@ class AuthorizedKeyResourceTest {
   }
 
   @Test
-  void shouldReturnForbiddenOnFindAllWhenAnonymous() {
-    when(subject.getPrincipal()).thenReturn("_anonymous");
+  void shouldThrowAuthorizationExceptionOnFindAllWhenAnonymous() {
+    when(subject.getPrincipal()).thenReturn(USER_ANONYMOUS);
 
-    assertThrows(ForbiddenException.class, () -> resource.findAll("trillian"));
+    assertThrows(AuthorizationException.class, () -> resource.findAll("trillian"));
   }
 
   @Test
@@ -110,10 +111,10 @@ class AuthorizedKeyResourceTest {
   }
 
   @Test
-  void shouldReturnForbiddenOnFindByIdWhenAnonymous() {
-    when(subject.getPrincipal()).thenReturn("_anonymous");
+  void shouldThrowAuthorizationExceptionOnFindByIdWhenAnonymous() {
+    when(subject.getPrincipal()).thenReturn(USER_ANONYMOUS);
 
-    assertThrows(ForbiddenException.class, () -> resource.findById("trillian", "42"));
+    assertThrows(AuthorizationException.class, () -> resource.findById("trillian", "42"));
   }
 
   @Test
@@ -144,10 +145,10 @@ class AuthorizedKeyResourceTest {
   }
 
   @Test
-  void shouldReturnForbiddenOnCreateWhenAnonymous() throws URISyntaxException {
-    when(subject.getPrincipal()).thenReturn("_anonymous");
+  void shouldThrowAuthorizationExceptionOnCreateWhenAnonymous() throws URISyntaxException {
+    when(subject.getPrincipal()).thenReturn(USER_ANONYMOUS);
 
-    assertThrows(ForbiddenException.class, () -> resource.create(null, "trillian", null));
+    assertThrows(AuthorizationException.class, () -> resource.create(null, "trillian", null));
   }
 
   @Test
@@ -158,9 +159,9 @@ class AuthorizedKeyResourceTest {
   }
 
   @Test
-  void shouldReturnForbiddenOnDeleteWhenAnonymous() {
-    when(subject.getPrincipal()).thenReturn("_anonymous");
+  void shouldThrowAuthorizationExceptionOnDeleteWhenAnonymous() {
+    when(subject.getPrincipal()).thenReturn(USER_ANONYMOUS);
 
-    assertThrows(ForbiddenException.class, () -> resource.deleteById("trillian", "42"));
+    assertThrows(AuthorizationException.class, () -> resource.deleteById("trillian", "42"));
   }
 }
