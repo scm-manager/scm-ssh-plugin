@@ -36,8 +36,6 @@ import javax.inject.Provider;
 import java.io.IOException;
 import java.util.Set;
 
-import static sun.print.CUPSPrinter.getPort;
-
 public class ScmSshServer {
 
   private static final Logger LOG = LoggerFactory.getLogger(ScmSshServer.class);

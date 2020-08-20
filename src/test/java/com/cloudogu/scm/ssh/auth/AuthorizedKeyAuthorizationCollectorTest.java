@@ -26,6 +26,7 @@ package com.cloudogu.scm.ssh.auth;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.subject.SimplePrincipalCollection;
 import org.junit.jupiter.api.Test;
+import sonia.scm.SCMContext;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -40,6 +41,15 @@ class AuthorizedKeyAuthorizationCollectorTest {
     AuthorizationInfo info = collector.collect(collection);
 
     assertThat(info.getStringPermissions()).containsOnly("user:readAuthorizedKeys,writeAuthorizedKeys:trillian");
+  }
+
+  @Test
+  void shouldNotAddDefaultPermissionsIfUserIsAnonymous() {
+    SimplePrincipalCollection collection = new SimplePrincipalCollection(SCMContext.USER_ANONYMOUS, "test");
+
+    AuthorizationInfo info = collector.collect(collection);
+
+    assertThat(info.getStringPermissions()).isNullOrEmpty();
   }
 
 }
