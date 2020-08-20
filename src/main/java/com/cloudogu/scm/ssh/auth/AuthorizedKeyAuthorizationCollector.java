@@ -27,6 +27,7 @@ import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.subject.PrincipalCollection;
 import sonia.scm.plugin.Extension;
+import sonia.scm.security.Authentications;
 import sonia.scm.security.AuthorizationCollector;
 
 @Extension
@@ -37,7 +38,9 @@ public class AuthorizedKeyAuthorizationCollector implements AuthorizationCollect
     SimpleAuthorizationInfo authorizationInfo = new SimpleAuthorizationInfo();
 
     String username = principalCollection.getPrimaryPrincipal().toString();
-    authorizationInfo.addStringPermission(Permissions.readAndWriteAuthorizedKeys(username));
+    if (!Authentications.isSubjectAnonymous(username)) {
+      authorizationInfo.addStringPermission(Permissions.readAndWriteAuthorizedKeys(username));
+    }
 
     return authorizationInfo;
   }

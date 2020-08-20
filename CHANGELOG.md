@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Documentation in English and German ([#6](https://github.com/scm-manager/scm-ssh-plugin/pull/6))
 
+### Fixed
+- Anonymous users should not be able to access or modify authorized keys ([#10](https://github.com/scm-manager/scm-ssh-plugin/pull/10))
+
 ## 2.0.0 - 2020-06-04
 ### Changed
 - Changeover to MIT license ([#5](https://github.com/scm-manager/scm-ssh-plugin/pull/5))
