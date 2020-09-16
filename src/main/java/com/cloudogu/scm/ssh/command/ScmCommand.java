@@ -82,7 +82,10 @@ public class ScmCommand extends AbstractCommandSupport {
 
       String[] args = commandInterpreter.getParsedArgs();
 
-      RepositoryContext repositoryContext = commandInterpreter.getRepositoryContextResolver().resolve(args);
+      RepositoryContext repositoryContext = null;
+      if (commandInterpreter.getRepositoryContextResolver() != null) {
+        repositoryContext = commandInterpreter.getRepositoryContextResolver().resolve(args);
+      }
       CommandContext commandContext = createCommandContext(command, args);
 
       commandInterpreter.getProtocolHandler().handle(commandContext, repositoryContext);
