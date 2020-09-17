@@ -21,33 +21,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.cloudogu.scm.ssh.accesstoken;
+package com.cloudogu.scm.ssh.simplecommand;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.junit.jupiter.MockitoExtension;
-import sonia.scm.protocolcommand.CommandInterpreter;
+import sonia.scm.plugin.ExtensionPoint;
 
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-@ExtendWith(MockitoExtension.class)
-class AccessTokenCommandInterpreterFactoryTest {
-
-  @InjectMocks
-  private AccessTokenCommandInterpreterFactory factory;
-
-  @Test
-  void shouldReturnEmptyOptional() {
-    assertThat(factory.canHandle("invalid")).isEmpty();
-  }
-
-  @Test
-  void shouldReturnInterpreter() {
-    Optional<CommandInterpreter> commandInterpreter = factory.canHandle("scm-access-token");
-    assertThat(commandInterpreter).isNotEmpty();
-    assertThat(commandInterpreter.get()).isInstanceOf(AccessTokenCommandInterpreter.class);
-  }
+@ExtensionPoint
+public interface SimpleCommandFactory {
+  Optional<SimpleCommand> canHandle(String command);
 }

@@ -23,39 +23,38 @@
  */
 package com.cloudogu.scm.ssh.accesstoken;
 
+import com.cloudogu.scm.ssh.simplecommand.SimpleCommand;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.otto.edison.hal.Link;
 import de.otto.edison.hal.Links;
 import org.apache.shiro.SecurityUtils;
 import sonia.scm.config.ScmConfiguration;
 import sonia.scm.protocolcommand.CommandContext;
-import sonia.scm.protocolcommand.RepositoryContext;
-import sonia.scm.protocolcommand.ScmCommandProtocol;
 import sonia.scm.security.AccessToken;
 import sonia.scm.security.AccessTokenBuilderFactory;
 
-import javax.inject.Inject;
 import java.io.IOException;
 
-public class AccessTokenCommandProtocol implements ScmCommandProtocol {
+public class AccessTokenCommand implements SimpleCommand {
 
   private static final ObjectMapper objectMapper = new ObjectMapper();
+  private static final int SUCCESS_EXIT_CODE = 0;
 
   private final AccessTokenBuilderFactory accessTokenBuilderFactory;
   private final ScmConfiguration scmConfiguration;
 
-  @Inject
-  public AccessTokenCommandProtocol(AccessTokenBuilderFactory accessTokenBuilderFactory, ScmConfiguration scmConfiguration) {
+  public AccessTokenCommand(AccessTokenBuilderFactory accessTokenBuilderFactory, ScmConfiguration scmConfiguration) {
     this.accessTokenBuilderFactory = accessTokenBuilderFactory;
     this.scmConfiguration = scmConfiguration;
   }
 
   @Override
-  public void handle(CommandContext context, RepositoryContext repositoryContext) throws IOException {
+  public int execute(CommandContext context) throws IOException {
     AccessToken accessToken = createAccessToken();
     String indexUrl = createIndexUrl();
 
     objectMapper.writeValue(context.getOutputStream(), createCommandResult(accessToken, indexUrl));
+    return SUCCESS_EXIT_CODE;
   }
 
   AccessTokenCommandResult createCommandResult(AccessToken accessToken, String indexUrl) {

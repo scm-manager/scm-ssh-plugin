@@ -23,28 +23,31 @@
  */
 package com.cloudogu.scm.ssh.accesstoken;
 
-import sonia.scm.plugin.Extension;
-import sonia.scm.protocolcommand.CommandInterpreter;
-import sonia.scm.protocolcommand.CommandInterpreterFactory;
+import com.cloudogu.scm.ssh.simplecommand.SimpleCommand;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-import javax.inject.Inject;
 import java.util.Optional;
 
-@Extension
-public class AccessTokenCommandInterpreterFactory implements CommandInterpreterFactory {
+import static org.assertj.core.api.Assertions.assertThat;
 
-  private final AccessTokenCommandProtocol protocolHandler;
+@ExtendWith(MockitoExtension.class)
+class AccessTokenCommandFactoryTest {
 
-  @Inject
-  public AccessTokenCommandInterpreterFactory(AccessTokenCommandProtocol protocolHandler) {
-    this.protocolHandler = protocolHandler;
+  @InjectMocks
+  private AccessTokenCommandFactory factory;
+
+  @Test
+  void shouldReturnEmptyOptional() {
+    assertThat(factory.canHandle("invalid")).isEmpty();
   }
 
-  @Override
-  public Optional<CommandInterpreter> canHandle(String command) {
-    if (command.startsWith("scm-access-token")) {
-      return Optional.of(new AccessTokenCommandInterpreter(protocolHandler));
-    }
-    return Optional.empty();
+  @Test
+  void shouldReturnInterpreter() {
+    Optional<SimpleCommand> commandInterpreter = factory.canHandle("scm-access-token");
+    assertThat(commandInterpreter).isNotEmpty();
+    assertThat(commandInterpreter.get()).isInstanceOf(AccessTokenCommand.class);
   }
 }

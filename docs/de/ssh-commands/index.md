@@ -11,4 +11,6 @@ Mit dem Zugangstoken Befehl bekommen Sie einen neu generierten Zugangstoken zur√
 welcher die Berechtigung des authentifizierten Benutzers hat. 
 Zus√§tzlich bekommen Sie den Link zum API Index im [HAL Format](http://stateless.co/hal_specification.html).
 
+Beispiel: `ssh ssh://scmadmin@localhost:2222 scm-access-token`
+
 ![Access-Token-Command](assets/scm-access-token.png)

@@ -21,32 +21,18 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.cloudogu.scm.ssh.accesstoken;
+package com.cloudogu.scm.ssh.simplecommand;
 
-import sonia.scm.protocolcommand.CommandInterpreter;
-import sonia.scm.protocolcommand.RepositoryContextResolver;
-import sonia.scm.protocolcommand.ScmCommandProtocol;
+import sonia.scm.protocolcommand.CommandContext;
 
-public class AccessTokenCommandInterpreter implements CommandInterpreter {
+import java.io.IOException;
 
-  private final ScmCommandProtocol protocolHandler;
-
-  public AccessTokenCommandInterpreter(ScmCommandProtocol protocolHandler) {
-    this.protocolHandler = protocolHandler;
-  }
-
-  @Override
-  public String[] getParsedArgs() {
-    return new String[0];
-  }
-
-  @Override
-  public ScmCommandProtocol getProtocolHandler() {
-    return protocolHandler;
-  }
-
-  @Override
-  public RepositoryContextResolver getRepositoryContextResolver() {
-    return null;
-  }
+public interface SimpleCommand {
+  /**
+   * Executes ssh command.
+   *
+   * @param context {@link CommandContext}
+   * @return exit code
+   */
+  int execute(CommandContext context) throws IOException;
 }

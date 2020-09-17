@@ -24,6 +24,7 @@
 package com.cloudogu.scm.ssh.command;
 
 import com.cloudogu.scm.ssh.SshServerConfigurator;
+import com.cloudogu.scm.ssh.simplecommand.SimpleCommandFactory;
 import org.apache.sshd.server.SshServer;
 import org.apache.sshd.server.command.AbstractDelegatingCommandFactory;
 import org.slf4j.Logger;
@@ -38,11 +39,13 @@ public class ScmCommandFactory extends AbstractDelegatingCommandFactory implemen
   private static final Logger LOG = LoggerFactory.getLogger(ScmCommandFactory.class);
 
   private final Set<CommandInterpreterFactory> commandInterpreterFactories;
+  private final Set<SimpleCommandFactory> simpleCommandFactories;
 
   @Inject
-  public ScmCommandFactory(Set<CommandInterpreterFactory> commandInterpreterFactories) {
+  public ScmCommandFactory(Set<CommandInterpreterFactory> commandInterpreterFactories, Set<SimpleCommandFactory> simpleCommandFactories) {
     super(ScmCommandFactory.class.getSimpleName());
     this.commandInterpreterFactories = commandInterpreterFactories;
+    this.simpleCommandFactories = simpleCommandFactories;
   }
 
   @Override
@@ -53,7 +56,7 @@ public class ScmCommandFactory extends AbstractDelegatingCommandFactory implemen
   @Override
   protected ScmCommand executeSupportedCommand(String command) {
     LOG.debug("create scm command for '{}'", command);
-    return new ScmCommand(command, Executors.get(), commandInterpreterFactories);
+    return new ScmCommand(command, Executors.get(), commandInterpreterFactories, simpleCommandFactories);
   }
 
   @Override

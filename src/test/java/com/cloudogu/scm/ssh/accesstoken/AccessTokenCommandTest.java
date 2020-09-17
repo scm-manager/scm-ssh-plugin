@@ -47,7 +47,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class AccessTokenCommandProtocolTest {
+class AccessTokenCommandTest {
 
   @Mock
   private Subject subject;
@@ -63,7 +63,7 @@ class AccessTokenCommandProtocolTest {
   private AccessToken token;
 
   @InjectMocks
-  private AccessTokenCommandProtocol protocolHandler;
+  private AccessTokenCommand accessTokenCommand;
 
   @BeforeEach
   void initSubject() {
@@ -86,7 +86,7 @@ class AccessTokenCommandProtocolTest {
     when(tokenBuilder.build()).thenReturn(token);
     when(token.compact()).thenReturn(compactToken);
 
-    protocolHandler.handle(context, null);
+    accessTokenCommand.execute(context);
 
     AccessTokenCommandResult result = new ObjectMapper().readValue(baos.toByteArray(), AccessTokenCommandResult.class);
 
