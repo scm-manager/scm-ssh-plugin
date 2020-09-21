@@ -34,6 +34,7 @@ import sonia.scm.security.AccessToken;
 import sonia.scm.security.AccessTokenBuilderFactory;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 public class AccessTokenCommand implements SimpleCommand {
 
@@ -53,7 +54,8 @@ public class AccessTokenCommand implements SimpleCommand {
     AccessToken accessToken = createAccessToken();
     String indexUrl = createIndexUrl();
 
-    objectMapper.writeValue(context.getOutputStream(), createCommandResult(accessToken, indexUrl));
+    String json = objectMapper.writeValueAsString(createCommandResult(accessToken, indexUrl));
+    context.getOutputStream().write(json.getBytes(StandardCharsets.UTF_8));
     return SUCCESS_EXIT_CODE;
   }
 
