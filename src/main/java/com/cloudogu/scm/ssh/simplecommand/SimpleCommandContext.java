@@ -21,18 +21,21 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package com.cloudogu.scm.ssh.simplecommand;
 
-import sonia.scm.protocolcommand.CommandContext;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
-import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
-public interface SimpleCommand {
-  /**
-   * Executes ssh command.
-   *
-   * @param context {@link CommandContext}
-   * @return exit code
-   */
-  int execute(SimpleCommandContext context) throws IOException;
+@AllArgsConstructor
+@Getter
+public class SimpleCommandContext {
+  private final String command;
+
+  private final InputStream inputStream;
+  private final OutputStream outputStream;
+  private final OutputStream errorStream;
 }

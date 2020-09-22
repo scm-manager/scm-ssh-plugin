@@ -23,6 +23,7 @@
  */
 package com.cloudogu.scm.ssh.accesstoken;
 
+import com.cloudogu.scm.ssh.simplecommand.SimpleCommandContext;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.shiro.subject.Subject;
@@ -36,7 +37,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import sonia.scm.config.ScmConfiguration;
-import sonia.scm.protocolcommand.CommandContext;
 import sonia.scm.security.AccessToken;
 import sonia.scm.security.AccessTokenBuilder;
 import sonia.scm.security.AccessTokenBuilderFactory;
@@ -55,7 +55,7 @@ class AccessTokenCommandTest {
   @Mock
   private ScmConfiguration scmConfiguration;
   @Mock
-  private CommandContext context;
+  private SimpleCommandContext context;
   @Mock
   private AccessTokenBuilderFactory tokenBuilderFactory;
   @Mock(answer = Answers.RETURNS_SELF)

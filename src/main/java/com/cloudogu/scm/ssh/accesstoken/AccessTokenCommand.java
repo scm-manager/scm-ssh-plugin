@@ -24,6 +24,7 @@
 package com.cloudogu.scm.ssh.accesstoken;
 
 import com.cloudogu.scm.ssh.simplecommand.SimpleCommand;
+import com.cloudogu.scm.ssh.simplecommand.SimpleCommandContext;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.otto.edison.hal.Link;
 import de.otto.edison.hal.Links;
@@ -50,7 +51,7 @@ public class AccessTokenCommand implements SimpleCommand {
   }
 
   @Override
-  public int execute(CommandContext context) throws IOException {
+  public int execute(SimpleCommandContext context) throws IOException {
     AccessToken accessToken = createAccessToken();
     String indexUrl = createIndexUrl();
 

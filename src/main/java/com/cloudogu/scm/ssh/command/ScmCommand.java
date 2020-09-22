@@ -25,6 +25,7 @@ package com.cloudogu.scm.ssh.command;
 
 import com.cloudogu.scm.ssh.Attributes;
 import com.cloudogu.scm.ssh.simplecommand.SimpleCommand;
+import com.cloudogu.scm.ssh.simplecommand.SimpleCommandContext;
 import com.cloudogu.scm.ssh.simplecommand.SimpleCommandFactory;
 import org.apache.shiro.util.ThreadContext;
 import org.apache.sshd.common.channel.ChannelOutputStream;
@@ -109,7 +110,7 @@ public class ScmCommand extends AbstractCommandSupport {
   }
 
   private int executeSimpleCommand(SimpleCommand simpleCommand, String command) throws IOException {
-    int exitCode = simpleCommand.execute(createCommandContext(command, new String[0]));
+    int exitCode = simpleCommand.execute(new SimpleCommandContext(command, in, out, err));
     LOG.debug("finished execution of command '{}'", command);
     return exitCode;
   }
@@ -117,7 +118,7 @@ public class ScmCommand extends AbstractCommandSupport {
   private void executeProtocolCommand(CommandInterpreter commandInterpreter, String command) throws IOException {
     String[] args = commandInterpreter.getParsedArgs();
     RepositoryContext repositoryContext = commandInterpreter.getRepositoryContextResolver().resolve(args);
-    CommandContext commandContext = createCommandContext(command, args);
+    CommandContext commandContext = new CommandContext(command, args, in, out, err);
     commandInterpreter.getProtocolHandler().handle(commandContext, repositoryContext);
     LOG.debug("finished protocol handling of command '{}'", command);
   }
@@ -138,9 +139,5 @@ public class ScmCommand extends AbstractCommandSupport {
       .filter(Optional::isPresent)
       .map(Optional::get)
       .findFirst();
-  }
-
-  private CommandContext createCommandContext(String command, String[] args) {
-    return new CommandContext(command, args, in, out, err);
   }
 }
