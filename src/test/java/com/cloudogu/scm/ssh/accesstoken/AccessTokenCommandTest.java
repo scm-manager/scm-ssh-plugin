@@ -23,6 +23,7 @@
  */
 package com.cloudogu.scm.ssh.accesstoken;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.ThreadContext;
@@ -88,10 +89,9 @@ class AccessTokenCommandTest {
 
     accessTokenCommand.execute(context);
 
-    AccessTokenCommandResult result = new ObjectMapper().readValue(baos.toByteArray(), AccessTokenCommandResult.class);
+    JsonNode result = new ObjectMapper().readTree(baos.toByteArray());
 
-    assertThat(result.getAccessToken()).isEqualTo(compactToken);
-    assertThat(result.getLinks().getLinkBy("index")).isPresent();
-    assertThat(result.getLinks().getLinkBy("index").get().getHref()).isEqualTo("baseurl/api/v2");
+    assertThat(result.get("accessToken").textValue()).isEqualTo(compactToken);
+    assertThat(result.get("_links").get("index").get("href").textValue()).isEqualTo("baseurl/api/v2");
   }
 }

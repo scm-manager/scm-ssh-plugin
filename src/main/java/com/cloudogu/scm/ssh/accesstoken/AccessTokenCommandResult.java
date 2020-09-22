@@ -29,12 +29,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@NoArgsConstructor
 @Getter
-@Setter
 @SuppressWarnings("java:S2160") // we do not need equals for dto
 public class AccessTokenCommandResult extends HalRepresentation {
-  private String accessToken;
+  private final String accessToken;
 
   public AccessTokenCommandResult(String accessToken, Links links) {
     super(links);
