@@ -23,10 +23,10 @@
  */
 package com.cloudogu.scm.ssh.command;
 
+import com.cloudogu.scm.ssh.simplecommand.SimpleCommandFactory;
 import org.apache.sshd.common.session.Session;
 import org.apache.sshd.common.util.threads.CloseableExecutorService;
 import org.apache.sshd.server.ExitCallback;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -48,7 +48,11 @@ import java.util.Optional;
 import static java.util.Collections.singleton;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class ScmCommandTest {
@@ -81,14 +85,15 @@ class ScmCommandTest {
   private CommandInterpreterFactory commandInterpreterFactory;
 
   @Mock
+  private SimpleCommandFactory simpleCommandFactory;
+
+  @Mock
   private CommandInterpreter commandInterpreter;
 
   @Test
   void shouldCallCapableInterpreter() throws IOException {
     ScmCommand scmCommand = initGitCommandProtocol("git arg");
     scmCommand.run();
-
-
 
     assertThat(commandContextCaptor.getValue().getArgs()).contains("git", "arg");
     assertThat(commandContextCaptor.getValue().getInputStream()).isSameAs(inputStream);
@@ -97,6 +102,16 @@ class ScmCommandTest {
 
     assertThat(commandContextCaptor.getValue().getErrorStream()).isSameAs(errorStream);
     verify(exitCallback).onExit(0, "");
+  }
+
+  @Test
+  void shouldCallCapableSimpleCommand() {
+    when(simpleCommandFactory.canHandle("simple-command")).thenReturn(Optional.of(context -> 0));
+    ScmCommand scmCommand = initTestObject("simple-command");
+
+    scmCommand.run();
+
+    verify(simpleCommandFactory).canHandle("simple-command");
   }
 
   @Test
@@ -120,7 +135,7 @@ class ScmCommandTest {
   }
 
   ScmCommand initTestObject(String command) {
-    ScmCommand scmCommand = new ScmCommand(command, executorService, singleton(commandInterpreterFactory)) {
+    ScmCommand scmCommand = new ScmCommand(command, executorService, singleton(commandInterpreterFactory), singleton(simpleCommandFactory)) {
       @Override
       public Session getSession() {
         return session;
