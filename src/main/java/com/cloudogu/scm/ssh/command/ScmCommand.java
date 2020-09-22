@@ -123,25 +123,21 @@ public class ScmCommand extends AbstractCommandSupport {
   }
 
   private Optional<SimpleCommand> getSimpleCommand(String command) {
-    Optional<SimpleCommandFactory> factory = simpleCommandFactories
+    return simpleCommandFactories
       .stream()
-      .filter(p -> p.canHandle(command).isPresent())
+      .map(p -> p.canHandle(command))
+      .filter(Optional::isPresent)
+      .map(Optional::get)
       .findFirst();
-    if (factory.isPresent()) {
-      return factory.get().canHandle(command);
-    }
-    return Optional.empty();
   }
 
   private Optional<CommandInterpreter> getCommandInterpreter(String command) {
-    Optional<CommandInterpreterFactory> factory = commandInterpreterFactories
+    return commandInterpreterFactories
       .stream()
-      .filter(p -> p.canHandle(command).isPresent())
+      .map(p -> p.canHandle(command))
+      .filter(Optional::isPresent)
+      .map(Optional::get)
       .findFirst();
-    if (factory.isPresent()) {
-      return factory.get().canHandle(command);
-    }
-    return Optional.empty();
   }
 
   private CommandContext createCommandContext(String command, String[] args) {

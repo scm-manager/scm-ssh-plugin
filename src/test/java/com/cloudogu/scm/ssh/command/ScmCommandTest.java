@@ -111,7 +111,7 @@ class ScmCommandTest {
 
     scmCommand.run();
 
-    verify(simpleCommandFactory, times(2)).canHandle("simple-command");
+    verify(simpleCommandFactory).canHandle("simple-command");
   }
 
   @Test
