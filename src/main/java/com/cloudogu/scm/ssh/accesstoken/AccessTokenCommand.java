@@ -59,7 +59,7 @@ public class AccessTokenCommand implements SimpleCommand {
     return SUCCESS_EXIT_CODE;
   }
 
-  AccessTokenCommandResult createCommandResult(AccessToken accessToken, String indexUrl) {
+  private AccessTokenCommandResult createCommandResult(AccessToken accessToken, String indexUrl) {
     return new AccessTokenCommandResult(
       accessToken.compact(),
       Links.linkingTo().single(Link.link("index", indexUrl)).build()
