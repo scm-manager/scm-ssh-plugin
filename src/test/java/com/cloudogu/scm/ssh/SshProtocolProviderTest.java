@@ -70,6 +70,7 @@ class SshProtocolProviderTest {
 
     assertThat(sshProtocol.getType()).isEqualTo("ssh");
     assertThat(sshProtocol.getUrl()).isEqualTo("ssh://scm.hitchhiker.com:2022/repo/hitchhiker/HeartOfGold");
+    assertThat(sshProtocol.isAnonymousEnabled()).isFalse();
   }
 
   private ScmProtocol configureAndGet(int port) {
@@ -96,6 +97,7 @@ class SshProtocolProviderTest {
 
     assertThat(sshProtocol.getType()).isEqualTo("ssh");
     assertThat(sshProtocol.getUrl()).isEqualTo("ssh://trillian@scm.hitchhiker.com:2022/repo/hitchhiker/HeartOfGold");
+    assertThat(sshProtocol.isAnonymousEnabled()).isFalse();
   }
 
   @Test
@@ -104,6 +106,7 @@ class SshProtocolProviderTest {
 
     assertThat(sshProtocol.getType()).isEqualTo("ssh");
     assertThat(sshProtocol.getUrl()).isEqualTo("ssh://scm.hitchhiker.com/repo/hitchhiker/HeartOfGold");
+    assertThat(sshProtocol.isAnonymousEnabled()).isFalse();
   }
 
   @Test
