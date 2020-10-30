@@ -109,5 +109,10 @@ public class SshProtocolProvider implements ScmProtocolProvider {
         .append(namespaceAndName.getName())
         .toString();
     }
+
+    @Override
+    public boolean isAnonymousEnabled() {
+      return false;
+    }
   }
 }
