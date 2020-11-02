@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Add access token command ([#11](https://github.com/scm-manager/scm-ssh-plugin/pull/11))
 
+### Fixed
+- Disable cloning repositories via ssh for anonymous users ([#12](https://github.com/scm-manager/scm-ssh-plugin/pull/12))
+
 ## 2.1.0 - 2020-08-20
 ### Added
 - Documentation in English and German ([#6](https://github.com/scm-manager/scm-ssh-plugin/pull/6))
