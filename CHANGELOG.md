@@ -5,11 +5,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## Unreleased
-### Added
-- Add access token command ([#11](https://github.com/scm-manager/scm-ssh-plugin/pull/11))
-
 ### Fixed
 - Disable cloning repositories via ssh for anonymous users ([#12](https://github.com/scm-manager/scm-ssh-plugin/pull/12))
+
+## 2.2.0 - 2020-09-25
+### Added
+- Add access token command ([#11](https://github.com/scm-manager/scm-ssh-plugin/pull/11))
 
 ## 2.1.0 - 2020-08-20
 ### Added
