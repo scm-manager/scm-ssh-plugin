@@ -1,10 +1,12 @@
 {
   "scm-ssh-plugin": {
     "title": "Authorized Keys",
+    "description": "To use a authorized key for SSH access to SCM-Manager, the key needs to be provided here.",
     "navigation": "Authorized Keys",
     "displayName": "Display Name",
     "created": "Created at",
     "raw": "Key",
+    "addSubtitle": "Add new key",
     "addKey": "Add key",
     "delete": "Delete",
     "noStoredKeys": "No authorized keys found",
