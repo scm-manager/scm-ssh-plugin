@@ -88,6 +88,7 @@ class AuthorizedKeysPage extends React.Component<Props, State> {
   };
 
   render() {
+    const { t } = this.props;
     const { authorizedKeys, loading, error } = this.state;
     let children;
     if (loading) {
@@ -97,7 +98,13 @@ class AuthorizedKeysPage extends React.Component<Props, State> {
     } else {
       let form = null;
       if (authorizedKeys && authorizedKeys._links.create) {
-        form = <AuthorizedKeysForm url={authorizedKeys._links.create.href} onKeyAdded={this.onKeyAdded} />;
+        form = (
+          <>
+            <hr />
+            <Subtitle subtitle={t("scm-ssh-plugin.addSubtitle")} />
+            <AuthorizedKeysForm url={authorizedKeys._links.create.href} onKeyAdded={this.onKeyAdded} />
+          </>
+        );
       }
 
       children = (
@@ -115,6 +122,8 @@ class AuthorizedKeysPage extends React.Component<Props, State> {
     return (
       <>
         <Subtitle subtitle={t("scm-ssh-plugin.title")} />
+        <p>{t("scm-ssh-plugin.description")}</p>
+        <br />
         {children}
       </>
     );

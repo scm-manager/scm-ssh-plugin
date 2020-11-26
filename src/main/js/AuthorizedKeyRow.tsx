@@ -24,7 +24,7 @@
 import React from "react";
 import { WithTranslation, withTranslation } from "react-i18next";
 import { AuthorizedKey } from "./types";
-import { apiClient, DateFromNow, DeleteButton } from "@scm-manager/ui-components";
+import { apiClient, DateFromNow, Loading, Icon } from "@scm-manager/ui-components";
 import { formatAuthorizedKey } from "./formatAuthorizedKey";
 
 type Props = WithTranslation & {
@@ -78,7 +78,7 @@ class AuthorizedKeyRow extends React.Component<Props, State> {
           <DateFromNow date={authorizedKey.created} />
         </td>
         <td className="is-hidden-mobile">{formatAuthorizedKey(authorizedKey.raw)}</td>
-        <td>{this.renderDeleteAction()}</td>
+        <td className="is-darker">{this.renderDeleteAction()}</td>
       </tr>
     );
   }
@@ -88,8 +88,16 @@ class AuthorizedKeyRow extends React.Component<Props, State> {
     const link = authorizedKey._links.delete;
     if (link) {
       const { loading } = this.state;
+
+      if (loading) {
+        return <Loading />;
+      }
       return (
-        <DeleteButton label={t("scm-ssh-plugin.delete")} loading={loading} action={() => this.onDelete(link.href)} />
+        <a className="level-item" onClick={() => this.onDelete(link.href)}>
+          <span className="icon">
+            <Icon name="trash" title={t("scm-ssh-plugin.delete")} color="inherit" />
+          </span>
+        </a>
       );
     }
     return null;
