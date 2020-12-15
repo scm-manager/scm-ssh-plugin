@@ -1,7 +1,7 @@
 {
   "scm-ssh-plugin": {
     "title": "Autorisierte Schlüssel",
-    "description": "Um über einen autorisierten Schlüssel Zugriffe per SSH auf den SCM-Manager zu ermöglichen, muss dieser hier hinterlegt werden.",
+    "description": "Ein autorisierter Schlüssel ist ein öffentlicher SSH-Schlüssel. Um über einen autorisierten Schlüssel Zugriffe per SSH auf den SCM-Manager zu ermöglichen, muss dieser hier hinterlegt werden.",
     "navigation": "Autorisierte Schlüssel",
     "displayName": "Anzeigename",
     "created": "Erstellt am",
