@@ -29,17 +29,23 @@ import org.apache.shiro.util.ThreadContext;
 import org.apache.sshd.server.SshServer;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import sonia.scm.plugin.PluginLoader;
 
 import java.io.IOException;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.awaitility.Awaitility.await;
+import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -55,108 +61,140 @@ class ScmSshServerTest {
   @Mock
   private SshServerConfigurator configurator;
 
-  private ScmSshServer scmSshServer;
+  @Mock
+  private PluginLoader pluginLoader;
 
-  private List<SshServer> createdServers = new LinkedList<>();
+  @Test
+  void shouldCreateDefaultServer() {
+    ScmSshServer scmSshServer = new ScmSshServer(
+      Providers.of(securityManager), Collections.singleton(configurator), pluginLoader
+    );
 
-  @BeforeEach
-  void initTestObject() {
-    scmSshServer = new ScmSshServer(Providers.of(securityManager), Collections.singleton(configurator)) {
-      @Override
-      void runInThread(Runnable r) {
-        r.run();
-      }
-
-      @Override
-      SshServer createDefaultServer() {
-        SshServer serverMock = mock(SshServer.class);
-        createdServers.add(serverMock);
-        return serverMock;
-      }
-    };
+    assertThat(scmSshServer.getServer()).isNotNull();
   }
 
   @Test
-  void shouldInitializeWithConfigurator() throws IOException {
-    verify(configurator).configure(any());
-    assertThat(createdServers).hasSize(1);
-    verify(createdServers.get(0), never()).start();
+  void shouldRunInScmSshServerThread() {
+    ScmSshServer scmSshServer = new ScmSshServer(
+      Providers.of(securityManager), Collections.singleton(configurator), pluginLoader
+    );
+    AtomicReference<String> threadName = new AtomicReference<>();
+    scmSshServer.runInThread(() -> {
+      threadName.set(Thread.currentThread().getName());
+    });
+
+    await()
+      .atMost(1, TimeUnit.SECONDS)
+      .untilAtomic(threadName, equalTo("ScmSshServer"));
   }
 
-  @Test
-  void shouldBindThreadContext() {
-    scmSshServer.start();
-    assertThat(ThreadContext.getSecurityManager()).isSameAs(securityManager);
-  }
+  @Nested
+  class WithMockedServer {
 
-  @Test
-  void shouldStartServer() throws IOException {
-    scmSshServer.start();
-    assertThat(createdServers).hasSize(1);
-    verify(createdServers.get(0)).start();
-  }
+    private ScmSshServer scmSshServer;
 
-  @Test
-  void shouldStopServer() throws IOException {
-    scmSshServer.start();
-    scmSshServer.stop();
-    assertThat(createdServers).hasSize(1);
-    verify(createdServers.get(0)).start();
-    verify(createdServers.get(0)).stop();
-  }
+    private final List<SshServer> createdServers = new LinkedList<>();
 
-  @Test
-  void shouldRestartServerOnPortChange() throws IOException {
-    scmSshServer.start();
+    @BeforeEach
+    void initTestObject() {
+      scmSshServer = new ScmSshServer(Providers.of(securityManager), Collections.singleton(configurator), pluginLoader) {
+        @Override
+        void runInThread(Runnable r) {
+          r.run();
+        }
 
-    scmSshServer.configurationChanged(createEvent(2222, 3333));
+        @Override
+        SshServer createDefaultServer() {
+          SshServer serverMock = mock(SshServer.class);
+          createdServers.add(serverMock);
+          return serverMock;
+        }
+      };
+    }
 
-    assertRestart();
-  }
+    @Test
+    void shouldInitializeWithConfigurator() throws IOException {
+      verify(configurator).configure(any());
+      assertThat(createdServers).hasSize(1);
+      verify(createdServers.get(0), never()).start();
+    }
 
-  private void assertRestart() throws IOException {
-    assertThat(createdServers).hasSize(2);
-    verify(createdServers.get(0)).start();
-    verify(createdServers.get(0)).stop();
-    verify(createdServers.get(1)).start();
-  }
+    @Test
+    void shouldBindThreadContext() {
+      scmSshServer.start();
+      assertThat(ThreadContext.getSecurityManager()).isSameAs(securityManager);
+    }
 
-  @Test
-  void shouldRestartServerOnDisablePasswordAuthenticationChange() throws IOException {
-    scmSshServer.start();
+    @Test
+    void shouldStartServer() throws IOException {
+      scmSshServer.start();
+      assertThat(createdServers).hasSize(1);
+      verify(createdServers.get(0)).start();
+    }
 
-    ConfigChangedEvent event = createEvent(2222, 2222);
-    event.getNewConfiguration().setDisablePasswordAuthentication(true);
+    @Test
+    void shouldStopServer() throws IOException {
+      scmSshServer.start();
+      scmSshServer.stop();
+      assertThat(createdServers).hasSize(1);
+      verify(createdServers.get(0)).start();
+      verify(createdServers.get(0)).stop();
+    }
 
-    scmSshServer.configurationChanged(event);
+    @Test
+    void shouldRestartServerOnPortChange() throws IOException {
+      scmSshServer.start();
 
-    assertRestart();
-  }
+      scmSshServer.configurationChanged(createEvent(2222, 3333));
 
-  @Test
-  void shouldNotRestartServerWhenConfigurationChangedButNotPort() throws IOException {
-    scmSshServer.start();
+      assertRestart();
+    }
 
-    scmSshServer.configurationChanged(createEvent(2222, 2222));
+    private void assertRestart() throws IOException {
+      assertThat(createdServers).hasSize(2);
+      verify(createdServers.get(0)).start();
+      verify(createdServers.get(0)).stop();
+      verify(createdServers.get(1)).start();
+    }
 
-    assertThat(createdServers).hasSize(1);
-    verify(createdServers.get(0)).start();
-    verify(createdServers.get(0), never()).stop();
-  }
+    @Test
+    void shouldRestartServerOnDisablePasswordAuthenticationChange() throws IOException {
+      scmSshServer.start();
 
-  @AfterEach
-  void cleanupThreadContext() {
-    ThreadContext.unbindSecurityManager();
-  }
+      ConfigChangedEvent event = createEvent(2222, 2222);
+      event.getNewConfiguration().setDisablePasswordAuthentication(true);
 
-  private ConfigChangedEvent createEvent(int oldPort, int newPort) {
-    ConfigChangedEvent event = mock(ConfigChangedEvent.class);
-    Configuration oldConfiguration = new Configuration();
-    oldConfiguration.setPort(oldPort);
-    when(event.getOldConfiguration()).thenReturn(oldConfiguration);
-    Configuration newConfiguration = new Configuration();
-    newConfiguration.setPort(newPort);
-    when(event.getNewConfiguration()).thenReturn(newConfiguration);
-    return event;
+      scmSshServer.configurationChanged(event);
+
+      assertRestart();
+    }
+
+    @Test
+    void shouldNotRestartServerWhenConfigurationChangedButNotPort() throws IOException {
+      scmSshServer.start();
+
+      scmSshServer.configurationChanged(createEvent(2222, 2222));
+
+      assertThat(createdServers).hasSize(1);
+      verify(createdServers.get(0)).start();
+      verify(createdServers.get(0), never()).stop();
+    }
+
+    @AfterEach
+    void cleanupThreadContext() {
+      ThreadContext.unbindSecurityManager();
+    }
+
+    private ConfigChangedEvent createEvent(int oldPort, int newPort) {
+      ConfigChangedEvent event = mock(ConfigChangedEvent.class);
+      Configuration oldConfiguration = new Configuration();
+      oldConfiguration.setPort(oldPort);
+      when(event.getOldConfiguration()).thenReturn(oldConfiguration);
+      Configuration newConfiguration = new Configuration();
+      newConfiguration.setPort(newPort);
+      when(event.getNewConfiguration()).thenReturn(newConfiguration);
+      return event;
+    }
+
   }
 }

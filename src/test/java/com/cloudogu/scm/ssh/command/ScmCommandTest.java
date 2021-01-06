@@ -24,9 +24,9 @@
 package com.cloudogu.scm.ssh.command;
 
 import com.cloudogu.scm.ssh.simplecommand.SimpleCommandFactory;
-import org.apache.sshd.common.session.Session;
 import org.apache.sshd.common.util.threads.CloseableExecutorService;
 import org.apache.sshd.server.ExitCallback;
+import org.apache.sshd.server.session.ServerSession;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -48,11 +48,7 @@ import java.util.Optional;
 import static java.util.Collections.singleton;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class ScmCommandTest {
@@ -62,7 +58,7 @@ class ScmCommandTest {
   @Mock
   private ScmCommandProtocol gitCommandProtocol;
   @Mock
-  private Session session;
+  private ServerSession session;
   @Mock
   private ExitCallback exitCallback;
   @Mock
@@ -135,12 +131,10 @@ class ScmCommandTest {
   }
 
   ScmCommand initTestObject(String command) {
-    ScmCommand scmCommand = new ScmCommand(command, executorService, singleton(commandInterpreterFactory), singleton(simpleCommandFactory)) {
-      @Override
-      public Session getSession() {
-        return session;
-      }
-    };
+    ScmCommand scmCommand = new ScmCommand(
+      command, executorService, singleton(commandInterpreterFactory), singleton(simpleCommandFactory)
+    );
+    scmCommand.setSession(session);
     scmCommand.setExitCallback(exitCallback);
     scmCommand.setInputStream(inputStream);
     scmCommand.setOutputStream(outputStream);
