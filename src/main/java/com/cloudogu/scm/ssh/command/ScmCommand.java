@@ -110,7 +110,10 @@ public class ScmCommand extends AbstractCommandSupport {
   }
 
   private int executeSimpleCommand(SimpleCommand simpleCommand, String command) throws IOException {
-    int exitCode = simpleCommand.execute(new SimpleCommandContext(command, in, out, err));
+    SimpleCommandContext context = new SimpleCommandContext(
+      command, getInputStream(), getOutputStream(), getErrorStream()
+    );
+    int exitCode = simpleCommand.execute(context);
     LOG.debug("finished execution of command '{}'", command);
     return exitCode;
   }
@@ -118,7 +121,9 @@ public class ScmCommand extends AbstractCommandSupport {
   private void executeProtocolCommand(CommandInterpreter commandInterpreter, String command) throws IOException {
     String[] args = commandInterpreter.getParsedArgs();
     RepositoryContext repositoryContext = commandInterpreter.getRepositoryContextResolver().resolve(args);
-    CommandContext commandContext = new CommandContext(command, args, in, out, err);
+    CommandContext commandContext = new CommandContext(
+      command, args, getInputStream(), getOutputStream(), getErrorStream()
+    );
     commandInterpreter.getProtocolHandler().handle(commandContext, repositoryContext);
     LOG.debug("finished protocol handling of command '{}'", command);
   }

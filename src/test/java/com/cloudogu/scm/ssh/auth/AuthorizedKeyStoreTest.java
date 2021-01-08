@@ -27,6 +27,9 @@ import com.google.common.collect.Lists;
 import org.apache.shiro.authz.AuthorizationException;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.ThreadContext;
+import org.apache.sshd.common.config.keys.KeyUtils;
+import org.apache.sshd.common.config.keys.PublicKeyEntryDecoder;
+import org.apache.sshd.common.util.security.SecurityUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -53,6 +56,10 @@ class AuthorizedKeyStoreTest {
     "/YPjQ0JCQTjO3iBkfzTm83dzti5DhZ20migHhZblhjv8sPk3e/+xVI/II5KejalI0ODBQ9YSkDsFHNlelrK2kbwXVEcLN8S8is7l6312wej2" +
     "PAMQdDRsbjRGRRXbymzO4ZWfHVlIEuZAkBeNZS8K66nXX98cj6n6e8ZP0VCV/FRD82TDFD9Zvj19rkp3pJjJaOIftJ92op62P/g6po/+0bF9" +
     "maCtIO6umgzuA1LiWaUXPEsxNIAkaZwiw2RgekqpWqkYibQOW2YCL67MwOf9WWWXgXmRNnS5gCRdYuXPLP23kF0HdRauJUwqV " +
+    "trillian@heart-of-gold";
+
+  private static final String VALID_ED25519 = "ssh-ed25519 " +
+    "AAAAC3NzaC1lZDI1NTE5AAAAIPyV6j1YbJkFo4sysW2LCDnsM7v7Ej5rlNuzUlAdvHpo " +
     "trillian@heart-of-gold";
 
   @Mock
@@ -149,6 +156,16 @@ class AuthorizedKeyStoreTest {
       List<AuthorizedKey> keys = keyStore.getAll("trillian");
       assertThat(keys).hasSize(2);
     }
+
+    @Test
+    void shouldAcceptEd25519Key() {
+      AuthorizedKey authorizedKey = new AuthorizedKey();
+      authorizedKey.setRaw(VALID_ED25519);
+
+      String id = keyStore.add("trillian", authorizedKey);
+      Optional<AuthorizedKey> optionalKey = keyStore.findById("trillian", id);
+      assertThat(optionalKey).isPresent();
+    }
   }
 
   @Test
@@ -168,7 +185,8 @@ class AuthorizedKeyStoreTest {
   @Test
   void shouldCheckPermissionForAdd() {
     doThrowAuthorizationException("user:writeAuthorizedKeys:trillian");
-    assertThrows(AuthorizationException.class, () -> keyStore.add("trillian", createValidAuthorizedKey()));
+    AuthorizedKey authorizedKey = createValidAuthorizedKey();
+    assertThrows(AuthorizationException.class, () -> keyStore.add("trillian", authorizedKey));
   }
 
   @Test
@@ -196,7 +214,8 @@ class AuthorizedKeyStoreTest {
 
   @Test
   void shouldThrowExceptionForInvalidKeys() {
-    assertThrows(InvalidAuthorizedKeyException.class, () -> keyStore.add("trillian", createInvalidAuthorizedKey()));
+    AuthorizedKey authorizedKey = createInvalidAuthorizedKey();
+    assertThrows(InvalidAuthorizedKeyException.class, () -> keyStore.add("trillian", authorizedKey));
   }
 
 }

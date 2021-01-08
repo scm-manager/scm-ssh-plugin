@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Unreleased
 ### Added
 - Unify and add description to key view across user settings ([#13](https://github.com/scm-manager/scm-manager/pull/13))
+- Support ed25519 keys ([#16](https://github.com/scm-manager/scm-ssh-plugin/pull/16))
 
 ## 2.2.1 - 2020-11-06
 ### Fixed

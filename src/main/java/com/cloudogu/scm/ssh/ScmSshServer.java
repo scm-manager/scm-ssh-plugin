@@ -30,6 +30,7 @@ import org.apache.shiro.util.ThreadContext;
 import org.apache.sshd.server.SshServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import sonia.scm.plugin.PluginLoader;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -43,11 +44,13 @@ public class ScmSshServer {
   private SshServer sshd;
   private final Provider<SshSecurityManager> securityManagerProvider;
   private final Set<SshServerConfigurator> configurators;
+  private final PluginLoader pluginLoader;
 
   @Inject
-  public ScmSshServer(Provider<SshSecurityManager> securityManagerProvider, Set<SshServerConfigurator> configurators) {
+  public ScmSshServer(Provider<SshSecurityManager> securityManagerProvider, Set<SshServerConfigurator> configurators, PluginLoader pluginLoader) {
     this.securityManagerProvider = securityManagerProvider;
     this.configurators = configurators;
+    this.pluginLoader = pluginLoader;
 
     sshd = createDefaultServer();
 
@@ -119,6 +122,19 @@ public class ScmSshServer {
 
   @VisibleForTesting
   SshServer createDefaultServer() {
-    return SshServer.setUpDefaultServer();
+    // we have to use the uber classloader,
+    // without sshd does not find net.i2p.crypto security provider
+    ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+    try {
+      Thread.currentThread().setContextClassLoader(pluginLoader.getUberClassLoader());
+      return SshServer.setUpDefaultServer();
+    } finally {
+      Thread.currentThread().setContextClassLoader(classLoader);
+    }
+  }
+
+  @VisibleForTesting
+  SshServer getServer() {
+    return sshd;
   }
 }
