@@ -23,8 +23,9 @@
  */
 import React from "react";
 import { WithTranslation, withTranslation } from "react-i18next";
+import styled from "styled-components";
+import { apiClient, DateFromNow, Loading, Button } from "@scm-manager/ui-components";
 import { AuthorizedKey } from "./types";
-import { apiClient, DateFromNow, Loading, Icon } from "@scm-manager/ui-components";
 import { formatAuthorizedKey } from "./formatAuthorizedKey";
 
 type Props = WithTranslation & {
@@ -35,6 +36,11 @@ type Props = WithTranslation & {
 type State = {
   loading: boolean;
 };
+
+const VCenteredTd = styled.td`
+  display: table-cell;
+  vertical-align: middle !important;
+`;
 
 class AuthorizedKeyRow extends React.Component<Props, State> {
   constructor(props: Props) {
@@ -73,12 +79,12 @@ class AuthorizedKeyRow extends React.Component<Props, State> {
     const { authorizedKey } = this.props;
     return (
       <tr>
-        <td>{authorizedKey.displayName}</td>
-        <td>
+        <VCenteredTd>{authorizedKey.displayName}</VCenteredTd>
+        <VCenteredTd>
           <DateFromNow date={authorizedKey.created} />
-        </td>
-        <td className="is-hidden-mobile">{formatAuthorizedKey(authorizedKey.raw)}</td>
-        <td className="is-darker">{this.renderDeleteAction()}</td>
+        </VCenteredTd>
+        <VCenteredTd className="is-hidden-mobile">{formatAuthorizedKey(authorizedKey.raw)}</VCenteredTd>
+        <VCenteredTd>{this.renderDeleteAction()}</VCenteredTd>
       </tr>
     );
   }
@@ -93,11 +99,13 @@ class AuthorizedKeyRow extends React.Component<Props, State> {
         return <Loading />;
       }
       return (
-        <a className="level-item" onClick={() => this.onDelete(link.href)}>
-          <span className="icon">
-            <Icon name="trash" title={t("scm-ssh-plugin.delete")} color="inherit" />
-          </span>
-        </a>
+        <Button
+          color="text"
+          icon="trash"
+          action={() => this.onDelete(link.href)}
+          title={t("scm-ssh-plugin.delete")}
+          className="px-2"
+        />
       );
     }
     return null;
