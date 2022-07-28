@@ -26,6 +26,7 @@ package com.cloudogu.scm.ssh.command;
 import com.cloudogu.scm.ssh.SshServerConfigurator;
 import com.cloudogu.scm.ssh.simplecommand.SimpleCommandFactory;
 import org.apache.sshd.server.SshServer;
+import org.apache.sshd.server.channel.ChannelSession;
 import org.apache.sshd.server.command.AbstractDelegatingCommandFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,12 +50,12 @@ public class ScmCommandFactory extends AbstractDelegatingCommandFactory implemen
   }
 
   @Override
-  public boolean isSupportedCommand(String command) {
+  public boolean isSupportedCommand(ChannelSession channel, String command) {
     return true;
   }
 
   @Override
-  protected ScmCommand executeSupportedCommand(String command) {
+  protected ScmCommand executeSupportedCommand(ChannelSession channel, String command) {
     LOG.debug("create scm command for '{}'", command);
     return new ScmCommand(command, Executors.get(), commandInterpreterFactories, simpleCommandFactories);
   }
