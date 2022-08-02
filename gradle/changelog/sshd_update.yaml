@@ -1,0 +1,3 @@
+- type: fixed
+  description: Authorized key authentication with Ubuntu 22.04 (upgrade of apache sshd library, [#45](https://github.com/scm-manager/scm-ssh-plugin/pull/45))
+
