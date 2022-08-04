@@ -44,6 +44,8 @@ class KeyPairConfiguratorTest {
 
   @Mock
   private SCMContextProvider context;
+  @Mock
+  private ConfigStore configStore;
 
   @InjectMocks
   private KeyPairConfigurator configurator;
