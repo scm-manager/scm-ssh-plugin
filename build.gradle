@@ -27,7 +27,7 @@ plugins {
 }
 
 dependencies {
-  implementation "org.apache.sshd:sshd-core:2.8.0"
+  implementation "org.apache.sshd:sshd-core:2.9.0"
   implementation "net.i2p.crypto:eddsa:0.3.0"
   testImplementation "org.awaitility:awaitility:3.0.0"
 }

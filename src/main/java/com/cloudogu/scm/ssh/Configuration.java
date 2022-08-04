@@ -40,4 +40,5 @@ public class Configuration {
   private String hostName;
   private int port = 2222;
   private boolean disablePasswordAuthentication;
+  private HostKeyAlgorithm algorithm = HostKeyAlgorithm.EC;
 }

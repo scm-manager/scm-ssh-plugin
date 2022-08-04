@@ -75,4 +75,8 @@ public class ConfigStore {
   public int getPort() {
     return getConfiguration().getPort();
   }
+
+  public String getAlgorithm() {
+    return getConfiguration().getAlgorithm().toString();
+  }
 }

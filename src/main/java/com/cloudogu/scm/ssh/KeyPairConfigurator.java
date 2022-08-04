@@ -33,16 +33,20 @@ import java.nio.file.Paths;
 
 public class KeyPairConfigurator implements SshServerConfigurator {
 
-  private SCMContextProvider context;
+  private final SCMContextProvider context;
+  private final ConfigStore configStore;
 
   @Inject
-  public KeyPairConfigurator(SCMContextProvider context) {
+  public KeyPairConfigurator(SCMContextProvider context, ConfigStore configStore) {
     this.context = context;
+    this.configStore = configStore;
   }
 
   @Override
   public void configure(SshServer server) {
     Path path = context.resolve(Paths.get("config", "ssh-hostkeys.ser"));
-    server.setKeyPairProvider(new SimpleGeneratorHostKeyProvider(path));
+    SimpleGeneratorHostKeyProvider keyProvider = new SimpleGeneratorHostKeyProvider(path);
+    keyProvider.setAlgorithm(configStore.getAlgorithm());
+    server.setKeyPairProvider(keyProvider);
   }
 }

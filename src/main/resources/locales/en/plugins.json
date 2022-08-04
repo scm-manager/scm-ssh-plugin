@@ -20,7 +20,10 @@
       "portHelp": "TCP port opened by SCM-Manager to provide SSH support",
       "portInvalid": "The port must be between 1 and 65535",
       "disablePasswordAuthentication": "Deactivate password authentication",
-      "disablePasswordAuthenticationHelp": "Deactivates the ssh password authentication. Only authentication with public key is possible."
+      "disablePasswordAuthenticationHelp": "Deactivates the ssh password authentication. Only authentication with public key is possible.",
+      "hostKeyAlgorithm": "SSH Host Key Algorithm",
+      "hostKeyAlgorithmHelp": "The algorithm which should be used for the host key. We recommend using \"EC\" but be aware that you have to accept the host new key for each client after changing this.",
+      "hostKeyAlgorithmNotification": "Warning: Changing this algorithm causes the host keys to be regenerated. This means that all SSH connections such as developers, CI servers and other third-party systems must accept the new host key."
     }
   },
   "permissions": {
