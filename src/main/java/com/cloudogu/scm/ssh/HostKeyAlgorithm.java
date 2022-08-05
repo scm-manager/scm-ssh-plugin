@@ -21,32 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package com.cloudogu.scm.ssh;
 
-import org.apache.sshd.server.SshServer;
-import org.apache.sshd.server.keyprovider.SimpleGeneratorHostKeyProvider;
-import sonia.scm.SCMContextProvider;
-
-import javax.inject.Inject;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
-public class KeyPairConfigurator implements SshServerConfigurator {
-
-  private final SCMContextProvider context;
-  private final ConfigStore configStore;
-
-  @Inject
-  public KeyPairConfigurator(SCMContextProvider context, ConfigStore configStore) {
-    this.context = context;
-    this.configStore = configStore;
-  }
-
-  @Override
-  public void configure(SshServer server) {
-    Path path = context.resolve(Paths.get("config", "ssh-hostkeys.ser"));
-    SimpleGeneratorHostKeyProvider keyProvider = new SimpleGeneratorHostKeyProvider(path);
-    keyProvider.setAlgorithm(configStore.getAlgorithm());
-    server.setKeyPairProvider(keyProvider);
-  }
+public enum HostKeyAlgorithm {
+  RSA,
+  EC
 }

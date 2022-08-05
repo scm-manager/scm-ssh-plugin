@@ -104,7 +104,12 @@ public class ScmSshServer {
     Configuration oldConfiguration = configChangedEvent.getOldConfiguration();
     Configuration newConfiguration = configChangedEvent.getNewConfiguration();
     return hasPortChanged(oldConfiguration, newConfiguration)
-      || hasDisabledPasswordAuthenticationChanged(oldConfiguration, newConfiguration);
+      || hasDisabledPasswordAuthenticationChanged(oldConfiguration, newConfiguration)
+      || hasAlgorithmChanged(oldConfiguration, newConfiguration);
+  }
+
+  private boolean hasAlgorithmChanged(Configuration oldConfiguration, Configuration newConfiguration) {
+    return oldConfiguration.getAlgorithm() != newConfiguration.getAlgorithm();
   }
 
   private boolean hasDisabledPasswordAuthenticationChanged(Configuration oldConfiguration, Configuration newConfiguration) {

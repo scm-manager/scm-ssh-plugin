@@ -43,6 +43,7 @@ public class ConfigurationDto extends HalRepresentation {
   private int port;
 
   private boolean disablePasswordAuthentication;
+  private String algorithm;
 
   public ConfigurationDto(Links links) {
     super(links);

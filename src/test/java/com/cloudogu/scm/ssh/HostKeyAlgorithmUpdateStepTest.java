@@ -21,51 +21,71 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package com.cloudogu.scm.ssh;
 
-import org.apache.sshd.server.SshServer;
-import org.apache.sshd.server.keyprovider.SimpleGeneratorHostKeyProvider;
+import com.google.common.io.Resources;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.api.io.TempDir;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import sonia.scm.SCMContextProvider;
 
-import java.nio.file.Path;
+import java.io.File;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.Paths;
+import java.security.spec.InvalidKeySpecException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class KeyPairConfiguratorTest {
+class HostKeyAlgorithmUpdateStepTest {
 
-  @Mock
-  private SCMContextProvider context;
   @Mock
   private ConfigStore configStore;
+  @Mock
+  private SCMContextProvider scmContextProvider;
 
   @InjectMocks
-  private KeyPairConfigurator configurator;
+  private HostKeyAlgorithmUpdateStep updateStep;
 
   @Test
-  void shouldApplyKeyProviderWithPathToConfig(@TempDir Path home) {
-    when(context.resolve(any(Path.class))).then((ic) -> {
-      Path path = ic.getArgument(0);
-      return home.resolve(path);
-    });
+  void shouldNotKeepAlgorithm() throws InvalidKeySpecException, IOException, URISyntaxException {
+    when(scmContextProvider.resolve(any())).thenReturn(Paths.get(Resources.getResource("com/cloudogu/scm/ssh/ec").toURI()));
 
-    SshServer server = new SshServer();
-    configurator.configure(server);
+    updateStep.doUpdate();
 
-    assertThat(server.getKeyPairProvider()).isInstanceOf(SimpleGeneratorHostKeyProvider.class);
-
-    SimpleGeneratorHostKeyProvider provider = (SimpleGeneratorHostKeyProvider) server.getKeyPairProvider();
-
-    Path path = provider.getPath();
-    assertThat(path).isEqualByComparingTo( home.resolve("config").resolve("ssh-hostkeys.ser") );
+    verify(configStore, never()).setConfiguration(any());
   }
 
+  @Test
+  void shouldKeepRsaAlgorithm() throws InvalidKeySpecException, IOException, URISyntaxException {
+    when(scmContextProvider.resolve(any())).thenReturn(Paths.get(Resources.getResource("com/cloudogu/scm/ssh/rsa").toURI()));
+    when(configStore.getConfiguration()).thenReturn(new Configuration());
+
+    updateStep.doUpdate();
+
+    verify(configStore).setConfiguration(argThat(arg -> {
+      assertThat(arg.getAlgorithm()).isEqualTo(HostKeyAlgorithm.RSA);
+      return true;
+    }));
+  }
+
+  @Test
+  void shouldDoNothingIfNoHostKeysFound() throws URISyntaxException, InvalidKeySpecException, IOException {
+    when(scmContextProvider.resolve(any())).thenReturn(Paths.get(Resources.getResource("com/cloudogu/scm/ssh").toURI()));
+
+    updateStep.doUpdate();
+
+    verify(configStore, never()).setConfiguration(any());
+  }
 }

@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 import React from "react";
-import { Checkbox, InputField } from "@scm-manager/ui-components";
+import { Checkbox, InputField, Notification, Select } from "@scm-manager/ui-components";
 import { WithTranslation, withTranslation } from "react-i18next";
 import { validateHostnameWithPort, validatePort } from "./validator";
 
@@ -30,6 +30,7 @@ type SshConfiguration = {
   hostName?: string;
   port: number;
   disablePasswordAuthentication: boolean;
+  algorithm: string;
 };
 
 type Props = WithTranslation & {
@@ -50,6 +51,15 @@ class SshConfigurationForm extends React.Component<Props, State> {
       ...props.initialConfiguration
     };
   }
+
+  onAlgorithmChanged = (value: string) => {
+    this.setState(
+      {
+        algorithm: value
+      },
+      this.onStateChange
+    );
+  };
 
   onPortChanged = (value: string) => {
     let portValidationError = !validatePort(value);
@@ -83,8 +93,8 @@ class SshConfigurationForm extends React.Component<Props, State> {
   };
 
   onStateChange = () => {
-    const { hostName, port, disablePasswordAuthentication } = this.state;
-    this.props.onConfigurationChange({ hostName, port, disablePasswordAuthentication }, this.isValid());
+    const { hostName, port, disablePasswordAuthentication, algorithm } = this.state;
+    this.props.onConfigurationChange({ hostName, port, disablePasswordAuthentication, algorithm }, this.isValid());
   };
 
   isValid = () => {
@@ -94,7 +104,14 @@ class SshConfigurationForm extends React.Component<Props, State> {
 
   render(): React.ReactNode {
     const { t } = this.props;
-    const { hostName, hostNameValidationError, port, portValidationError, disablePasswordAuthentication } = this.state;
+    const {
+      hostName,
+      hostNameValidationError,
+      port,
+      portValidationError,
+      disablePasswordAuthentication,
+      algorithm
+    } = this.state;
     return (
       <>
         <InputField
@@ -121,6 +138,18 @@ class SshConfigurationForm extends React.Component<Props, State> {
           label={t("scm-ssh-plugin.globalConfig.disablePasswordAuthentication")}
           helpText={t("scm-ssh-plugin.globalConfig.disablePasswordAuthenticationHelp")}
           checked={disablePasswordAuthentication}
+        />
+        <Notification type="warning">{t("scm-ssh-plugin.globalConfig.hostKeyAlgorithmNotification")}</Notification>
+        <Select
+          options={[
+            { value: "RSA", label: "RSA" },
+            { value: "EC", label: "EC" }
+          ]}
+          onChange={this.onAlgorithmChanged}
+          name="hostKeyAlgorithm"
+          label={t("scm-ssh-plugin.globalConfig.hostKeyAlgorithm")}
+          helpText={t("scm-ssh-plugin.globalConfig.hostKeyAlgorithmHelp")}
+          value={algorithm}
         />
       </>
     );
