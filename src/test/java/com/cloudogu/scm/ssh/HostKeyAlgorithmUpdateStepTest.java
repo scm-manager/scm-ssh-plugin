@@ -37,6 +37,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.Paths;
 import java.security.spec.InvalidKeySpecException;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -59,7 +60,7 @@ class HostKeyAlgorithmUpdateStepTest {
 
   @Test
   void shouldNotKeepAlgorithm() throws InvalidKeySpecException, IOException, URISyntaxException {
-    updateStep.setFile(new File(Resources.getResource("com/cloudogu/scm/ssh/ec-hostkeys.ser").toURI()));
+    when(scmContextProvider.resolve(any())).thenReturn(Paths.get(Resources.getResource("com/cloudogu/scm/ssh/ec").toURI()));
 
     updateStep.doUpdate();
 
@@ -68,8 +69,8 @@ class HostKeyAlgorithmUpdateStepTest {
 
   @Test
   void shouldKeepRsaAlgorithm() throws InvalidKeySpecException, IOException, URISyntaxException {
+    when(scmContextProvider.resolve(any())).thenReturn(Paths.get(Resources.getResource("com/cloudogu/scm/ssh/rsa").toURI()));
     when(configStore.getConfiguration()).thenReturn(new Configuration());
-    updateStep.setFile(new File(Resources.getResource("com/cloudogu/scm/ssh/rsa-hostkeys.ser").toURI()));
 
     updateStep.doUpdate();
 
@@ -77,5 +78,14 @@ class HostKeyAlgorithmUpdateStepTest {
       assertThat(arg.getAlgorithm()).isEqualTo(HostKeyAlgorithm.RSA);
       return true;
     }));
+  }
+
+  @Test
+  void shouldDoNothingIfNoHostKeysFound() throws URISyntaxException, InvalidKeySpecException, IOException {
+    when(scmContextProvider.resolve(any())).thenReturn(Paths.get(Resources.getResource("com/cloudogu/scm/ssh").toURI()));
+
+    updateStep.doUpdate();
+
+    verify(configStore, never()).setConfiguration(any());
   }
 }
