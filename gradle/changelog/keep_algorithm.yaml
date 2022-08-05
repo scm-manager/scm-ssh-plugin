@@ -1,2 +1,0 @@
-- type: fixed
-  description: Prevent host key algorithm from automatic changes ([#46](https://github.com/scm-manager/scm-ssh-plugin/pull/46))
