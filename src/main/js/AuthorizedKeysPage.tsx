@@ -101,7 +101,7 @@ class AuthorizedKeysPage extends React.Component<Props, State> {
         form = (
           <>
             <hr />
-            <Subtitle subtitle={t("scm-ssh-plugin.addSubtitle")} />
+            <Subtitle subtitle={t("scm-ssh-plugin.authorizedKeys.addSubtitle")} />
             <AuthorizedKeysForm url={authorizedKeys._links.create.href} onKeyAdded={this.onKeyAdded} />
           </>
         );
@@ -121,8 +121,8 @@ class AuthorizedKeysPage extends React.Component<Props, State> {
     const { t } = this.props;
     return (
       <>
-        <Subtitle subtitle={t("scm-ssh-plugin.title")} />
-        <p>{t("scm-ssh-plugin.description")}</p>
+        <Subtitle subtitle={t("scm-ssh-plugin.authorizedKeys.title")} />
+        <p>{t("scm-ssh-plugin.authorizedKeys.description")}</p>
         <br />
         {children}
       </>

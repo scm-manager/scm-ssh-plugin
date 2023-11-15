@@ -21,29 +21,22 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package com.cloudogu.scm.ssh;
 
-plugins {
-  id 'org.scm-manager.smp' version '0.15.0'
-}
+import com.cloudogu.conveyor.GenerateDto;
+import com.cloudogu.conveyor.Include;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-dependencies {
-  implementation "org.apache.sshd:sshd-core:2.9.0"
-  implementation "net.i2p.crypto:eddsa:0.3.0"
-  testImplementation "org.awaitility:awaitility:3.0.0"
-  implementation "org.bouncycastle:bcprov-jdk15on:1.68"
-}
+import javax.xml.bind.annotation.XmlRootElement;
 
-scmPlugin {
-  scmVersion = "2.47.1-SNAPSHOT"
-  displayName = "SSH"
-  description = "SSH support for SCM-Manager"
-  author = "Cloudogu GmbH"
-  category = "Authentication"
-
-  openapi {
-    packages = [
-      "com.cloudogu.scm.ssh",
-      "com.cloudogu.scm.ssh.auth",
-    ]
-  }
+@GenerateDto
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@XmlRootElement
+public class MeConfig {
+  @Include
+  private boolean useSshCheckout;
 }

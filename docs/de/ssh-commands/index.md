@@ -2,7 +2,8 @@
 title: SSH-Befehle
 ---
 ### Repository Befehle
-Auf der Informationsseite eines Repository gibt es die Möglichkeit über einen Schalter die CLI-Befehle zwischen HTTP und SSH umzuschalten.
+Auf der Informationsseite eines Repository gibt es die Möglichkeit über einen Schalter die CLI-Befehle zwischen HTTP und SSH umzuschalten. 
+Die präferierte Checkout-Variante kann in den persönlichen Nutzereinstellungen im Bereich "SSH" vorausgewählt werden.
 
 ![SSH-Commands](assets/ssh-commands.png)
 

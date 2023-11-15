@@ -1,29 +1,51 @@
 {
   "scm-ssh-plugin": {
-    "title": "Authorized Keys",
-    "description": "An authorized key is an public SSH key. To use a authorized key for SSH access to SCM-Manager, the key needs to be provided here.",
-    "navigation": "Authorized Keys",
-    "displayName": "Display Name",
-    "created": "Created on",
-    "raw": "Key",
-    "addSubtitle": "Add New key",
-    "addKey": "Add Key",
-    "delete": "Delete",
-    "noStoredKeys": "No authorized keys found.",
     "globalConfig": {
       "navLink": "SSH",
       "title": "SSH Configuration",
-      "hostName": "SSH Client URL",
-      "hostNameHelp": "URL that is used by SSH Client to connect to SCM-Manager (e.g.: ssh.hitchhiker.com:2222 or ssh://ssh.hitchhiker.com:2222).\nIf this is omitted, the host name of the base URL configured in global configuration will be used.",
-      "hostNameInvalid": "Please specify a valid SSH client url (e.g.: ssh.hitchhiker.com:2222 or ssh://ssh.hitchhiker.com:2222)",
-      "port": "SSH Server Port",
-      "portHelp": "TCP port opened by SCM-Manager to provide SSH support",
-      "portInvalid": "The port must be between 1 and 65535",
-      "disablePasswordAuthentication": "Deactivate password authentication",
-      "disablePasswordAuthenticationHelp": "Deactivates the ssh password authentication. Only authentication with public key is possible.",
-      "hostKeyAlgorithm": "SSH Host Key Algorithm",
-      "hostKeyAlgorithmHelp": "The algorithm which should be used for the host key. We recommend using \"EC\" but be aware that you have to accept the host new key for each client after changing this.",
-      "hostKeyAlgorithmNotification": "Warning: Changing this algorithm causes the host keys to be regenerated. This means that all SSH connections such as developers, CI servers and other third-party systems must accept the new host key."
+      "hostName": {
+        "label": "SSH Client URL",
+        "helpText": "URL that is used by SSH Client to connect to SCM-Manager (e.g.: ssh.hitchhiker.com:2222 or ssh://ssh.hitchhiker.com:2222).\nIf this is omitted, the host name of the base URL configured in global configuration will be used.",
+        "error": {
+          "validate": "Please specify a valid SSH client url (e.g.: ssh.hitchhiker.com:2222 or ssh://ssh.hitchhiker.com:2222)",
+          "required": "This configuration value is required"
+        }
+      },
+      "port": {
+        "label": "SSH Server Port",
+        "helpText": "TCP port opened by SCM-Manager to provide SSH support",
+        "error": {
+          "validate": "The port must be between 1 and 65535"
+        }
+      },
+      "disablePasswordAuthentication": {
+        "label": "Deactivate password authentication",
+        "helpText": "Deactivates the ssh password authentication. Only authentication with public key is possible."
+      },
+      "hostKeyAlgorithm": {
+        "label": "SSH Host Key Algorithm",
+        "helpText": "The algorithm which should be used for the host key. We recommend using \"EC\" but be aware that you have to accept the host new key for each client after changing this.",
+        "notification": "Warning: Changing this algorithm causes the host keys to be regenerated. This means that all SSH connections such as developers, CI servers and other third-party systems must accept the new host key."
+      }
+    },
+    "authorizedKeys": {
+      "navLink": "Authorized Keys",
+      "title": "Authorized Keys",
+      "description": "An authorized key is an public SSH key. To use a authorized key for SSH access to SCM-Manager, the key needs to be provided here.",
+      "displayName": "Display Name",
+      "created": "Created on",
+      "raw": "Key",
+      "addSubtitle": "Add New key",
+      "addKey": "Add Key",
+      "delete": "Delete",
+      "noStoredKeys": "No authorized keys found."
+    },
+    "meConfig": {
+      "navLink": "SSH",
+      "title": "SSH Configuration",
+      "useSshCheckout": {
+        "label": "Use SSH as a checkout variant to clone repositories with an SSH key"
+      }
     }
   },
   "permissions": {

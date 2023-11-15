@@ -104,13 +104,13 @@ class AuthorizedKeysForm extends React.Component<Props, State> {
         <ErrorNotification error={error} />
         <InputField
           name="displayName"
-          label={t("scm-ssh-plugin.displayName")}
+          label={t("scm-ssh-plugin.authorizedKeys.displayName")}
           value={displayName}
           onChange={this.onChange}
         />
-        <Textarea name="raw" label={t("scm-ssh-plugin.raw")} value={raw} onChange={this.onChange} />
+        <Textarea name="raw" label={t("scm-ssh-plugin.authorizedKeys.raw")} value={raw} onChange={this.onChange} />
         <Level
-          right={<SubmitButton label={t("scm-ssh-plugin.addKey")} loading={loading} disabled={!this.isValid()} />}
+          right={<SubmitButton label={t("scm-ssh-plugin.authorizedKeys.addKey")} loading={loading} disabled={!this.isValid()} />}
         />
       </form>
     );

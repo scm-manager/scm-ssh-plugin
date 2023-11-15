@@ -21,25 +21,52 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import React from "react";
-import { WithTranslation, withTranslation } from "react-i18next";
-import { Title, Configuration } from "@scm-manager/ui-components";
-import SshConfigurationForm from "./SshConfigurationForm";
+import React, { FC } from "react";
+import { useTranslation } from "react-i18next";
+import { Notification, Title } from "@scm-manager/ui-components";
+import { ConfigurationForm, Form } from "@scm-manager/ui-forms";
+import * as validator from "./validator";
 
-type Props = WithTranslation & {
-  link: string;
+type SshConfiguration = {
+  hostName?: string;
+  port: number;
+  disablePasswordAuthentication: boolean;
+  algorithm: string;
 };
 
-class LdapConfiguration extends React.Component<Props> {
-  render() {
-    const { t, link } = this.props;
-    return (
-      <>
-        <Title title={t("scm-ssh-plugin.globalConfig.title")} />
-        <Configuration link={link} render={props => <SshConfigurationForm {...props} />} />
-      </>
-    );
-  }
-}
+const SshConfiguration: FC<{ link: string }> = ({ link }) => {
+  const [t] = useTranslation("plugins");
 
-export default withTranslation("plugins")(LdapConfiguration);
+  return (
+    <>
+      <Title title={t("scm-ssh-plugin.globalConfig.title")} />
+      <ConfigurationForm<SshConfiguration> link={link} translationPath={["plugins", "scm-ssh-plugin.globalConfig"]}>
+        <Form.Input
+          name="hostName"
+          rules={{
+            validate: validator.validateHostnameWithPort,
+            required: true
+          }}
+        />
+        <Form.Input
+          name="port"
+          rules={{
+            validate: validator.validatePort
+          }}
+          type="number"
+        />
+        <Form.Checkbox name="disablePasswordAuthentication" />
+        <Notification type="warning">{t("scm-ssh-plugin.globalConfig.hostKeyAlgorithm.notification")}</Notification>
+        <Form.Select
+          name="algorithm"
+          options={[
+            { label: "RSA", value: "RSA" },
+            { label: "EC", value: "EC" }
+          ]}
+        />
+      </ConfigurationForm>
+    </>
+  );
+};
+
+export default SshConfiguration;

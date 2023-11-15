@@ -21,29 +21,18 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+import React, { FC } from "react";
+import { useTranslation } from "react-i18next";
+import { NavLink } from "@scm-manager/ui-components";
 
-plugins {
-  id 'org.scm-manager.smp' version '0.15.0'
-}
+type Props = {
+  url: string;
+};
 
-dependencies {
-  implementation "org.apache.sshd:sshd-core:2.9.0"
-  implementation "net.i2p.crypto:eddsa:0.3.0"
-  testImplementation "org.awaitility:awaitility:3.0.0"
-  implementation "org.bouncycastle:bcprov-jdk15on:1.68"
-}
+const MeNavigationLink: FC<Props> = ({ url }) => {
+  const [t] = useTranslation("plugins");
 
-scmPlugin {
-  scmVersion = "2.47.1-SNAPSHOT"
-  displayName = "SSH"
-  description = "SSH support for SCM-Manager"
-  author = "Cloudogu GmbH"
-  category = "Authentication"
+  return <NavLink to={`${url}/settings/authorized_keys`} label={t("scm-ssh-plugin.authorizedKeys.navLink")} />;
+};
 
-  openapi {
-    packages = [
-      "com.cloudogu.scm.ssh",
-      "com.cloudogu.scm.ssh.auth",
-    ]
-  }
-}
+export default MeNavigationLink;

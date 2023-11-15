@@ -21,29 +21,30 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+import React, { FC } from "react";
+import { useTranslation } from "react-i18next";
+import { Subtitle } from "@scm-manager/ui-components";
+import { ConfigurationForm, Form } from "@scm-manager/ui-forms";
 
-plugins {
-  id 'org.scm-manager.smp' version '0.15.0'
-}
+type Props = {
+  link: string;
+};
 
-dependencies {
-  implementation "org.apache.sshd:sshd-core:2.9.0"
-  implementation "net.i2p.crypto:eddsa:0.3.0"
-  testImplementation "org.awaitility:awaitility:3.0.0"
-  implementation "org.bouncycastle:bcprov-jdk15on:1.68"
-}
+type MeConfiguration = {
+  useSshCheckout: boolean;
+};
 
-scmPlugin {
-  scmVersion = "2.47.1-SNAPSHOT"
-  displayName = "SSH"
-  description = "SSH support for SCM-Manager"
-  author = "Cloudogu GmbH"
-  category = "Authentication"
+const MeConfiguration: FC<Props> = ({ link }) => {
+  const [t] = useTranslation("plugins");
 
-  openapi {
-    packages = [
-      "com.cloudogu.scm.ssh",
-      "com.cloudogu.scm.ssh.auth",
-    ]
-  }
-}
+  return (
+    <>
+      <Subtitle subtitle={t("scm-ssh-plugin.meConfig.title")} />
+      <ConfigurationForm<MeConfiguration> link={link} translationPath={["plugins", "scm-ssh-plugin.meConfig"]}>
+        <Form.Checkbox name="useSshCheckout" />
+      </ConfigurationForm>
+    </>
+  );
+};
+
+export default MeConfiguration;

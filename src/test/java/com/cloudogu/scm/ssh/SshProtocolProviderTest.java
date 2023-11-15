@@ -35,6 +35,7 @@ import sonia.scm.config.ScmConfiguration;
 import sonia.scm.repository.Repository;
 import sonia.scm.repository.RepositoryTestData;
 import sonia.scm.repository.api.ScmProtocol;
+import sonia.scm.store.InMemoryByteConfigurationEntryStoreFactory;
 import sonia.scm.store.InMemoryConfigurationStoreFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -47,6 +48,7 @@ class SshProtocolProviderTest {
   private Subject subject;
 
   private ConfigStore sshConfigStore;
+  private MeConfigStore meConfigStore;
   private SshProtocolProvider protocolProvider;
   private ScmConfiguration scmConfiguration;
 
@@ -56,7 +58,8 @@ class SshProtocolProviderTest {
 
     scmConfiguration = new ScmConfiguration();
     sshConfigStore = new ConfigStore(new InMemoryConfigurationStoreFactory(), scmConfiguration);
-    protocolProvider = new SshProtocolProvider(sshConfigStore);
+    meConfigStore = new MeConfigStore(new InMemoryByteConfigurationEntryStoreFactory());
+    protocolProvider = new SshProtocolProvider(sshConfigStore, meConfigStore);
   }
 
   @AfterEach
@@ -137,6 +140,35 @@ class SshProtocolProviderTest {
 
     ScmProtocol sshProtocol = configureAndGet(sshConfiguration);
     assertThat(sshProtocol.getUrl()).isEqualTo("ssh://ssh.hitchhiker.com/repo/hitchhiker/HeartOfGold");
+  }
+
+  @Test
+  void shouldReturnDefaultPriorityWhenNoStoreExists() {
+    when(subject.getPrincipal()).thenReturn("trillian");
+
+    ScmProtocol sshProtocol = configureAndGet(22);
+
+    assertThat(sshProtocol.getPriority()).isEqualTo(100);
+  }
+
+  @Test
+  void shouldReturnDefaultPriorityWhenSshIsNotPreferred() {
+    when(subject.getPrincipal()).thenReturn("trillian");
+
+    meConfigStore.set(new MeConfig(false));
+    ScmProtocol sshProtocol = configureAndGet(22);
+
+    assertThat(sshProtocol.getPriority()).isEqualTo(100);
+  }
+
+  @Test
+  void shouldReturnIncreasedPriorityWhenSshIsPreferred() {
+    when(subject.getPrincipal()).thenReturn("trillian");
+
+    meConfigStore.set(new MeConfig(true));
+    ScmProtocol sshProtocol = configureAndGet(22);
+
+    assertThat(sshProtocol.getPriority()).isEqualTo(200);
   }
 
 }

@@ -21,9 +21,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import React from "react";
+import React, { FC } from "react";
 import { Route } from "react-router-dom";
-import { User } from "@scm-manager/ui-types";
+import { Link, User } from "@scm-manager/ui-types";
 import AuthorizedKeys from "./AuthorizedKeysPage";
 
 type Props = {
@@ -31,16 +31,12 @@ type Props = {
   user: User;
 };
 
-class UserNavigationRoute extends React.Component<Props> {
-  render() {
-    const { user, url } = this.props;
-    return (
-      <Route
-        path={`${url}/settings/authorized_keys`}
-        render={() => <AuthorizedKeys link={user._links.authorized_keys.href} />}
-      />
-    );
-  }
-}
+const UserNavigationRoute: FC<Props> = ({ url, user }) => {
+  return (
+    <Route path={`${url}/settings/authorized_keys`}>
+      <AuthorizedKeys link={(user?._links?.authorized_keys as Link)?.href} />
+    </Route>
+  );
+};
 
 export default UserNavigationRoute;

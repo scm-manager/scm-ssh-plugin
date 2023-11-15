@@ -23,18 +23,19 @@
  */
 import { binder } from "@scm-manager/ui-extensions";
 import { ConfigurationBinder as cfgBinder } from "@scm-manager/ui-components";
-import NavigationLink from "./NavigationLink";
+import MeNavigationLink from "./MeNavigationLink";
 import MeNavigationRoute from "./MeNavigationRoute";
+import UserNavigationLink from "./UserNavigationLink";
 import UserNavigationRoute from "./UserNavigationRoute";
 import SshConfiguration from "./SshConfiguration";
 
 // me page
 
 const mePredicate = props => {
-  return props.me && props.me._links && props.me._links.authorized_keys;
+  return props.me && props.me._links && (props.me._links.authorized_keys || props.me._links.sshPreferences);
 };
 
-binder.bind("profile.setting", NavigationLink, mePredicate);
+binder.bind("profile.setting", MeNavigationLink, mePredicate);
 binder.bind("profile.route", MeNavigationRoute, mePredicate);
 
 // user page
@@ -43,7 +44,7 @@ const userPredicate = props => {
   return props.user && props.user._links && props.user._links.authorized_keys;
 };
 
-binder.bind("user.setting", NavigationLink, userPredicate);
+binder.bind("user.setting", UserNavigationLink, userPredicate);
 binder.bind("user.route", UserNavigationRoute, userPredicate);
 
 // global configuration

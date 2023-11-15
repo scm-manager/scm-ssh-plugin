@@ -103,7 +103,7 @@ class AuthorizedKeyRow extends React.Component<Props, State> {
           color="text"
           icon="trash"
           action={() => this.onDelete(link.href)}
-          title={t("scm-ssh-plugin.delete")}
+          title={t("scm-ssh-plugin.authorizedKeys.delete")}
           className="px-2"
         />
       );

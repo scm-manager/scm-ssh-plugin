@@ -21,26 +21,33 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import React from "react";
-import { Route } from "react-router-dom";
-import { Me } from "@scm-manager/ui-types";
-import AuthorizedKeys from "./AuthorizedKeysPage";
+import React, { FC } from "react";
+import { Route, Switch } from "react-router-dom";
+import { Link, Me } from "@scm-manager/ui-types";
+import MeConfiguration from "./MeConfiguration";
+import AuthorizedKeysPage from "./AuthorizedKeysPage";
+import { useSubject } from "@scm-manager/ui-api";
 
 type Props = {
   url: string;
   me: Me;
 };
 
-class MeNavigationRoute extends React.Component<Props> {
-  render() {
-    const { me, url } = this.props;
-    return (
-      <Route
-        path={`${url}/settings/authorized_keys`}
-        render={() => <AuthorizedKeys link={me._links.authorized_keys.href} />}
-      />
-    );
-  }
-}
+const MeNavigationRoute: FC<Props> = ({ url, me }) => {
+  const { isAnonymous } = useSubject();
+
+  return (
+    <Switch>
+      {!isAnonymous && (
+        <Route path={`${url}/settings/sshPreferences`}>
+          <MeConfiguration link={(me?._links?.sshPreferences as Link)?.href} />
+        </Route>
+      )}
+      <Route path={`${url}/settings/authorized_keys`}>
+        <AuthorizedKeysPage link={(me?._links?.authorized_keys as Link)?.href} />
+      </Route>
+    </Switch>
+  );
+};
 
 export default MeNavigationRoute;

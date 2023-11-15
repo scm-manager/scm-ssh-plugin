@@ -3,6 +3,7 @@ title: SSH commands
 ---
 ### Repository Commands
 On the information page of the repositories the CLI commands can be switched between HTTP and SSH.
+The preferred checkout variant can be preselected in the personal user settings in the "SSH" section.
 
 ![SSH-Commands](assets/ssh-commands.png)
 

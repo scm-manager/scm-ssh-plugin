@@ -38,9 +38,12 @@ public class SshProtocolProvider implements ScmProtocolProvider {
 
   private final ConfigStore sshConfigStore;
 
+  private final MeConfigStore meConfigStore;
+
   @Inject
-  public SshProtocolProvider(ConfigStore sshConfigStore) {
+  public SshProtocolProvider(ConfigStore sshConfigStore, MeConfigStore meConfigStore) {
     this.sshConfigStore = sshConfigStore;
+    this.meConfigStore = meConfigStore;
   }
 
   @Override
@@ -113,6 +116,14 @@ public class SshProtocolProvider implements ScmProtocolProvider {
     @Override
     public boolean isAnonymousEnabled() {
       return false;
+    }
+
+    @Override
+    public int getPriority() {
+      if (meConfigStore.get().isUseSshCheckout()) {
+        return 200;
+      }
+      return 100;
     }
   }
 }

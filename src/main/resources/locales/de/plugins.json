@@ -1,29 +1,51 @@
 {
   "scm-ssh-plugin": {
-    "title": "Autorisierte Schlüssel",
-    "description": "Ein autorisierter Schlüssel ist ein öffentlicher SSH-Schlüssel. Um über einen autorisierten Schlüssel Zugriffe per SSH auf den SCM-Manager zu ermöglichen, muss dieser hier hinterlegt werden.",
-    "navigation": "Autorisierte Schlüssel",
-    "displayName": "Anzeigename",
-    "created": "Erstellt am",
-    "raw": "Schlüssel",
-    "addSubtitle": "Neuen Schlüssel hinzufügen",
-    "addKey": "Schlüssel hinzufügen",
-    "delete": "Löschen",
-    "noStoredKeys": "Keine autorisierten Schlüssel gefunden",
     "globalConfig": {
       "navLink": "SSH",
       "title": "SSH Konfiguration",
-      "hostName": "SSH Client URL",
-      "hostNameHelp": "URL die von SSH Client für die Verbindung zu SCM-Manager verwendet werden kann\n(z.B.: ssh.hitchhiker.com:2222 or ssh://ssh.hitchhiker.com:2222).\nWenn dieser nicht ausgefüllt wird, wird der Hostname auf Basis der Base URL aus den globalen Einstellungen genutzt.",
-      "hostNameInvalid": "Geben Sie einen gültige SSH Client URL an (z.B.: ssh.hitchhiker.com:2222 or ssh://ssh.hitchhiker.com:2222)",
-      "port": "SSH Server Port",
-      "portHelp": "TCP Port den SCM-Manager für den SSH Support öffnet",
-      "portInvalid": "Der Port muss zwischen 1 und 65535 liegen",
-      "disablePasswordAuthentication": "Passwort Authentifizierung deaktivieren",
-      "disablePasswordAuthenticationHelp": "Deaktiviert die SSH Password Authentifizierung. Es kann sich nur noch mit PublicKey authentifiziert werden.",
-      "hostKeyAlgorithm": "SSH Host Schlüssel Algorithmus",
-      "hostKeyAlgorithmHelp": "SSH Host Schlüssel Algorithmus",
-      "hostKeyAlgorithmNotification": "Achtung: Das Ändern dieses Algorithmus führt dazu, dass die Host Schlüssel neu generiert werden. Damit müssen alle SSH Verbindungen wie z. B. Entwickler, CI Server und andere Fremdsysteme den neuen Host Schlüssel akzeptieren."
+      "hostName": {
+        "label": "SSH Client URL",
+        "helpText": "URL die von SSH Client für die Verbindung zu SCM-Manager verwendet werden kann\n(z.B.: ssh.hitchhiker.com:2222 or ssh://ssh.hitchhiker.com:2222).\nWenn dieser nicht ausgefüllt wird, wird der Hostname auf Basis der Base URL aus den globalen Einstellungen genutzt.",
+        "error": {
+          "validate": "Geben Sie einen gültige SSH Client URL an (z.B.: ssh.hitchhiker.com:2222 or ssh://ssh.hitchhiker.com:2222)",
+          "required": "Dieser Konfigurationswert wird benötigt"
+        }
+      },
+      "port": {
+        "label": "SSH Server Port",
+        "helpText": "TCP Port den SCM-Manager für den SSH Support öffnet",
+        "error": {
+          "validate": "Der Port muss zwischen 1 und 65535 liegen"
+        }
+      },
+      "disablePasswordAuthentication": {
+        "label": "Passwort Authentifizierung deaktivieren",
+        "helpText": "Deaktiviert die SSH Password Authentifizierung. Es kann sich nur noch mit PublicKey authentifiziert werden."
+      },
+      "hostKeyAlgorithm": {
+        "label": "SSH Host Schlüssel Algorithmus",
+        "helpText": "SSH Host Schlüssel Algorithmus",
+        "notification": "Achtung: Das Ändern dieses Algorithmus führt dazu, dass die Host Schlüssel neu generiert werden. Damit müssen alle SSH Verbindungen wie z. B. Entwickler, CI Server und andere Fremdsysteme den neuen Host Schlüssel akzeptieren."
+      }
+    },
+    "authorizedKeys": {
+      "navLink": "Autorisierte Schlüssel",
+      "title": "Autorisierte Schlüssel",
+      "description": "Ein autorisierter Schlüssel ist ein öffentlicher SSH-Schlüssel. Um über einen autorisierten Schlüssel Zugriffe per SSH auf den SCM-Manager zu ermöglichen, muss dieser hier hinterlegt werden.",
+      "displayName": "Anzeigename",
+      "created": "Erstellt am",
+      "raw": "Schlüssel",
+      "addSubtitle": "Neuen Schlüssel hinzufügen",
+      "addKey": "Schlüssel hinzufügen",
+      "delete": "Löschen",
+      "noStoredKeys": "Keine autorisierten Schlüssel gefunden"
+    },
+    "meConfig": {
+      "navLink": "SSH",
+      "title": "SSH Konfiguration",
+      "useSshCheckout": {
+        "label": "Verwende SSH als Checkout-Variante, um Repositories mit einem SSH-Schlüssel zu klonen"
+      }
     }
   },
   "permissions": {

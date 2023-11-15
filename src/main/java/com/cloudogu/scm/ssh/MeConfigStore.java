@@ -21,19 +21,34 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import React from "react";
-import { WithTranslation, withTranslation } from "react-i18next";
-import { NavLink } from "@scm-manager/ui-components";
+package com.cloudogu.scm.ssh;
 
-type Props = WithTranslation & {
-  url: string;
-};
+import org.apache.shiro.SecurityUtils;
+import sonia.scm.store.ConfigurationEntryStore;
+import sonia.scm.store.ConfigurationEntryStoreFactory;
 
-class NavigationLink extends React.Component<Props> {
-  render() {
-    const { url, t } = this.props;
-    return <NavLink to={`${url}/settings/authorized_keys`} label={t("scm-ssh-plugin.navigation")} />;
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
+@Singleton
+public class MeConfigStore {
+  private final ConfigurationEntryStore<MeConfig> store;
+
+  @Inject
+  public MeConfigStore(ConfigurationEntryStoreFactory storeFactory) {
+    this.store = storeFactory.withType(MeConfig.class).withName("sshPreferences").build();
+  }
+
+  public MeConfig get() {
+    return store.getOptional(getUserId()).orElse(new MeConfig());
+  }
+
+  public void set(MeConfig meConfig) {
+    store.put(getUserId(), meConfig);
+  }
+
+
+  private static String getUserId() {
+    return SecurityUtils.getSubject().getPrincipal().toString();
   }
 }
-
-export default withTranslation("plugins")(NavigationLink);

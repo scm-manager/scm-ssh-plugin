@@ -21,29 +21,38 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package com.cloudogu.scm.ssh;
 
-plugins {
-  id 'org.scm-manager.smp' version '0.15.0'
-}
+import de.otto.edison.hal.Links;
+import org.mapstruct.Mapper;
+import org.mapstruct.ObjectFactory;
+import sonia.scm.api.v2.resources.LinkBuilder;
+import sonia.scm.api.v2.resources.ScmPathInfoStore;
 
-dependencies {
-  implementation "org.apache.sshd:sshd-core:2.9.0"
-  implementation "net.i2p.crypto:eddsa:0.3.0"
-  testImplementation "org.awaitility:awaitility:3.0.0"
-  implementation "org.bouncycastle:bcprov-jdk15on:1.68"
-}
+import javax.inject.Inject;
 
-scmPlugin {
-  scmVersion = "2.47.1-SNAPSHOT"
-  displayName = "SSH"
-  description = "SSH support for SCM-Manager"
-  author = "Cloudogu GmbH"
-  category = "Authentication"
+import static de.otto.edison.hal.Link.link;
+import static de.otto.edison.hal.Links.linkingTo;
 
-  openapi {
-    packages = [
-      "com.cloudogu.scm.ssh",
-      "com.cloudogu.scm.ssh.auth",
-    ]
+@Mapper
+public abstract class MeConfigMapper {
+
+  @Inject
+  private ScmPathInfoStore scmPathInfoStore;
+
+  @ObjectFactory
+  MeConfigDto createDto(MeConfig meConfig) {
+    Links.Builder linksBuilder = linkingTo().self(self()).single(link("update", update()));
+    return MeConfigDto.from(meConfig, linksBuilder.build());
+  }
+
+  private String self() {
+    LinkBuilder linkBuilder = new LinkBuilder(scmPathInfoStore.get(), MeConfigResource.class);
+    return linkBuilder.method("getConfig").parameters().href();
+  }
+
+  private String update() {
+    LinkBuilder linkBuilder = new LinkBuilder(scmPathInfoStore.get(), MeConfigResource.class);
+    return linkBuilder.method("setConfig").parameters().href();
   }
 }
