@@ -34,7 +34,7 @@ dependencies {
 }
 
 scmPlugin {
-  scmVersion = "2.47.1-SNAPSHOT"
+  scmVersion = "2.48.0"
   displayName = "SSH"
   description = "SSH support for SCM-Manager"
   author = "Cloudogu GmbH"
