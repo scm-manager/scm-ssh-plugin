@@ -1,2 +1,0 @@
-- type: changed
-  description: Update to latest Apache SSH library to fix CVE-2023-48795 (Terrapin)
