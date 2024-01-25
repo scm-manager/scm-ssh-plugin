@@ -12,6 +12,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Option to specify whether SSH is the preferred checkout variant
 
+## 2.3.4 - 2024-01-25
+### Changed
+- Update to latest Apache SSH library to fix CVE-2023-48795 (Terrapin) (Backport from 2.5.0)
+
 ## 2.3.3 - 2022-08-05
 ### Fixed
 - Prevent host key algorithm from automatic changes ([#46](https://github.com/scm-manager/scm-ssh-plugin/pull/46))
