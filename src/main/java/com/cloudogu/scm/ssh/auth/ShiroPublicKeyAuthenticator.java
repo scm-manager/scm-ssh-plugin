@@ -17,6 +17,7 @@
 package com.cloudogu.scm.ssh.auth;
 
 import com.cloudogu.scm.ssh.SshServerConfigurator;
+import org.apache.shiro.util.ThreadContext;
 import org.apache.sshd.server.SshServer;
 import org.apache.sshd.server.auth.AsyncAuthException;
 import org.apache.sshd.server.auth.pubkey.PublickeyAuthenticator;
@@ -32,6 +33,7 @@ public class ShiroPublicKeyAuthenticator implements PublickeyAuthenticator, SshS
 
   @Override
   public boolean authenticate(String username, PublicKey key, ServerSession session) throws AsyncAuthException {
+    ThreadContext.unbindSubject();
     return ShiroAuthenticator.authenticate(new PublicKeyToken(session, username, key), session);
   }
 }
