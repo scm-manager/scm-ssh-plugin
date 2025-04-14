@@ -2,30 +2,30 @@
   "scm-ssh-plugin": {
     "globalConfig": {
       "navLink": "SSH",
-      "title": "SSH Konfiguration",
+      "title": "SSH-Konfiguration",
       "hostName": {
-        "label": "SSH Client URL",
-        "helpText": "URL die von SSH Client für die Verbindung zu SCM-Manager verwendet werden kann\n(z.B.: ssh.hitchhiker.com:2222 or ssh://ssh.hitchhiker.com:2222).\nWenn dieser nicht ausgefüllt wird, wird der Hostname auf Basis der Base URL aus den globalen Einstellungen genutzt.",
+        "label": "SSH Client-URL",
+        "helpText": "URL die vom SSH Client für die Verbindung zu SCM-Manager verwendet werden kann\n(z.B.: ssh.hitchhiker.com:2222 or ssh://ssh.hitchhiker.com:2222).\nWenn dieser nicht ausgefüllt wird, wird der Hostname auf Basis der Base-URL aus den globalen Einstellungen genutzt.",
         "error": {
-          "validate": "Geben Sie einen gültige SSH Client URL an (z.B.: ssh.hitchhiker.com:2222 or ssh://ssh.hitchhiker.com:2222)",
+          "validate": "Geben Sie einen gültige SSH Client-URL an (z.B.: ssh.hitchhiker.com:2222 or ssh://ssh.hitchhiker.com:2222)",
           "required": "Dieser Konfigurationswert wird benötigt"
         }
       },
       "port": {
-        "label": "SSH Server Port",
-        "helpText": "TCP Port den SCM-Manager für den SSH Support öffnet",
+        "label": "SSH Server-Port",
+        "helpText": "TCP-Port, den der SCM-Manager für den SSH Support öffnet",
         "error": {
           "validate": "Der Port muss zwischen 1 und 65535 liegen"
         }
       },
       "disablePasswordAuthentication": {
-        "label": "Passwort Authentifizierung deaktivieren",
-        "helpText": "Deaktiviert die SSH Password Authentifizierung. Es kann sich nur noch mit PublicKey authentifiziert werden."
+        "label": "Passwortauthentifizierung deaktivieren",
+        "helpText": "Deaktiviert die SSH-Passwortauthentifizierung. Es kann sich nur noch mit PublicKey authentifiziert werden."
       },
       "hostKeyAlgorithm": {
-        "label": "SSH Host Schlüssel Algorithmus",
-        "helpText": "SSH Host Schlüssel Algorithmus",
-        "notification": "Achtung: Das Ändern dieses Algorithmus führt dazu, dass die Host Schlüssel neu generiert werden. Damit müssen alle SSH Verbindungen wie z. B. Entwickler, CI Server und andere Fremdsysteme den neuen Host Schlüssel akzeptieren."
+        "label": "SSH Hostschlüssel-Algorithmus",
+        "helpText": "SSH Hostschlüssel-Algorithmus",
+        "notification": "Achtung: Das Ändern dieses Algorithmus führt dazu, dass die Hostschlüssel neu generiert werden. Damit müssen alle SSH-Verbindungen wie z. B. Entwickler, CI-Server und andere Fremdsysteme den neuen Hostschlüssel akzeptieren."
       }
     },
     "authorizedKeys": {
@@ -42,7 +42,7 @@
     },
     "meConfig": {
       "navLink": "SSH",
-      "title": "SSH Konfiguration",
+      "title": "SSH-Konfiguration",
       "useSshCheckout": {
         "label": "Verwende SSH als Checkout-Variante, um Repositories mit einem SSH-Schlüssel zu klonen"
       }
@@ -52,8 +52,8 @@
     "configuration": {
       "read,write": {
         "ssh": {
-          "displayName": "SSH Konfiguration ändern",
-          "description": "Darf die SSH Konfiguration ändern"
+          "displayName": "SSH-Konfiguration ändern",
+          "description": "Darf die SSH-Konfiguration ändern"
         }
       }
     },

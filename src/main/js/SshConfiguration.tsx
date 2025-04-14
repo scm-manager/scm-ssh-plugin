@@ -16,7 +16,7 @@
 
 import React, { FC } from "react";
 import { useTranslation } from "react-i18next";
-import { Notification, Title } from "@scm-manager/ui-components";
+import { Notification, Title, useDocumentTitle } from "@scm-manager/ui-core";
 import { ConfigurationForm, Form } from "@scm-manager/ui-forms";
 import * as validator from "./validator";
 
@@ -29,6 +29,7 @@ type SshConfiguration = {
 
 const SshConfiguration: FC<{ link: string }> = ({ link }) => {
   const [t] = useTranslation("plugins");
+  useDocumentTitle(t("scm-ssh-plugin.globalConfig.title"));
 
   return (
     <>
@@ -38,13 +39,13 @@ const SshConfiguration: FC<{ link: string }> = ({ link }) => {
           name="hostName"
           rules={{
             validate: validator.validateHostnameWithPort,
-            required: true
+            required: true,
           }}
         />
         <Form.Input
           name="port"
           rules={{
-            validate: validator.validatePort
+            validate: validator.validatePort,
           }}
           type="number"
         />
@@ -54,7 +55,7 @@ const SshConfiguration: FC<{ link: string }> = ({ link }) => {
           name="algorithm"
           options={[
             { label: "RSA", value: "RSA" },
-            { label: "EC", value: "EC" }
+            { label: "EC", value: "EC" },
           ]}
         />
       </ConfigurationForm>

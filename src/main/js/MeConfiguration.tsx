@@ -16,7 +16,7 @@
 
 import React, { FC } from "react";
 import { useTranslation } from "react-i18next";
-import { Subtitle } from "@scm-manager/ui-components";
+import { Subtitle, useDocumentTitle } from "@scm-manager/ui-core";
 import { ConfigurationForm, Form } from "@scm-manager/ui-forms";
 
 type Props = {
@@ -29,6 +29,7 @@ type MeConfiguration = {
 
 const MeConfiguration: FC<Props> = ({ link }) => {
   const [t] = useTranslation("plugins");
+  useDocumentTitle(t("scm-ssh-plugin.meConfig.title"));
 
   return (
     <>
