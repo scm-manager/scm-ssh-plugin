@@ -16,16 +16,22 @@
 
 import React, { FC } from "react";
 import { useTranslation } from "react-i18next";
-import { AuthorizedKey } from "./types";
-import AuthorizedKeyRow from "./AuthorizedKeyRow";
+import { AuthorizedKey, AuthorizedKeysCollection } from "./types";
+import { Notification } from "@scm-manager/ui-core";
+import { DeleteFunction } from "@scm-manager/ui-api";
+import AuthorizedKeyEntry from "./AuthorizedKeyEntry";
 
 type Props = {
-  onKeyDeleted: (error?: Error) => void;
-  authorizedKeys: AuthorizedKey[];
+  authorizedKeys?: AuthorizedKeysCollection;
+  onDelete: DeleteFunction<AuthorizedKey>;
 };
 
-const AuthorizedKeysTable: FC<Props> = ({ onKeyDeleted, authorizedKeys }) => {
+const AuthorizedKeysTable: FC<Props> = ({ authorizedKeys, onDelete }) => {
   const [t] = useTranslation("plugins");
+
+  if (authorizedKeys?._embedded?.keys?.length === 0) {
+    return <Notification type="info">{t("scm-ssh-plugin.authorizedKeys.noStoredKeys")}</Notification>;
+  }
 
   return (
     <table className="card-table table is-hoverable is-fullwidth">
@@ -38,8 +44,8 @@ const AuthorizedKeysTable: FC<Props> = ({ onKeyDeleted, authorizedKeys }) => {
         </tr>
       </thead>
       <tbody>
-        {authorizedKeys.map((authorizedKey, index) => {
-          return <AuthorizedKeyRow key={index} onKeyDeleted={onKeyDeleted} authorizedKey={authorizedKey} />;
+        {authorizedKeys?._embedded?.keys?.map((authorizedKey: AuthorizedKey, index: number) => {
+          return <AuthorizedKeyEntry key={index} onDelete={onDelete} authorizedKey={authorizedKey} />;
         })}
       </tbody>
     </table>

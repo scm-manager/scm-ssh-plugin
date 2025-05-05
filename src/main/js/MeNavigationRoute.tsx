@@ -18,7 +18,7 @@ import React, { FC } from "react";
 import { Route, Switch } from "react-router-dom";
 import { Link, Me } from "@scm-manager/ui-types";
 import MeConfiguration from "./MeConfiguration";
-import AuthorizedKeysPage from "./AuthorizedKeysPage";
+import AuthorizedKeys from "./AuthorizedKeys";
 import { useSubject } from "@scm-manager/ui-api";
 
 type Props = {
@@ -37,7 +37,7 @@ const MeNavigationRoute: FC<Props> = ({ url, me }) => {
         </Route>
       )}
       <Route path={`${url}/settings/authorized_keys`}>
-        <AuthorizedKeysPage link={(me?._links?.authorized_keys as Link)?.href} />
+        <AuthorizedKeys user={me} />
       </Route>
     </Switch>
   );

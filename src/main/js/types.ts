@@ -14,17 +14,18 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import { Collection, Links } from "@scm-manager/ui-types";
+import { HalRepresentation, HalRepresentationWithEmbedded } from "@scm-manager/ui-types";
 
-export type AuthorizedKeysCollection = Collection & {
-  _embedded: {
-    keys: AuthorizedKey[];
-  };
-};
+export type AuthorizedKeysCollection = HalRepresentationWithEmbedded<{ keys: AuthorizedKey[] }>;
 
-export type AuthorizedKey = {
+export type AuthorizedKeyBase = {
   displayName: string;
   raw: string;
-  created?: string;
-  _links: Links;
 };
+
+export type AuthorizedKey = HalRepresentation &
+  AuthorizedKeyBase & {
+    created?: string;
+  };
+
+export type AuthorizedKeyCreation = AuthorizedKeyBase;

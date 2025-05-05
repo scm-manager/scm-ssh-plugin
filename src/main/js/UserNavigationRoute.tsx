@@ -16,8 +16,8 @@
 
 import React, { FC } from "react";
 import { Route } from "react-router-dom";
-import { Link, User } from "@scm-manager/ui-types";
-import AuthorizedKeys from "./AuthorizedKeysPage";
+import { User } from "@scm-manager/ui-types";
+import AuthorizedKeys from "./AuthorizedKeys";
 
 type Props = {
   url: string;
@@ -27,7 +27,7 @@ type Props = {
 const UserNavigationRoute: FC<Props> = ({ url, user }) => {
   return (
     <Route path={`${url}/settings/authorized_keys`}>
-      <AuthorizedKeys link={(user?._links?.authorized_keys as Link)?.href} />
+      <AuthorizedKeys user={user} />
     </Route>
   );
 };
