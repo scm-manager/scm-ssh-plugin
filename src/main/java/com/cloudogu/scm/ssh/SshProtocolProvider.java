@@ -16,6 +16,7 @@
 
 package com.cloudogu.scm.ssh;
 
+import com.google.common.base.Strings;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import sonia.scm.plugin.Extension;
@@ -80,6 +81,10 @@ public class SshProtocolProvider implements ScmProtocolProvider {
       }
 
       String hostname = serverName;
+      if (Strings.isNullOrEmpty(hostname)) {
+        hostname = "localhost";
+      }
+
       if (hostname.startsWith("ssh://")) {
         hostname = hostname.substring(6);
       }
