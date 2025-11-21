@@ -1,2 +1,0 @@
-- type: changed
-  description: Updated Apache ssh library (which removes ciphers aes128-cbc, aes192-cbc, and aes256-cbc)

@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 3.2.0 - 2025-11-21
+### Fixed
+- Possible Exception if neither hostname nor base url were set
+
+### Changed
+- Updated Apache ssh library (which removes ciphers aes128-cbc, aes192-cbc, and aes256-cbc)
+
 ## 3.1.1 - 2025-08-04
 ### Fixed
 - Document titles for configuration pages from core
