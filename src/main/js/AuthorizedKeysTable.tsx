@@ -16,9 +16,9 @@
 
 import React, { FC } from "react";
 import { useTranslation } from "react-i18next";
-import { AuthorizedKey, AuthorizedKeysCollection } from "./types";
-import { Notification } from "@scm-manager/ui-core";
 import { DeleteFunction } from "@scm-manager/ui-api";
+import { Notification } from "@scm-manager/ui-core";
+import { AuthorizedKey, AuthorizedKeysCollection } from "./types";
 import AuthorizedKeyEntry from "./AuthorizedKeyEntry";
 
 type Props = {

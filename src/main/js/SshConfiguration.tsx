@@ -16,19 +16,21 @@
 
 import React, { FC } from "react";
 import { useTranslation } from "react-i18next";
-import { Notification, Title } from "@scm-manager/ui-core";
-import { ConfigurationForm, Form } from "@scm-manager/ui-forms";
+import { useRequiredIndexLink } from "@scm-manager/ui-api";
+import { ConfigurationForm, Form, Notification, Title } from "@scm-manager/ui-core";
+import { HalRepresentation } from "@scm-manager/ui-types";
 import * as validator from "./validator";
 
-type SshConfiguration = {
+type SshConfiguration = HalRepresentation & {
   hostName?: string;
   port: number;
   disablePasswordAuthentication: boolean;
   algorithm: string;
 };
 
-const SshConfiguration: FC<{ link: string }> = ({ link }) => {
+const SshConfiguration: FC = () => {
   const [t] = useTranslation("plugins");
+  const link = useRequiredIndexLink("sshConfig");
 
   return (
     <>
@@ -38,13 +40,13 @@ const SshConfiguration: FC<{ link: string }> = ({ link }) => {
           name="hostName"
           rules={{
             validate: validator.validateHostnameWithPort,
-            required: true
+            required: true,
           }}
         />
         <Form.Input
           name="port"
           rules={{
-            validate: validator.validatePort
+            validate: validator.validatePort,
           }}
           type="number"
         />
@@ -54,7 +56,7 @@ const SshConfiguration: FC<{ link: string }> = ({ link }) => {
           name="algorithm"
           options={[
             { label: "RSA", value: "RSA" },
-            { label: "EC", value: "EC" }
+            { label: "EC", value: "EC" },
           ]}
         />
       </ConfigurationForm>

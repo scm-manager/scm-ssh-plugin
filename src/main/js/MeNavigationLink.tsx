@@ -16,23 +16,17 @@
 
 import React, { FC } from "react";
 import { useTranslation } from "react-i18next";
-import { NavLink } from "@scm-manager/ui-components";
 import { useSubject } from "@scm-manager/ui-api";
+import { NavLink } from "@scm-manager/ui-components";
 
-type Props = {
-  url: string;
-};
-
-const MeNavigationLink: FC<Props> = ({ url }) => {
+const MeNavigationLink: FC = () => {
   const [t] = useTranslation("plugins");
   const { isAnonymous } = useSubject();
 
   return (
     <>
-      {!isAnonymous && (
-        <NavLink to={`${url}/settings/sshPreferences`} label={t("scm-ssh-plugin.meConfig.navLink")} />
-      )}
-      <NavLink to={`${url}/settings/authorized_keys`} label={t("scm-ssh-plugin.authorizedKeys.navLink")} />
+      {!isAnonymous && <NavLink to="/me/settings/sshPreferences" label={t("scm-ssh-plugin.meConfig.navLink")} />}
+      <NavLink to="/me/settings/authorized_keys" label={t("scm-ssh-plugin.authorizedKeys.navLink")} />
     </>
   );
 };

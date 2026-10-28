@@ -16,14 +16,14 @@
 
 import React, { FC } from "react";
 import { useTranslation } from "react-i18next";
-import { Subtitle, useDocumentTitle } from "@scm-manager/ui-core";
-import { ConfigurationForm, Form } from "@scm-manager/ui-forms";
+import { ConfigurationForm, Form, Subtitle, useDocumentTitle } from "@scm-manager/ui-core";
+import { HalRepresentation } from "@scm-manager/ui-types";
 
 type Props = {
   link: string;
 };
 
-type MeConfiguration = {
+type MeConfiguration = HalRepresentation & {
   useSshCheckout: boolean;
 };
 

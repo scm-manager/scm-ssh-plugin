@@ -17,7 +17,8 @@
 import React, { FC } from "react";
 import { useTranslation } from "react-i18next";
 import { DeleteFunction } from "@scm-manager/ui-api";
-import { Button, DateFromNow } from "@scm-manager/ui-components";
+import { Button } from "@scm-manager/ui-components";
+import { DateFromNow } from "@scm-manager/ui-core";
 import { AuthorizedKey } from "./types";
 import { formatAuthorizedKey } from "./formatAuthorizedKey";
 

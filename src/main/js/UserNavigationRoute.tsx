@@ -15,21 +15,17 @@
  */
 
 import React, { FC } from "react";
-import { Route } from "react-router-dom";
 import { User } from "@scm-manager/ui-types";
 import AuthorizedKeys from "./AuthorizedKeys";
 
 type Props = {
-  url: string;
   user: User;
 };
 
-const UserNavigationRoute: FC<Props> = ({ url, user }) => {
-  return (
-    <Route path={`${url}/settings/authorized_keys`}>
-      <AuthorizedKeys user={user} />
-    </Route>
-  );
-};
+export const UserAuthorizedKeysRouteElement: FC<Props> = ({ user }) => {
+  if (!user) {
+    return null;
+  }
 
-export default UserNavigationRoute;
+  return <AuthorizedKeys user={user} />;
+};

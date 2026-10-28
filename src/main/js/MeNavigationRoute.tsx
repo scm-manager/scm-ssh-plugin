@@ -14,33 +14,29 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import React, { FC } from "react";
-import { Route, Switch } from "react-router-dom";
-import { Link, Me } from "@scm-manager/ui-types";
+import React from "react";
+import { useMe, useSubject } from "@scm-manager/ui-api";
+import { Link } from "@scm-manager/ui-types";
 import MeConfiguration from "./MeConfiguration";
 import AuthorizedKeys from "./AuthorizedKeys";
-import { useSubject } from "@scm-manager/ui-api";
 
-type Props = {
-  url: string;
-  me: Me;
-};
-
-const MeNavigationRoute: FC<Props> = ({ url, me }) => {
+export const MeSshPreferenceRouteElement = () => {
+  const { data: me } = useMe();
   const { isAnonymous } = useSubject();
 
-  return (
-    <Switch>
-      {!isAnonymous && (
-        <Route path={`${url}/settings/sshPreferences`}>
-          <MeConfiguration link={(me?._links?.sshPreferences as Link)?.href} />
-        </Route>
-      )}
-      <Route path={`${url}/settings/authorized_keys`}>
-        <AuthorizedKeys user={me} />
-      </Route>
-    </Switch>
-  );
+  if (!me || isAnonymous) {
+    return null;
+  }
+
+  return <MeConfiguration link={(me._links?.sshPreferences as Link)?.href} />;
 };
 
-export default MeNavigationRoute;
+export const MeAuthorizedKeysRouteElement = () => {
+  const { data: me } = useMe();
+
+  if (!me) {
+    return null;
+  }
+
+  return <AuthorizedKeys user={me} />;
+};

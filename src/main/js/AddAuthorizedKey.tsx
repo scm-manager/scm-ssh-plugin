@@ -29,11 +29,7 @@ type Props = {
 
 const AddAuthorizedKey: FC<Props> = ({ user, authorizedKeys }) => {
   const [t] = useTranslation("plugins");
-  const {
-    isLoading,
-    error,
-    create,
-  } = useCreateAuthorizedKey(user, authorizedKeys);
+  const { isLoading, error, create } = useCreateAuthorizedKey(user, authorizedKeys);
   const [displayName, setDisplayName] = useState("");
   const [raw, setRaw] = useState("");
 

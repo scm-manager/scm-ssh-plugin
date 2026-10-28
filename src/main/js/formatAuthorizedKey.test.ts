@@ -15,6 +15,7 @@
  */
 
 import { formatAuthorizedKey } from "./formatAuthorizedKey";
+import { describe, it, expect } from "vitest";
 
 describe("format authorized key tests", () => {
   it("should format the given key", () => {
